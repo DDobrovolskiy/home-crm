@@ -1,0 +1,20 @@
+# Uncomment this line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  flutter_root = File.dirname(`which flutter`.chomp)
+  flutter_channel = File.readlines(File.join(flutter_root, '.flutter-channel')).first.chomp
+  flutter_version = File.readlines(File.join(flutter_root, 'bin/internal/engine.version')).first.chomp
+
+  pod 'Flutter', :git => 'https://github.com/flutter/engine.git', :tag => flutter_version
+
+  # Добавьте зависимости для плагинов
+  pod 'shared_preferences', :path => '../.symlinks/plugins/shared_preferences/ios'
+
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
