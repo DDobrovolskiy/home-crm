@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  home-crm-back:
+    image: ddobrovolskiy/home-crm-back:0.0.1
+    container_name: home-crm-back
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+  home-crm-front:
+    image: ddobrovolskiy/home-crm-front:0.0.2
+    container_name: home-crm-front
+    restart: unless-stopped
+    ports:
+      - "80:80"
