@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 
 final defaultTheme = ThemeData(
   // primarySwatch: Colors.amber,
-  colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-  scaffoldBackgroundColor: Color.fromRGBO(253, 253, 253, 255),
+  colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+  scaffoldBackgroundColor: Colors.white70,
   dividerColor: Colors.white30,
   listTileTheme: ListTileThemeData(iconColor: Colors.black45),
   appBarTheme: AppBarTheme(
-    backgroundColor: Color.fromRGBO(253, 253, 253, 255),
+    backgroundColor: Colors.indigo,
     titleTextStyle: TextStyle(color: Colors.white, fontSize: 25),
   ),
   textTheme: TextTheme(

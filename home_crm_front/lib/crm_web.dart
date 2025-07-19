@@ -10,8 +10,8 @@ import 'package:home_crm_front/theme/theme.dart';
 
 import 'cookie/cookie_handler.dart';
 
-class CrmApp extends StatelessWidget {
-  const CrmApp({super.key});
+class CrmWeb extends StatelessWidget {
+  const CrmWeb({super.key});
 
   @override
   Widget build(BuildContext context) {
