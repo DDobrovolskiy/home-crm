@@ -3,7 +3,9 @@ import 'package:flutter/physics.dart';
 import 'dart:ui'; // Для эффектов размытия
 // import 'package:flutter/simulation.dart'; // Для симуляции физики
 import 'package:flutter/animation.dart';
-import 'package:flutter_svg/svg.dart'; // Для анимации
+import 'package:flutter_svg/svg.dart';
+import 'package:home_crm_front/theme/theme.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Для анимации
 
 class LoginPage extends StatefulWidget {
   @override
@@ -27,7 +29,6 @@ class _LoginPageState extends State<LoginPage>
     );
 
     // Создание анимации смещения параллакса
-    // final Simulation simulation = SpringSimulation(SpringDescription(mass: 1, stiffness: 100, damping: 1), 0.0, 100.0, 0.0);
     _parallaxOffset =
         Tween(begin: 0.0, end: 100.0).animate(
           CurvedAnimation(
@@ -56,6 +57,11 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
+    // Получаем размеры экрана
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Определяем адаптивные размеры окна авторизации
+    final windowWidth = screenWidth <= 600 ? screenWidth * 0.8 : 480.0;
     return SafeArea(
       child: AnimatedBuilder(
         animation: _parallaxOffset,
@@ -71,7 +77,7 @@ class _LoginPageState extends State<LoginPage>
                     _parallaxOffset.value * 0.2,
                   ),
                   child: Image.asset(
-                    'assets/common/background2.jpg',
+                    'assets/common/background3.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -87,21 +93,12 @@ class _LoginPageState extends State<LoginPage>
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  width: 350,
-                  height: 500,
-                  // Фиксированная ширина окна
-                  constraints: BoxConstraints(
-                    maxWidth: 350,
-                    minWidth: 350,
-                    minHeight: 500,
-                    maxHeight: 500,
-                  ),
-                  // Ограничение максимальной ширины
+                  width: windowWidth,
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(4.0),
                     ),
-                    margin: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(4.0),
                     elevation: 8.0,
                     color: Colors.white.withOpacity(0.8),
                     child: Padding(
@@ -117,49 +114,47 @@ class _LoginPageState extends State<LoginPage>
                               width: 90,
                             ),
                             // Заголовок окна
-                            const Text(
-                              'Home CRM',
-                              // style: TextStyle(
-                              //   fontSize: 24,
-                              //   fontWeight: FontWeight.bold,
-                              //   color: Colors.black,
-                              // ),
-                            ),
-                            const Text(
-                              'система для вашего бизнеса',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            const Divider(thickness: 1.0),
-                            const SizedBox(height: 20),
-
-                            // Поле ввода логина
-                            _buildLoginField(),
-                            const SizedBox(height: 15),
-
-                            // Поле ввода пароля
-                            _buildPasswordField(),
-
-                            TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                'Забыли пароль?',
-                                style: TextStyle(fontSize: 12),
+                            RichText(
+                              text: TextSpan(
+                                style: Theme.of(context).textTheme.headlineLarge,
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'home',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  TextSpan(
+                                    text: 'CRM',
+                                    style: TextStyle(color: CustomColors.accentColor),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            Text(
+                              'система для вашего бизнеса',
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            Divider(thickness: 1.0),
+                            SizedBox(height: 5),
+                            // Поле ввода логина
+                            _buildLoginField(),
+                            SizedBox(height: 5),
+                            // Поле ввода пароля
+                            _buildPasswordField(),
+                            SizedBox(height: 5),
+                            TextButton(
+                              onPressed: () {},
+                              child: Text(
+                                'Забыли пароль?',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
                             // Кнопка входа
                             ElevatedButton(
                               style: ButtonStyle(
                                 fixedSize: WidgetStateProperty.all(
                                   Size.fromWidth(420),
                                 ),
-                                backgroundColor: WidgetStateProperty.all(
-                                  Colors.blueAccent.shade700,
-                                ),
-                                // Заливка серым цветом
-                                foregroundColor: WidgetStateProperty.all(
-                                  Colors.white,
-                                ), // Белый текст на кнопке
                               ),
                               onPressed: () {},
                               child: const Text('Войти'),
@@ -169,18 +164,22 @@ class _LoginPageState extends State<LoginPage>
                             // Ссылка на восстановление пароля
                             TextButton(
                               style: ButtonStyle(
-                                fixedSize: WidgetStateProperty.all(
-                                  Size.fromWidth(420),
-                                ),
-                                backgroundColor: WidgetStateProperty.all(
-                                  Colors.white,
-                                ),
-                                foregroundColor: WidgetStateProperty.all(
-                                  Colors.grey.shade700,
-                                ),
+                                foregroundColor: WidgetStateProperty.all(CustomColors.backgroundDark),
+                                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                  if (states.contains(WidgetState.pressed)) {
+                                    return CustomColors.accentColor.withOpacity(0.1);
+                                  }
+                                  return CustomColors.accentColor;
+                                }),
+                                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                shadowColor: WidgetStateProperty.all(Colors.transparent),
+                                shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                )),
+                                minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
                               ),
                               onPressed: () {},
-                              child: const Text('Регистрация'),
+                              child: Text('Регистрация'),
                             ),
                           ],
                         ),
@@ -196,18 +195,21 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
+  MaskTextInputFormatter phoneFormatter = MaskTextInputFormatter(mask: '+7 (###) ###-##-##');
+
   // Вспомогательные методы для построения полей ввода
   Widget _buildLoginField() {
     return TextField(
+      inputFormatters: [phoneFormatter],
       decoration: const InputDecoration(
-        labelText: 'Логин или Email',
+        hintText: '+7 (___) ___-__-__',
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         filled: true,
         fillColor: Colors.white60,
       ),
-      style: const TextStyle(color: Colors.black),
+      keyboardType: TextInputType.phone,
     );
   }
 
@@ -217,7 +219,7 @@ class _LoginPageState extends State<LoginPage>
       decoration: const InputDecoration(
         labelText: 'Пароль',
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         filled: true,
         fillColor: Colors.white60,

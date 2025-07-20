@@ -23,7 +23,9 @@ class CrmWeb extends StatelessWidget {
     });
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: defaultTheme,
+      theme: getApplicationTheme(), // Светлая тема
+      darkTheme: getDarkApplicationTheme(), // Темная тема
+      themeMode: ThemeMode.system, // По умолчанию используем систему устройства
       onGenerateRoute: (settings) => generateRoute(settings),
       routes: routes,
     );
