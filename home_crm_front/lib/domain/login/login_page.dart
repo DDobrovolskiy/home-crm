@@ -3,7 +3,9 @@ import 'package:flutter/physics.dart';
 import 'dart:ui'; // Для эффектов размытия
 // import 'package:flutter/simulation.dart'; // Для симуляции физики
 import 'package:flutter/animation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:home_crm_front/domain/support/phone.dart';
 import 'package:home_crm_front/theme/theme.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Для анимации
 
@@ -16,6 +18,9 @@ class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _parallaxOffset;
+  final _formKey = GlobalKey<FormState>();
+  String? _login;
+  String? _password;
 
   @override
   void initState() {
@@ -116,7 +121,9 @@ class _LoginPageState extends State<LoginPage>
                             // Заголовок окна
                             RichText(
                               text: TextSpan(
-                                style: Theme.of(context).textTheme.headlineLarge,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineLarge,
                                 children: <TextSpan>[
                                   TextSpan(
                                     text: 'home',
@@ -124,7 +131,9 @@ class _LoginPageState extends State<LoginPage>
                                   ),
                                   TextSpan(
                                     text: 'CRM',
-                                    style: TextStyle(color: CustomColors.accentColor),
+                                    style: TextStyle(
+                                      color: CustomColors.accentColor,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -136,10 +145,17 @@ class _LoginPageState extends State<LoginPage>
                             Divider(thickness: 1.0),
                             SizedBox(height: 5),
                             // Поле ввода логина
-                            _buildLoginField(),
-                            SizedBox(height: 5),
-                            // Поле ввода пароля
-                            _buildPasswordField(),
+                            Form(
+                              key: _formKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _buildLoginField(),
+                                  SizedBox(height: 5),
+                                  _buildPasswordField(),
+                                ],
+                              ),
+                            ),
                             SizedBox(height: 5),
                             TextButton(
                               onPressed: () {},
@@ -156,7 +172,15 @@ class _LoginPageState extends State<LoginPage>
                                   Size.fromWidth(420),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  print("true");
+                                  print(_password);
+                                  print(_login);
+                                } else {
+                                  print("false");
+                                }
+                              },
                               child: const Text('Войти'),
                             ),
                             const SizedBox(height: 10),
@@ -164,19 +188,33 @@ class _LoginPageState extends State<LoginPage>
                             // Ссылка на восстановление пароля
                             TextButton(
                               style: ButtonStyle(
-                                foregroundColor: WidgetStateProperty.all(CustomColors.backgroundDark),
-                                backgroundColor: WidgetStateProperty.resolveWith((states) {
-                                  if (states.contains(WidgetState.pressed)) {
-                                    return CustomColors.accentColor.withOpacity(0.1);
-                                  }
-                                  return CustomColors.accentColor;
-                                }),
-                                overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                shadowColor: WidgetStateProperty.all(Colors.transparent),
-                                shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4.0),
-                                )),
-                                minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
+                                foregroundColor: WidgetStateProperty.all(
+                                  CustomColors.backgroundDark,
+                                ),
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith((states) {
+                                      if (states.contains(
+                                        WidgetState.pressed,
+                                      )) {
+                                        return CustomColors.accentColor
+                                            .withOpacity(0.1);
+                                      }
+                                      return CustomColors.accentColor;
+                                    }),
+                                overlayColor: WidgetStateProperty.all(
+                                  Colors.transparent,
+                                ),
+                                shadowColor: WidgetStateProperty.all(
+                                  Colors.transparent,
+                                ),
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                ),
+                                minimumSize: WidgetStateProperty.all(
+                                  Size(double.maxFinite, 56),
+                                ),
                               ),
                               onPressed: () {},
                               child: Text('Регистрация'),
@@ -195,12 +233,10 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  MaskTextInputFormatter phoneFormatter = MaskTextInputFormatter(mask: '+7 (###) ###-##-##');
-
   // Вспомогательные методы для построения полей ввода
   Widget _buildLoginField() {
-    return TextField(
-      inputFormatters: [phoneFormatter],
+    return TextFormField(
+      inputFormatters: [Phone.phoneFormatter],
       decoration: const InputDecoration(
         hintText: '+7 (___) ___-__-__',
         border: OutlineInputBorder(
@@ -210,11 +246,19 @@ class _LoginPageState extends State<LoginPage>
         fillColor: Colors.white60,
       ),
       keyboardType: TextInputType.phone,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (Phone.isValidPhoneNumber(value)) {
+          return null;
+        }
+        return 'Поле телефона обязательно для заполнения!';
+      },
+      onChanged: (value) => _login = value,
     );
   }
 
   Widget _buildPasswordField() {
-    return TextField(
+    return TextFormField(
       obscureText: true,
       decoration: const InputDecoration(
         labelText: 'Пароль',
@@ -225,6 +269,14 @@ class _LoginPageState extends State<LoginPage>
         fillColor: Colors.white60,
       ),
       style: const TextStyle(color: Colors.black),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Поле пароля обязательно для заполнения!';
+        }
+        return null;
+      },
+      onChanged: (value) => _password = value,
     );
   }
 }
