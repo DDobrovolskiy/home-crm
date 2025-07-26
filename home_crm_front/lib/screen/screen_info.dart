@@ -6,6 +6,7 @@ class ScreenInfo with ChangeNotifier {
   late final bool isMobile;
 
   ScreenInfo(BuildContext context) {
+    debugPrint('Creating ScreenInfo at timestamp: ${DateTime.now()}');
     final screenSize = MediaQuery.of(context).size;
     isMobile = screenSize.shortestSide <= 600;
     log('screenSize: $screenSize');

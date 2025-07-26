@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:home_crm_front/screen/screen_info.dart';
 
-import '../../cookie/cookie_handler.dart';
+import '../../support/token_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -15,17 +14,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+
+
   @override
   Widget build(BuildContext context) {
     return ScreenInfo(context).isMobile
         ? MobileHomePage().build(context)
         : DesktopHomePage().build(context);
   }
+
+  @override
+  void initState() {
+    debugPrint('Creating initState at timestamp: ${DateTime.now()}');
+    TokenService().checkAuthAndRedirect(context);
+    debugPrint(
+        'Creating initState-TokenService at timestamp: ${DateTime.now()}');
+    super.initState();
+  }
 }
 
 class MobileHomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    debugPrint('Build MobileHomePage at timestamp: ${DateTime.now()}');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -63,10 +74,7 @@ class MobileHomePage extends State<HomePage> {
 class DesktopHomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    CookieHandler().getValue("key")
-    .then((value) {
-      print("cookies = $value");
-    });
+    debugPrint('Build DesktopHomePage at timestamp: ${DateTime.now()}');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:home_crm_front/cookie/cookie_handler.dart';
 import 'package:home_crm_front/crm_web.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 void main() {
+  debugPrint('Creating main at timestamp: ${DateTime.now()}');
   runApp(const CrmWeb());
 }
