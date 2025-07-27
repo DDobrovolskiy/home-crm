@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:home_crm_front/crm_web.dart';
+import 'package:home_crm_front/home_crm_app.dart';
 
-void main() {
+import 'domain/support/token_service.dart';
+
+Future<void> main() async {
   debugPrint('Creating main at timestamp: ${DateTime.now()}');
-  runApp(const CrmWeb());
+  String? authToken = await TokenService().getToken(TokenService.authToken);
+  runApp(HomeCrmApp(authToken: authToken));
 }

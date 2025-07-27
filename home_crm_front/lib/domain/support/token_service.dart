@@ -2,25 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenService {
-  static const String _tokenKey = 'authToken';
+  static const String authToken = 'authToken';
 
-  Future<String?> getToken() async {
+  Future<String?> getToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_tokenKey);
+    return prefs.getString(token);
   }
 
-  Future<bool> saveToken(String token) async {
+  Future<bool> saveToken(String name, String token) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_tokenKey, token);
+    return prefs.setString(name, token);
   }
 
-  Future<bool> clearToken() async {
+  Future<bool> clearToken(String name) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.remove(_tokenKey);
+    return prefs.remove(name);
   }
 
   Future<void> checkAuthAndRedirect(BuildContext context) async {
-    TokenService().getToken().then((hasToken) {
+    TokenService().getToken(authToken).then((hasToken) {
       if (hasToken == null) {
         Navigator.pushReplacementNamed(context, '/login');
       }

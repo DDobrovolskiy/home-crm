@@ -1,50 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:home_crm_front/domain/support/redux/state/app_state.dart';
+import 'package:home_crm_front/domain/support/router/roters.dart';
+import 'package:redux/redux.dart';
 
-import '../../../router/router.dart';
 import '../../../theme/theme.dart';
 import '../../support/phone.dart';
+import 'login_base_page.dart';
 
-class LoginForm {
+class LoginRegistrationPage extends StatefulWidget {
+  const LoginRegistrationPage({super.key});
+
+  @override
+  _LoginRegistrationPage createState() => _LoginRegistrationPage();
+}
+
+class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   String? _login;
   String? _password;
 
-  Form buildForm(BuildContext context) {
+  @override
+  Form getForm(Store<AppState> viewModel) {
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('ВХОД', style: Theme.of(context).textTheme.headlineMedium),
-          SizedBox(height: 5),
+          TextButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, RoutersApp.login);
+            },
+            child: Text(
+              '← У меня уже есть аккаунт',
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'РЕГИСТРАЦИЯ',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          SizedBox(height: 10),
           _buildLoginField(),
           SizedBox(height: 5),
           _buildPasswordField(),
           SizedBox(height: 5),
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Забыли пароль?',
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Кнопка входа
-          ElevatedButton(
-            style: ButtonStyle(
-              fixedSize: WidgetStateProperty.all(Size.fromWidth(420)),
-            ),
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                print("true");
-                print(_password);
-                print(_login);
-              } else {
-                print("false");
-              }
-            },
-            child: const Text('Войти'),
-          ),
+          _buildSecondPasswordField(),
           const SizedBox(height: 10),
 
           // Ссылка на восстановление пароля
@@ -69,9 +70,15 @@ class LoginForm {
               minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
             ),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, Routers.registration);
+              if (_formKey.currentState!.validate()) {
+                print("true");
+                print(_password);
+                print(_login);
+              } else {
+                print("false");
+              }
             },
-            child: Text('Регистрация →'),
+            child: Text('Регистрация'),
           ),
         ],
       ),
@@ -122,6 +129,28 @@ class LoginForm {
         return null;
       },
       onChanged: (value) => _password = value,
+    );
+  }
+
+  Widget _buildSecondPasswordField() {
+    return TextFormField(
+      obscureText: true,
+      decoration: const InputDecoration(
+        labelText: 'Повторите пароль',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        filled: true,
+        fillColor: Colors.white60,
+      ),
+      style: const TextStyle(color: Colors.black),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value != _password) {
+          return 'Пароли не совпали!';
+        }
+        return null;
+      },
     );
   }
 }
