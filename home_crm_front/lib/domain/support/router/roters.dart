@@ -8,7 +8,6 @@ class RoutersApp {
   static const String home = '/home';
   static const String login = '/login';
   static const String registration = '/register';
-  static const String splash = '/splash';
 
   static final Map<String, WidgetBuilder> routes = {
     home: (context) => HomePage(),

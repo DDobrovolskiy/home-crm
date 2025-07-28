@@ -1,18 +1,16 @@
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:home_crm_front/domain/support/redux/middleware/middleware.dart';
-import 'package:home_crm_front/domain/support/redux/reducer/app_reducer.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:redux/redux.dart';
 
 import '../state/app_state.dart';
 
-Store<AppState> createStore(String? authToken, BuildContext context) {
+Store<AppState> createStore(AppState appState) {
   return Store<AppState>(
-    appRepucer,
-    initialState: AppState(
-      username: 'TestUser',
-      isLoggedIn: authToken != null,
-      authToken: authToken,
-    ),
-    middleware: createMiddleware(context),
+    combineReducers<AppState>([
+    ]),
+    initialState: appState,
+    middleware: [
+      NavigationMiddleware<AppState>(),
+    ],
   );
 }

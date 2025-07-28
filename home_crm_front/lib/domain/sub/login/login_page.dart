@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:home_crm_front/domain/support/redux/state/app_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.dart';
 import 'package:redux/redux.dart';
@@ -20,7 +21,7 @@ class _LoginPage extends LoginPageBase<LoginPage> {
   String? _password;
 
   @override
-  Form getForm(Store<AppState> viewModel) {
+  Form getForm(Store<AppState> store) {
     return Form(
       key: _formKey,
       child: Column(
@@ -80,7 +81,7 @@ class _LoginPage extends LoginPageBase<LoginPage> {
               minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
             ),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, RoutersApp.registration);
+              store.dispatch(NavigateToAction.replace(RoutersApp.registration));
             },
             child: Text('Регистрация →'),
           ),

@@ -25,9 +25,5 @@ class TokenService {
         Navigator.pushReplacementNamed(context, '/login');
       }
     });
-    // final hasToken = await TokenService().getToken() != null;
-    // if (!hasToken) {
-    //   Navigator.pushReplacementNamed(context, '/login');
-    // }
   }
 }

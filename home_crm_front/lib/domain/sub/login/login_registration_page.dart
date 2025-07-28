@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:home_crm_front/domain/support/redux/state/app_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.dart';
 import 'package:redux/redux.dart';
@@ -20,7 +21,7 @@ class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
   String? _password;
 
   @override
-  Form getForm(Store<AppState> viewModel) {
+  Form getForm(Store<AppState> store) {
     return Form(
       key: _formKey,
       child: Column(
@@ -28,7 +29,7 @@ class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
         children: [
           TextButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, RoutersApp.login);
+              store.dispatch(NavigateToAction.replace(RoutersApp.login));
             },
             child: Text(
               '← У меня уже есть аккаунт',
