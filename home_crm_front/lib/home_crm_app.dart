@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
-import 'package:home_crm_front/domain/support/redux/store/init_store.dart';
+import 'package:home_crm_front/domain/support/redux/store/store.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import 'domain/support/redux/state/app_state.dart';
