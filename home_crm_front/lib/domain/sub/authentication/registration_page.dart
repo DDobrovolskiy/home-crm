@@ -18,7 +18,7 @@ class RegistrationPage extends StatefulWidget {
 
 class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _login;
+  String? _phone;
   String? _password;
 
   @override
@@ -30,6 +30,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
         children: [
           TextButton(
             onPressed: () {
+              store.state.registration.messageError = null;
               store.dispatch(NavigateToAction.replace(RoutersApp.login));
             },
             child: Text(
@@ -42,6 +43,11 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             'РЕГИСТРАЦИЯ',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
+          if (store.state.registration.messageError != null) SizedBox(
+              height: 10),
+          if (store.state.registration.messageError != null) Text(
+              store.state.registration.messageError!,
+              style: TextStyle(color: Colors.red)),
           SizedBox(height: 10),
           _buildLoginField(),
           SizedBox(height: 5),
@@ -75,7 +81,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
               if (_formKey.currentState!.validate()) {
                 store.state.registration.load = true;
                 store.dispatch(
-                    RegistrationAction(login: _login!, password: _password!));
+                    RegistrationAction(phone: _phone!, password: _password!));
               }
             },
             child: store.state.registration.load
@@ -107,7 +113,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
         }
         return 'Поле телефона обязательно для заполнения!';
       },
-      onChanged: (value) => _login = value,
+      onChanged: (value) => _phone = value,
     );
   }
 

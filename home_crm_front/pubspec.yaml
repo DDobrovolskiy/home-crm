@@ -42,9 +42,11 @@ dependencies:
   flutter_redux: ^0.10.0
   redux: ^5.0.0
   #  freezed: ^3.0.5
-  freezed_annotation: ^3.1.0
+  #  freezed_annotation: ^3.1.0
   flutter_native_splash: ^2.4.6
   flutter_redux_navigation: ^0.7.1
+  flutter_dotenv: ^5.2.1
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -57,7 +59,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   build_runner: ^2.6.0
-  freezed: ^3.2.0
+  #  freezed: ^3.2.0
+  json_serializable: ^6.10.0
 
 analyzer:
   errors:
@@ -70,6 +73,7 @@ analyzer:
 flutter:
   uses-material-design: true
   assets:
+    - .env
     - assets/common/background.png
     - assets/common/background1.jpg
     - assets/common/background2.jpg

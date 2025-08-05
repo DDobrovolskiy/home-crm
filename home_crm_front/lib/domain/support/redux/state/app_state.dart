@@ -11,4 +11,5 @@ class AppState {
 
 class RegistrationState {
   bool load = false;
+  String? messageError;
 }
