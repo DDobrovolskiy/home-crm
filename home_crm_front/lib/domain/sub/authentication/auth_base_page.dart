@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 
 import '../../support/redux/state/app_state.dart';
 
-abstract class LoginPageBase<T extends StatefulWidget> extends State<T>
+abstract class AuthPageBase<T extends StatefulWidget> extends State<T>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _parallaxOffset;

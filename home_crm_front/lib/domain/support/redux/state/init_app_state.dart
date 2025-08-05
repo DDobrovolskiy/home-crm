@@ -8,8 +8,9 @@ Future<AppState> initAppState() async {
     TokenService.authToken,
   );
   debugPrint(authToken);
-  final appState = AppState(authToken: authToken);
+  final appState = AppState(authToken);
   if (authToken != null) {
+    //
     debugPrint('do http');
   }
   return appState;

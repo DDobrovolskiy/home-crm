@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: home_crm_back
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      jdbc-url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/homecrm}
+      username: ${SPRING_DATASOURCE_USERNAME:myuser}
+      password: ${SPRING_DATASOURCE_PASSWORD:mypassword}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/homecrm}
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/homecrm}
+    user: ${SPRING_DATASOURCE_USERNAME:myuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:mypassword}
+    schemas: public
+    driver-class-name: org.postgresql.Driver

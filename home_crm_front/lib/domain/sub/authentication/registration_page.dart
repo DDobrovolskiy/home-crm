@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
+import 'package:home_crm_front/domain/sub/authentication/action/registration_action.dart';
 import 'package:home_crm_front/domain/support/redux/state/app_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.dart';
 import 'package:redux/redux.dart';
 
 import '../../../theme/theme.dart';
 import '../../support/phone.dart';
-import 'login_base_page.dart';
+import 'auth_base_page.dart';
 
-class LoginRegistrationPage extends StatefulWidget {
-  const LoginRegistrationPage({super.key});
+class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
 
   @override
   _LoginRegistrationPage createState() => _LoginRegistrationPage();
 }
 
-class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
+class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   String? _login;
   String? _password;
@@ -46,7 +47,7 @@ class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
           SizedBox(height: 5),
           _buildPasswordField(),
           SizedBox(height: 5),
-          _buildSecondPasswordField(),
+          _buildMatchingPasswordField(),
           const SizedBox(height: 10),
 
           // Ссылка на восстановление пароля
@@ -72,14 +73,14 @@ class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                print("true");
-                print(_password);
-                print(_login);
-              } else {
-                print("false");
+                store.state.registration.load = true;
+                store.dispatch(
+                    RegistrationAction(login: _login!, password: _password!));
               }
             },
-            child: Text('Регистрация'),
+            child: store.state.registration.load
+                ? CircularProgressIndicator()
+                : Text('Зарегистрироваться'),
           ),
         ],
       ),
@@ -133,7 +134,7 @@ class _LoginRegistrationPage extends LoginPageBase<LoginRegistrationPage> {
     );
   }
 
-  Widget _buildSecondPasswordField() {
+  Widget _buildMatchingPasswordField() {
     return TextFormField(
       obscureText: true,
       decoration: const InputDecoration(

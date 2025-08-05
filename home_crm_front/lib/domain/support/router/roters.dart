@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:home_crm_front/domain/sub/login/login_registration_page.dart';
 
+import '../../sub/authentication/login_page.dart';
+import '../../sub/authentication/registration_page.dart';
 import '../../sub/home/home_page.dart';
-import '../../sub/login/login_page.dart';
 
 class RoutersApp {
   static const String home = '/home';
@@ -12,6 +12,6 @@ class RoutersApp {
   static final Map<String, WidgetBuilder> routes = {
     home: (context) => HomePage(),
     login: (context) => LoginPage(),
-    registration: (context) => LoginRegistrationPage(),
+    registration: (context) => RegistrationPage(),
   };
 }

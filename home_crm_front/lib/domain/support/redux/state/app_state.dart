@@ -1,11 +1,14 @@
 class AppState {
   final String? authToken;
+  RegistrationState registration = RegistrationState();
 
-  const AppState({
-    required this.authToken,
-  });
+  AppState(this.authToken);
 
   bool isLogged() {
     return authToken != null;
   }
+}
+
+class RegistrationState {
+  bool load = false;
 }

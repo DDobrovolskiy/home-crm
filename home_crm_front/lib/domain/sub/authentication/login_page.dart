@@ -6,7 +6,7 @@ import 'package:redux/redux.dart';
 
 import '../../../theme/theme.dart';
 import '../../support/phone.dart';
-import 'login_base_page.dart';
+import 'auth_base_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,7 +15,7 @@ class LoginPage extends StatefulWidget {
   _LoginPage createState() => _LoginPage();
 }
 
-class _LoginPage extends LoginPageBase<LoginPage> {
+class _LoginPage extends AuthPageBase<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String? _login;
   String? _password;
