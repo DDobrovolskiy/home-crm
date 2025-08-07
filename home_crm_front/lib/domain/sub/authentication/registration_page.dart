@@ -30,7 +30,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
         children: [
           TextButton(
             onPressed: () {
-              store.state.registration.messageError = null;
+              store.state.authState.registrationState.messageError = null;
               store.dispatch(NavigateToAction.replace(RoutersApp.login));
             },
             child: Text(
@@ -43,11 +43,15 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             'РЕГИСТРАЦИЯ',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-          if (store.state.registration.messageError != null) SizedBox(
-              height: 10),
-          if (store.state.registration.messageError != null) Text(
-              store.state.registration.messageError!,
-              style: TextStyle(color: Colors.red)),
+          if (store.state.authState.registrationState.messageError !=
+              null) Column(
+            children: [
+              SizedBox(height: 10),
+              Text(
+                  store.state.authState.registrationState.messageError!,
+                  style: TextStyle(color: Colors.red)),
+            ],
+          ),
           SizedBox(height: 10),
           _buildLoginField(),
           SizedBox(height: 5),
@@ -79,14 +83,14 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                store.state.registration.load = true;
+                store.state.authState.registrationState.load = true;
                 store.dispatch(
                     RegistrationAction(phone: _phone!, password: _password!));
               }
             },
-            child: store.state.registration.load
+            child: store.state.authState.registrationState.load
                 ? CircularProgressIndicator()
-                : Text('Зарегистрироваться'),
+                : const Text('Зарегистрироваться'),
           ),
         ],
       ),

@@ -6,7 +6,6 @@ import ru.dda.homecrmback.domain.support.result.dto.Fail;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface ResultAggregate {
 
@@ -34,15 +33,9 @@ public interface ResultAggregate {
                 return this;
             }
 
-            public String getMessage() {
-                return events.stream()
-                        .map(Fail::message)
-                        .collect(Collectors.joining("\n"));
-            }
-
             @Override
             public ErrorData getErrorData() {
-                return ErrorData.of(getMessage());
+                return ErrorData.of(events);
             }
         }
     }

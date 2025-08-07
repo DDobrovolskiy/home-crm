@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import ru.dda.homecrmback.domain.support.auth.dto.SimpleAuthDTO;
+import ru.dda.homecrmback.domain.support.auth.dto.SimpleLoginDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
@@ -30,7 +31,7 @@ public class UserAggregate {
     @NotNull
     private String password;
 
-    public Result<String, IFailAggregate> login(SimpleAuthDTO dto) {
+    public Result<String, IFailAggregate> login(SimpleLoginDTO dto) {
         if (Objects.equals(password, dto.password())) {
             return Result.success(token);
         }

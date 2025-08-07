@@ -2,13 +2,15 @@ package ru.dda.homecrmback.domain.support.result.dto;
 
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record ErrorData(
-        String message
+        List<Fail> errors
 ) {
-    public static ErrorData of(String message) {
+    public static ErrorData of(List<Fail> errors) {
         return ErrorData.builder()
-                .message(message)
+                .errors(errors)
                 .build();
     }
 }

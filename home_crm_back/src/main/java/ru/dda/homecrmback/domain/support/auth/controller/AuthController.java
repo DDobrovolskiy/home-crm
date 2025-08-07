@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.dda.homecrmback.domain.support.auth.dto.SimpleAuthDTO;
+import ru.dda.homecrmback.domain.support.auth.dto.SimpleLoginDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 import ru.dda.homecrmback.domain.support.user.UserService;
@@ -22,7 +23,7 @@ public class AuthController implements IAuthController {
     }
 
     @PostMapping("/login")
-    public IResponse<String> login(@Valid @RequestBody SimpleAuthDTO dto) {
+    public IResponse<String> login(@Valid @RequestBody SimpleLoginDTO dto) {
         return authService.login(dto)
                 .response(ResultAggregate::getErrorData);
     }
@@ -31,5 +32,11 @@ public class AuthController implements IAuthController {
     public IResponse<Boolean> logout(@RequestHeader("Authorization") String token) {
         return authService.logout(token)
                 .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping("/check")
+    public Boolean check(@RequestHeader("Authorization") String token) {
+        return authService.check(token)
+                .complite(s -> true, f -> false);
     }
 }

@@ -35,7 +35,7 @@ public class AuthHeaderFilter implements Filter {
                         .map(UserAggregate::getUserInfo)
                         .consumer(UserContextHolder::setCurrentUser,
                                 fail -> ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                                        fail.getErrorData().message()));
+                                        "Не авторизован"));
             }
             chain.doFilter(request, response);
         } finally {

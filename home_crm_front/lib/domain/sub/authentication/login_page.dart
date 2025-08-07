@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
+import 'package:home_crm_front/domain/sub/authentication/action/login_action.dart';
 import 'package:home_crm_front/domain/support/redux/state/app_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.dart';
 import 'package:redux/redux.dart';
@@ -17,7 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends AuthPageBase<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _login;
+  String? _phone;
   String? _password;
 
   @override
@@ -28,13 +29,23 @@ class _LoginPage extends AuthPageBase<LoginPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('ВХОД', style: Theme.of(context).textTheme.headlineMedium),
+          if (store.state.authState.loginState.messageError != null) Column(
+            children: [
+              SizedBox(height: 5),
+              Text(
+                  store.state.authState.loginState.messageError!,
+                  style: TextStyle(color: Colors.red)),
+            ],
+          ),
           SizedBox(height: 5),
           _buildLoginField(),
           SizedBox(height: 5),
           _buildPasswordField(),
           SizedBox(height: 5),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              //TODO: Забыли пароль?
+            },
             child: Text(
               'Забыли пароль?',
               style: Theme.of(context).textTheme.labelMedium,
@@ -48,18 +59,17 @@ class _LoginPage extends AuthPageBase<LoginPage> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                print("true");
-                print(_password);
-                print(_login);
-              } else {
-                print("false");
+                store.state.authState.loginState.load = true;
+                store.dispatch(
+                    LoginAction(phone: _phone!, password: _password!));
               }
             },
-            child: const Text('Войти'),
+            child: store.state.authState.loginState.load
+                ? CircularProgressIndicator()
+                : const Text('Войти'),
           ),
           const SizedBox(height: 10),
 
-          // Ссылка на восстановление пароля
           TextButton(
             style: ButtonStyle(
               foregroundColor: WidgetStateProperty.all(
@@ -81,6 +91,7 @@ class _LoginPage extends AuthPageBase<LoginPage> {
               minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
             ),
             onPressed: () {
+              store.state.authState.registrationState.messageError = null;
               store.dispatch(NavigateToAction.replace(RoutersApp.registration));
             },
             child: Text('Регистрация →'),
@@ -110,7 +121,7 @@ class _LoginPage extends AuthPageBase<LoginPage> {
         }
         return 'Поле телефона обязательно для заполнения!';
       },
-      onChanged: (value) => _login = value,
+      onChanged: (value) => _phone = value,
     );
   }
 

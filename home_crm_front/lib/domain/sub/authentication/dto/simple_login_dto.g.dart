@@ -1,16 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'registration_action.dart';
+part of 'simple_login_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-RegistrationAction _$RegistrationActionFromJson(Map<String, dynamic> json) =>
-    RegistrationAction(
+SimpleLoginDto _$SimpleLoginDtoFromJson(Map<String, dynamic> json) =>
+    SimpleLoginDto(
       phone: json['phone'] as String,
       password: json['password'] as String,
     );
 
-Map<String, dynamic> _$RegistrationActionToJson(RegistrationAction instance) =>
+Map<String, dynamic> _$SimpleLoginDtoToJson(SimpleLoginDto instance) =>
     <String, dynamic>{'phone': instance.phone, 'password': instance.password};

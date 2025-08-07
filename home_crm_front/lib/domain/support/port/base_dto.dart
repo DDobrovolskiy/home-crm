@@ -16,4 +16,8 @@ class BaseDTO {
 
   factory BaseDTO.fromJson(Map<String, dynamic> json) =>
       _$BaseDTOFromJson(json);
+
+  String? fullErrorMessage() {
+    return errorData?.errors?.map((e) => e.message).join('\n');
+  }
 }

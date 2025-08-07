@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.dda.homecrmback.domain.support.auth.dto.SimpleAuthDTO;
+import ru.dda.homecrmback.domain.support.auth.dto.SimpleLoginDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
@@ -51,13 +52,19 @@ public class UserService {
     }
 
     @Transactional
-    public Result<String, IFailAggregate> login(SimpleAuthDTO dto) {
+    public Result<String, IFailAggregate> login(SimpleLoginDTO dto) {
         return getUserAggregateByPhone(dto.phone())
                 .then(userAggregate -> userAggregate.login(dto));
     }
 
     @Transactional
     public Result<Boolean, IFailAggregate> logout(String token) {
+        return getUserAggregateByToken(token)
+                .map(UserAggregate::logout);
+    }
+
+    @Transactional
+    public Result<Boolean, IFailAggregate> check(String token) {
         return getUserAggregateByToken(token)
                 .map(UserAggregate::logout);
     }

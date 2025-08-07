@@ -1,6 +1,6 @@
 class AppState {
-  final String? authToken;
-  RegistrationState registration = RegistrationState();
+  String? authToken;
+  AuthState authState = AuthState();
 
   AppState(this.authToken);
 
@@ -9,7 +9,17 @@ class AppState {
   }
 }
 
+class AuthState {
+  RegistrationState registrationState = RegistrationState();
+  LoginState loginState = LoginState();
+}
+
 class RegistrationState {
+  bool load = false;
+  String? messageError;
+}
+
+class LoginState {
   bool load = false;
   String? messageError;
 }
