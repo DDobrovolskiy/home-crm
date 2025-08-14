@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import ru.dda.homecrmback.domain.support.auth.dto.SimpleAuthDTO;
 import ru.dda.homecrmback.domain.support.auth.dto.SimpleLoginDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
+import ru.dda.homecrmback.domain.support.user.context.IUserContext;
 import ru.dda.homecrmback.domain.support.user.context.UserInfo;
+import ru.dda.homecrmback.domain.support.user.dto.response.UserDTO;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = "users")
-public class UserAggregate {
+public class UserAggregate implements IUserContext {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,12 +31,34 @@ public class UserAggregate {
     private String phone;
     @NotNull
     private String password;
+    @NotNull
+    private String name;
+
+    public static Result<UserAggregate, IFailAggregate> create(String name, String phone, String password) {
+        return Validator.create()
+                .is(name != null,
+                        () -> log.debug("name is null"),
+                        FailEvent.VALIDATION.fail("Имя не заполнено"))
+                .is(password != null,
+                        () -> log.debug("password is null"),
+                        FailEvent.VALIDATION.fail("Пароль не заполнен"))
+                .is(phone != null,
+                        () -> log.debug("phone is null"),
+                        FailEvent.VALIDATION.fail("Номер телефона не заполнен"))
+                .getResult(() -> {
+                    UserAggregate aggregate = new UserAggregate();
+                    aggregate.name = name;
+                    aggregate.phone = phone;
+                    aggregate.password = password;
+                    return aggregate;
+                });
+    }
 
     public Result<String, IFailAggregate> login(SimpleLoginDTO dto) {
         if (Objects.equals(password, dto.password())) {
             return Result.success(token);
         }
-        return Result.fail(ResultAggregate.Fails.Default.of(FailEvent.WRONG_PASSWORD.arg()));
+        return Result.fail(ResultAggregate.Fails.Default.of(FailEvent.WRONG_PASSWORD.fail()));
     }
 
     public boolean logout() {
@@ -43,29 +66,17 @@ public class UserAggregate {
         return true;
     }
 
-    public UserInfo getUserInfo() {
-        return UserInfo.builder()
+    public UserDTO getUserDTO() {
+        return UserDTO.builder()
                 .id(id)
+                .phone(phone)
+                .name(name)
                 .build();
     }
 
-    public static Result<UserAggregate, IFailAggregate> create(SimpleAuthDTO dto) {
-        return Validator.create()
-                .is(dto != null,
-                        () -> log.debug("SimpleAuthDTO dto is null"),
-                        FailEvent.VALIDATION.arg("Переданный объект пустой"),
-                        next -> next
-                                .is(dto.password() != null,
-                                        () -> log.debug("SimpleAuthDTO#password is null"),
-                                        FailEvent.VALIDATION.arg("Пароль не заполнен"))
-                                .is(dto.phone() != null,
-                                        () -> log.debug("SimpleAuthDTO#phone is null"),
-                                        FailEvent.VALIDATION.arg("Номер телефона не заполнен")))
-                .getResult(() -> {
-                    UserAggregate aggregate = new UserAggregate();
-                    aggregate.phone = dto.phone();
-                    aggregate.password = dto.password();
-                    return aggregate;
-                });
+    public UserInfo getUserInfo() {
+        return UserInfo.builder()
+                .userId(id)
+                .build();
     }
 }

@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends CrudRepository<UserAggregate, Long> {
     Optional<UserAggregate> findByPhone(String phone);
-
     Optional<UserAggregate> findByToken(String token);
 }
