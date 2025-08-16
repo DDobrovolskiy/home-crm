@@ -35,10 +35,9 @@ public class OrganizationAggregate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private UserAggregate owner;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<EmployeeAggregate> employees;
-    // Много тестов принадлежат одной организации
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<EmployeeAggregate> employees = new ArrayList<>();
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TestAggregate> tests = new ArrayList<>();
 
     public static Result<OrganizationAggregate, IFailAggregate> create(UserAggregate owner, String name) {

@@ -27,6 +27,7 @@ class AuthMiddleware implements MiddlewareClass<AppState> {
             .post(
               Port.path("auth/registration"),
               data: SimpleAuthDto(
+                name: action.name,
                 phone: action.phone,
                 password: action.password,
               ).toJson(),

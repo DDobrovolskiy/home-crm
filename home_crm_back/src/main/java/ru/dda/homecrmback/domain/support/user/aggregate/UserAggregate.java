@@ -15,6 +15,7 @@ import ru.dda.homecrmback.domain.support.result.validator.Validator;
 import ru.dda.homecrmback.domain.support.user.context.IUserContext;
 import ru.dda.homecrmback.domain.support.user.context.UserInfo;
 import ru.dda.homecrmback.domain.support.user.dto.response.UserDTO;
+import ru.dda.homecrmback.domain.support.user.dto.response.UserOrganizationDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,9 @@ public class UserAggregate implements IUserContext {
     private String password;
     @NotNull
     private String name;
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<OrganizationAggregate> organizations = new ArrayList<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<EmployeeAggregate> empolyees = new ArrayList<>();
 
     public static Result<UserAggregate, IFailAggregate> create(String name, String phone, String password) {
@@ -79,6 +80,17 @@ public class UserAggregate implements IUserContext {
                 .id(id)
                 .phone(phone)
                 .name(name)
+                .build();
+    }
+
+    public UserOrganizationDTO userOrganizationDTO() {
+        return UserOrganizationDTO.builder()
+                .ownerOrganizations(organizations.stream()
+                        .map(OrganizationAggregate::organizationInfoDTO)
+                        .toList())
+                .employeeOrganizations(empolyees.stream()
+                        .map(EmployeeAggregate::getEmployeeDTO)
+                        .toList())
                 .build();
     }
 

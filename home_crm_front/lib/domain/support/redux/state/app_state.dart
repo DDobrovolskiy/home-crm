@@ -23,3 +23,11 @@ class LoginState {
   bool load = false;
   String? messageError;
 }
+
+class OrganizationState {
+  bool load = false;
+
+  List<>
+
+  ;
+}

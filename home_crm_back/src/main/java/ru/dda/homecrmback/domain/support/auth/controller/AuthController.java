@@ -10,7 +10,6 @@ import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 import ru.dda.homecrmback.domain.support.user.User;
 import ru.dda.homecrmback.domain.support.user.UserService;
-import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
 @RestController
 @RequestMapping(IAuthController.PATH)
@@ -21,8 +20,7 @@ public class AuthController implements IAuthController {
     @PostMapping("/registration")
     public IResponse<String> registration(@Valid @RequestBody SimpleAuthDTO dto) {
         return User.Registration.of(dto.name(), dto.phone(), dto.password())
-                .execute(authService)
-                .map(UserAggregate::getToken)
+                .execute(authService::registration)
                 .response(ResultAggregate::getErrorData);
     }
 

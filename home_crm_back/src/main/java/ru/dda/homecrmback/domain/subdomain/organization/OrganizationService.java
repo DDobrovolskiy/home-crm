@@ -12,19 +12,21 @@ import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.role.RoleService;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
-import ru.dda.homecrmback.domain.support.user.UserService;
+import ru.dda.homecrmback.domain.support.user.UserDomainService;
+
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrganizationService {
     private final OrganizationRepository organizationRepository;
-    private final UserService userService;
+    private final UserDomainService userDomainService;
     private final RoleService roleService;
 
     @Transactional
     public Result<OrganizationAggregate, IFailAggregate> create(Organization.Create command) {
-        return command.owner().execute(userService::getUserAggregateById)
+        return command.owner().execute(userDomainService::getUserAggregateById)
                 .then(owner -> OrganizationAggregate.create(owner, command.organizationName()))
                 .then(organizationAggregate -> {
                     try {
@@ -48,5 +50,10 @@ public class OrganizationService {
         return organizationRepository.findById(command.organizationId())
                 .map(Result::<OrganizationAggregate, IFailAggregate>success)
                 .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.ORGANIZATION_NOT_FOUND.fail())));
+    }
+
+    @Transactional
+    public List<OrganizationAggregate> findOwnerOrganization(Organization.FindOwnerOrganization command) {
+        return organizationRepository.findAllByOwnerId(command.ownerId());
     }
 }

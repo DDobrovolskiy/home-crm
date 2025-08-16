@@ -18,8 +18,10 @@ class RegistrationPage extends StatefulWidget {
 
 class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _phone;
+  String? _name;
+  String? _login;
   String? _password;
+  bool _isHidden = true; // Переменная для управления отображением пароля
 
   @override
   Form getForm(Store<AppState> store) {
@@ -38,7 +40,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
               style: Theme.of(context).textTheme.labelMedium,
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 5),
           Text(
             'РЕГИСТРАЦИЯ',
             style: Theme.of(context).textTheme.headlineMedium,
@@ -46,19 +48,21 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
           if (store.state.authState.registrationState.messageError !=
               null) Column(
             children: [
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Text(
                   store.state.authState.registrationState.messageError!,
                   style: TextStyle(color: Colors.red)),
             ],
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 5),
+          _buildNameField(),
+          SizedBox(height: 5),
           _buildLoginField(),
           SizedBox(height: 5),
           _buildPasswordField(),
           SizedBox(height: 5),
           _buildMatchingPasswordField(),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
 
           // Ссылка на восстановление пароля
           TextButton(
@@ -85,7 +89,8 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
               if (_formKey.currentState!.validate()) {
                 store.state.authState.registrationState.load = true;
                 store.dispatch(
-                    RegistrationAction(phone: _phone!, password: _password!));
+                    RegistrationAction(
+                        name: _name!, phone: _login!, password: _password!));
               }
             },
             child: store.state.authState.registrationState.load
@@ -98,6 +103,29 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
   }
 
   // Вспомогательные методы для построения полей ввода
+  Widget _buildNameField() {
+    return TextFormField(
+      obscureText: false,
+      decoration: const InputDecoration(
+        labelText: 'Имя',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        filled: true,
+        fillColor: Colors.white60,
+      ),
+      style: const TextStyle(color: Colors.black),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Поле имя обязательно для заполнения!';
+        }
+        return null;
+      },
+      onChanged: (value) => _name = value,
+    );
+  }
+
   Widget _buildLoginField() {
     return TextFormField(
       inputFormatters: [Phone.phoneFormatter],
@@ -117,20 +145,26 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
         }
         return 'Поле телефона обязательно для заполнения!';
       },
-      onChanged: (value) => _phone = value,
+      onChanged: (value) => _login = value,
     );
   }
 
   Widget _buildPasswordField() {
     return TextFormField(
-      obscureText: true,
-      decoration: const InputDecoration(
+      obscureText: _isHidden,
+      decoration: InputDecoration(
         labelText: 'Пароль',
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         filled: true,
         fillColor: Colors.white60,
+        suffixIcon: IconButton(
+          icon: Icon(_isHidden ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            _isHidden = !_isHidden; // Переключаем состояние видимости
+          },
+        ),
       ),
       style: const TextStyle(color: Colors.black),
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -146,14 +180,20 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
 
   Widget _buildMatchingPasswordField() {
     return TextFormField(
-      obscureText: true,
-      decoration: const InputDecoration(
+      obscureText: _isHidden,
+      decoration: InputDecoration(
         labelText: 'Повторите пароль',
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         filled: true,
         fillColor: Colors.white60,
+        suffixIcon: IconButton(
+          icon: Icon(_isHidden ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            _isHidden = !_isHidden; // Переключаем состояние видимости
+          },
+        ),
       ),
       style: const TextStyle(color: Colors.black),
       autovalidateMode: AutovalidateMode.onUserInteraction,

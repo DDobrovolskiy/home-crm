@@ -14,8 +14,8 @@ import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
-import ru.dda.homecrmback.domain.support.user.UserRoleService;
-import ru.dda.homecrmback.domain.support.user.UserService;
+import ru.dda.homecrmback.domain.support.user.UserDomainService;
+import ru.dda.homecrmback.domain.support.user.UserRoleDomainService;
 import ru.dda.homecrmback.domain.support.user.context.IUserContext;
 import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
 
@@ -24,8 +24,8 @@ import java.io.IOException;
 @Component
 @AllArgsConstructor
 public class AuthHeaderFilter implements Filter {
-    private final UserService userService;
-    private final UserRoleService userRoleService;
+    private final UserDomainService userDomainService;
+    private final UserRoleDomainService userRoleService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -34,7 +34,7 @@ public class AuthHeaderFilter implements Filter {
                 Result.<String, IFailAggregate>success(getHeaderValue(request, Api.AUTHORIZATION_HEADER))
                         .isTrue(StringUtils::hasText,
                                 onFail -> ResultAggregate.Fails.Default.of(FailEvent.NOT_FOUND.fail("Токен в заголовке")))
-                        .then(userService::getUserAggregateByToken) //TODO кэш
+                        .then(userDomainService::getUserAggregateByToken) //TODO кэш
                         .map(IUserContext::getUserInfo)
                         .then(userInfo -> {
                             String organizationHeader = getHeaderValue(request, Api.ORGANIZATION_HEADER);

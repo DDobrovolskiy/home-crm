@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestResultAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
@@ -34,10 +36,12 @@ public class EmployeeAggregate {
     @JoinColumn(name = "user_id")
     private UserAggregate user;
     @NotNull
+    @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id")
     private OrganizationAggregate organization;
     @NotNull
+    @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private RoleAggregate role;

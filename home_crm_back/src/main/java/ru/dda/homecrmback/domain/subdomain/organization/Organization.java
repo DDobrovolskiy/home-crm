@@ -25,4 +25,14 @@ public interface Organization {
             return new FindById(organizationId);
         }
     }
+
+    @Builder
+    record FindOwnerOrganization(
+            long ownerId
+    ) implements IExecute<FindOwnerOrganization> {
+        public static FindOwnerOrganization of(long ownerId) {
+            return new FindOwnerOrganization(ownerId);
+        }
+    }
+
 }

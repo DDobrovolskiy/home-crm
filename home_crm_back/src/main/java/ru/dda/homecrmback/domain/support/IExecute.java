@@ -9,4 +9,8 @@ public interface IExecute<V extends IExecute<V>> {
     default <T> Result<T, IFailAggregate> execute(Function<V, Result<T, IFailAggregate>> function) {
         return function.apply((V) this);
     }
+
+    default <T> T map(Function<V, T> function) {
+        return function.apply((V) this);
+    }
 }

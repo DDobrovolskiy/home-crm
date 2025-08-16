@@ -19,3 +19,13 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:mypassword}
     schemas: public
     driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        highlight_sql: true
+
+#logging:
+#  level:
+#    sql: debug
+#    root: debug

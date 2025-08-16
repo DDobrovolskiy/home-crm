@@ -23,7 +23,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     @PostMapping
-    private IResponse<OrganizationInfoDTO> createOrganization(@RequestBody OrganizationCreateDTO dto) {
+    public IResponse<OrganizationInfoDTO> createOrganization(@RequestBody OrganizationCreateDTO dto) {
         return Organization.Create.of(dto.name(), UserContextHolder.getCurrentUser().getUserId())
                 .execute(organizationService::create)
                 .map(OrganizationAggregate::organizationInfoDTO)

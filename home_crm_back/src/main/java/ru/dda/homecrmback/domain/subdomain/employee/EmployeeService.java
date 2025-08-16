@@ -13,13 +13,13 @@ import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.role.RoleService;
 import ru.dda.homecrmback.domain.support.scope.ScopeType;
-import ru.dda.homecrmback.domain.support.user.UserService;
+import ru.dda.homecrmback.domain.support.user.UserDomainService;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
-    private final UserService userService;
+    private final UserDomainService userDomainService;
     private final OrganizationService organizationService;
     private final RoleService roleService;
     private final EmployeeRepository employeeRepository;
@@ -28,7 +28,7 @@ public class EmployeeService {
     public Result<EmployeeAggregate, IFailAggregate> registrationEmployee(Employee.Registration command) {
         return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () ->
                 Result.merge(
-                                command.user().execute(userService::registrationOrGet),
+                                command.user().execute(userDomainService::registrationOrGet),
                                 command.organization().execute(organizationService::findById),
                                 command.role().execute(roleService::findByIdAndOrganizationId),
                                 (EmployeeAggregate::create))

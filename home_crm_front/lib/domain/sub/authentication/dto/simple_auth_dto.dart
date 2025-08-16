@@ -4,10 +4,12 @@ part 'simple_auth_dto.g.dart';
 
 @JsonSerializable()
 class SimpleAuthDto {
+  final String name;
   final String phone;
   final String password;
 
-  SimpleAuthDto({required this.phone, required this.password});
+  SimpleAuthDto(
+      {required this.name, required this.phone, required this.password});
 
   Map<String, dynamic> toJson() {
     return _$SimpleAuthDtoToJson(this);

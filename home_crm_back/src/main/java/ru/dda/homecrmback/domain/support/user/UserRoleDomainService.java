@@ -15,7 +15,7 @@ import ru.dda.homecrmback.domain.support.user.repository.UserRoleRepository;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserRoleService {
+public class UserRoleDomainService {
     private final UserRoleRepository userRoleRepository;
 
     @Transactional(readOnly = true)

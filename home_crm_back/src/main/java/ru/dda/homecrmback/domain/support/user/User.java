@@ -17,8 +17,8 @@ public interface User {
             return new FindByPhone(phone);
         }
 
-        public Result<UserAggregate, IFailAggregate> execute(UserService userService) {
-            return userService.getUserAggregateByPhone(phone);
+        public Result<UserAggregate, IFailAggregate> execute(UserDomainService userDomainService) {
+            return userDomainService.getUserAggregateByPhone(phone);
         }
     }
 
@@ -36,14 +36,10 @@ public interface User {
             String name,
             String phone,
             String password
-    ) {
+    ) implements IExecute<Registration> {
 
         public static Registration of(String name, String phone, String password) {
             return new Registration(name, phone, password);
-        }
-
-        public Result<UserAggregate, IFailAggregate> execute(UserService userService) {
-            return userService.registration(this);
         }
     }
 
