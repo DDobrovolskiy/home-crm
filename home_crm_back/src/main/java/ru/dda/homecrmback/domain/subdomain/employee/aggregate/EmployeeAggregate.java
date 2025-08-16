@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestResultAggregate;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
@@ -15,7 +18,7 @@ import ru.dda.homecrmback.domain.support.result.validator.Validator;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Getter
@@ -35,9 +38,17 @@ public class EmployeeAggregate {
     @JoinColumn(name = "organization_id")
     private OrganizationAggregate organization;
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private RoleAggregate role;
+    // Сотрудник может проходить несколько тестов
+    @ManyToMany(mappedBy = "employees", fetch = FetchType.LAZY)
+    private Set<TestAggregate> assignedTests = new HashSet<>();
+    // Много результатов принадлежит одному сотруднику
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestResultAggregate> results = new ArrayList<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestSessionAggregate> sessions = new ArrayList<>();
 
     public static Result<EmployeeAggregate, IFailAggregate> create(UserAggregate userAggregate,
                                                                    OrganizationAggregate organizationAggregate,
@@ -59,6 +70,18 @@ public class EmployeeAggregate {
                     aggregate.role = roleAggregate;
                     return aggregate;
                 });
+    }
+
+    // Методы для назначения тестов
+    public void assignTest(TestAggregate test) {
+        this.assignedTests.add(test);
+        test.assignTo(this);
+    }
+
+    public void completeTest(TestAggregate test) {
+        if (this.assignedTests.contains(test)) {
+            this.assignedTests.remove(test);
+        }
     }
 
     public EmployeeDTO getEmployeeDTO() {

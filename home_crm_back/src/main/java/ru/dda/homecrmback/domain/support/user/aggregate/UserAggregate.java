@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
+import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.support.auth.dto.SimpleLoginDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
@@ -14,6 +16,8 @@ import ru.dda.homecrmback.domain.support.user.context.IUserContext;
 import ru.dda.homecrmback.domain.support.user.context.UserInfo;
 import ru.dda.homecrmback.domain.support.user.dto.response.UserDTO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,6 +37,10 @@ public class UserAggregate implements IUserContext {
     private String password;
     @NotNull
     private String name;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<OrganizationAggregate> organizations = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<EmployeeAggregate> empolyees = new ArrayList<>();
 
     public static Result<UserAggregate, IFailAggregate> create(String name, String phone, String password) {
         return Validator.create()
