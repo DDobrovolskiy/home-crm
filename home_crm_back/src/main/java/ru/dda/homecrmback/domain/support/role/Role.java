@@ -1,7 +1,7 @@
 package ru.dda.homecrmback.domain.support.role;
 
 import lombok.Builder;
-import ru.dda.homecrmback.domain.support.IExecute;
+import ru.dda.homecrmback.domain.IExecute;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;

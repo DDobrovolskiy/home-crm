@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 import ru.dda.homecrmback.domain.support.user.UserService;
-import ru.dda.homecrmback.domain.support.user.dto.response.UserOrganizationDTO;
+import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
 @RestController
 @RequestMapping(UserController.PATH)
@@ -17,8 +17,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/organizations")
-    public IResponse<UserOrganizationDTO> getEmployeeOrganization() {
+    @GetMapping
+    public IResponse<UserAggregate.DTO.UserDTO> getEmployeeOrganization() {
         return userService.getUserOrganization()
                 .response(ResultAggregate::getErrorData);
     }

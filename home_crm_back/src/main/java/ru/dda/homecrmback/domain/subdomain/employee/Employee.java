@@ -1,8 +1,8 @@
 package ru.dda.homecrmback.domain.subdomain.employee;
 
 import lombok.Builder;
+import ru.dda.homecrmback.domain.IExecute;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
-import ru.dda.homecrmback.domain.support.IExecute;
 import ru.dda.homecrmback.domain.support.role.Role;
 import ru.dda.homecrmback.domain.support.user.User;
 import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;

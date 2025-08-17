@@ -1,4 +1,4 @@
-package ru.dda.homecrmback.domain.support;
+package ru.dda.homecrmback.domain;
 
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;

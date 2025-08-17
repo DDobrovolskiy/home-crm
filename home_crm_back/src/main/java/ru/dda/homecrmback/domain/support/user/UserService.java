@@ -9,7 +9,6 @@ import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
-import ru.dda.homecrmback.domain.support.user.dto.response.UserOrganizationDTO;
 
 @Slf4j
 @Service
@@ -24,7 +23,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Result<UserOrganizationDTO, IFailAggregate> getUserOrganization() {
+    public Result<UserAggregate.DTO.UserDTO, IFailAggregate> getUserOrganization() {
         return User.FindById.of(UserContextHolder.getCurrentUser().getUserId())
                 .execute(userDomainService::getUserAggregateById)
                 .map(UserAggregate::userOrganizationDTO);
