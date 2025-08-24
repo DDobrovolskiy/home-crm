@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationInfoDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.support.auth.dto.SimpleLoginDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
@@ -121,7 +121,7 @@ public class UserAggregate implements IUserContext {
         @SuperBuilder
         class UserDTO extends UserBaseDTO {
             @Singular
-            private List<OrganizationInfoDTO> ownerOrganizations;
+            private List<OrganizationDTO> ownerOrganizations;
             @Singular
             private List<EmployeeDTO> employeeOrganizations;
         }

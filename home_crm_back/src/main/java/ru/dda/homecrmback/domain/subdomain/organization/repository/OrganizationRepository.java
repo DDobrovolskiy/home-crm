@@ -12,4 +12,6 @@ public interface OrganizationRepository extends CrudRepository<OrganizationAggre
     List<OrganizationAggregate> findAllByOwnerId(Long ownerId);
 
     List<OrganizationAggregate> findAllByIdIn(Collection<Long> ids);
+
+    int deleteByIdAndOwnerId(Long id, Long ownerId);
 }

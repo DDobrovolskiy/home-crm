@@ -26,8 +26,7 @@ class HomeCrmApp extends StatelessWidget {
         themeMode: ThemeMode.system,
         navigatorKey: NavigatorHolder.navigatorKey,
         // По умолчанию используем систему устройства
-        initialRoute: appState.isLogged() ? RoutersApp.home
-            : RoutersApp.login,
+        initialRoute: appState.isLogged() ? RoutersApp.user : RoutersApp.login,
         routes: RoutersApp.routes,
       ),
     );

@@ -7,6 +7,7 @@ import 'package:home_crm_front/domain/sub/authentication/action/logout_all_actio
 import 'package:home_crm_front/domain/sub/authentication/dto/logout_all_dto.dart';
 import 'package:home_crm_front/domain/sub/authentication/dto/simple_auth_dto.dart';
 import 'package:home_crm_front/domain/sub/authentication/dto/simple_login_dto.dart';
+import 'package:home_crm_front/domain/sub/user/actions/user_actions.dart';
 import 'package:home_crm_front/domain/support/port/port.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
 import 'package:redux/redux.dart';
@@ -42,8 +43,9 @@ class AuthMiddleware implements MiddlewareClass<AppState> {
                       .then((value) {
                         next(RegistartionSuccesAction(token: auth.data));
                         store.dispatch(
-                          NavigateToAction.replace(RoutersApp.home),
+                          NavigateToAction.replace(RoutersApp.user),
                         );
+                        next(GetInfoUserAction(),);
                       });
                 } else {
                   store.state.authState.registrationState.messageError = auth
@@ -78,8 +80,9 @@ class AuthMiddleware implements MiddlewareClass<AppState> {
                       .then((value) {
                         next(LoginSuccessAction(token: auth.data));
                         store.dispatch(
-                          NavigateToAction.replace(RoutersApp.home),
+                          NavigateToAction.replace(RoutersApp.user),
                         );
+                        next(GetInfoUserAction(),);
                       });
                 } else {
                   store.state.authState.loginState.messageError = auth
@@ -97,14 +100,19 @@ class AuthMiddleware implements MiddlewareClass<AppState> {
       TokenService().clearToken(TokenService.authToken).then((value) {
         store.state.authToken = null;
         store.dispatch(NavigateToAction.replace(RoutersApp.login));
+        next(LogoutAction());
       });
     } else if (action is LogoutAllAction) {
-      Port.post("auth/logout", LogoutAllDto().toJson()).then((response) {
+      Port.postWithoutHandler("auth/logout", LogoutAllDto().toJson()).then((
+          response) {
         TokenService().clearToken(TokenService.authToken).then((value) {
           store.state.authToken = null;
           store.dispatch(NavigateToAction.replace(RoutersApp.login));
+          next(LogoutAction());
         });
       });
+    } else {
+      next(action);
     }
   }
 }

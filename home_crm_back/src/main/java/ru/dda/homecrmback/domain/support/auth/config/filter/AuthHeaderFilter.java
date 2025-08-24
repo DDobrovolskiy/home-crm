@@ -5,6 +5,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.RequestFacade;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,7 +21,9 @@ import ru.dda.homecrmback.domain.support.user.context.IUserContext;
 import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
 
 import java.io.IOException;
+import java.util.Objects;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class AuthHeaderFilter implements Filter {
@@ -30,10 +33,14 @@ public class AuthHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            if (!((RequestFacade) request).getServletPath().contains(IAuthController.PATH)) {
+            RequestFacade requestFacade = (RequestFacade) request;
+            if (!(requestFacade).getServletPath().contains(IAuthController.PATH) && !Objects.equals(requestFacade.getMethod(), "OPTIONS")) {
                 Result.<String, IFailAggregate>success(getHeaderValue(request, Api.AUTHORIZATION_HEADER))
                         .isTrue(StringUtils::hasText,
-                                onFail -> ResultAggregate.Fails.Default.of(FailEvent.NOT_FOUND.fail("Токен в заголовке")))
+                                onFail -> {
+                                    log.warn("Токена нет в заголовке");
+                                    return ResultAggregate.Fails.Default.of(FailEvent.NOT_FOUND.fail("Токен в заголовке"));
+                                })
                         .then(userDomainService::getUserAggregateByToken) //TODO кэш
                         .map(IUserContext::getUserInfo)
                         .then(userInfo -> {

@@ -46,6 +46,18 @@ public class OrganizationService {
     }
 
     @Transactional
+    public Result<Integer, IFailAggregate> delete(Organization.Delete command) {
+        try {
+            return Result.success(organizationRepository.deleteByIdAndOwnerId(command.organization().organizationId(), command.owner().id()));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.fail(ResultAggregate.Fails.Default.of(
+                    FailEvent.ERROR_ON_SAVE.fail("Ошибка удаления организации: %s".formatted(command.organization().organizationId()))));
+        }
+    }
+
+
+    @Transactional
     public Result<OrganizationAggregate, IFailAggregate> findById(Organization.FindById command) {
         return organizationRepository.findById(command.organizationId())
                 .map(Result::<OrganizationAggregate, IFailAggregate>success)

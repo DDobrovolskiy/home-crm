@@ -9,11 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationInfoDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
+import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class OrganizationAggregate {
     @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<EmployeeAggregate> employees = new ArrayList<>();
     @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<RoleAggregate> roles = new ArrayList<>();
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TestAggregate> tests = new ArrayList<>();
 
     public static Result<OrganizationAggregate, IFailAggregate> create(UserAggregate owner, String name) {
@@ -61,8 +64,8 @@ public class OrganizationAggregate {
         test.setOrganization(this);
     }
 
-    public OrganizationInfoDTO organizationInfoDTO() {
-        return OrganizationInfoDTO.builder()
+    public OrganizationDTO organizationInfoDTO() {
+        return OrganizationDTO.builder()
                 .id(id)
                 .name(name)
                 .owner(owner.getUserDTO())

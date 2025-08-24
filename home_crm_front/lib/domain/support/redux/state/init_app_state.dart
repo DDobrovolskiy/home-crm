@@ -8,7 +8,7 @@ Future<AppState> initAppState() async {
     token,
   ) async {
     if (token != null) {
-      return await Port.get("auth/check").then((response) {
+      return await Port.getWithoutHandler("auth/check").then((response) {
         if (response.statusCode == 200 && response.data as bool) {
           print("check token true");
           return AppState(token);

@@ -39,14 +39,13 @@ dependencies:
   image_picker:
   google_fonts:
   mask_text_input_formatter: 2.9.0
-  flutter_redux: ^0.10.0
-  redux: ^5.0.0
-  #  freezed: ^3.0.5
-  #  freezed_annotation: ^3.1.0
   flutter_native_splash: ^2.4.6
-  flutter_redux_navigation: ^0.7.1
   flutter_dotenv: ^5.2.1
   json_annotation: ^4.9.0
+
+  redux: ^5.0.0
+  flutter_redux: ^0.10.0
+  flutter_redux_navigation: ^0.7.1
 
 dev_dependencies:
   flutter_test:

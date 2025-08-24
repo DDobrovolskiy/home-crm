@@ -1,7 +1,7 @@
 package ru.dda.homecrmback.domain.subdomain.employee.dto.response;
 
 import lombok.Builder;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationInfoDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.support.role.dto.response.RoleDTO;
 import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
@@ -10,7 +10,7 @@ import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 public record EmployeeDTO(
         long id,
         UserAggregate.DTO.UserBaseDTO user,
-        OrganizationInfoDTO organization,
+        OrganizationDTO organization,
         RoleDTO role
 ) {
 }

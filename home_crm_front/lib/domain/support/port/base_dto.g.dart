@@ -7,7 +7,7 @@ part of 'base_dto.dart';
 // **************************************************************************
 
 BaseDTO _$BaseDTOFromJson(Map<String, dynamic> json) => BaseDTO(
-  status: (json['status'] as num).toInt(),
+  status: (json['status'] as num?)?.toInt(),
   errorData: json['errorData'] == null
       ? null
       : ErrorDate.fromJson(json['errorData'] as Map<String, dynamic>),

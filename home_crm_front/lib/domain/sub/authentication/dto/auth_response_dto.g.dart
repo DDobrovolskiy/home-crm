@@ -8,7 +8,7 @@ part of 'auth_response_dto.dart';
 
 AuthResponseDto _$AuthResponseDtoFromJson(Map<String, dynamic> json) =>
     AuthResponseDto(
-      status: (json['status'] as num).toInt(),
+      status: (json['status'] as num?)?.toInt(),
       errorData: json['errorData'] == null
           ? null
           : ErrorDate.fromJson(json['errorData'] as Map<String, dynamic>),

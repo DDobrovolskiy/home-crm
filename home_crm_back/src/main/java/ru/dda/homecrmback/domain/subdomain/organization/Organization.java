@@ -17,6 +17,16 @@ public interface Organization {
     }
 
     @Builder
+    record Delete(
+            FindById organization,
+            User.FindById owner
+    ) implements IExecute<Delete> {
+        public static Delete of(long organizationId, long ownerId) {
+            return new Delete(Organization.FindById.of(organizationId), User.FindById.of(ownerId));
+        }
+    }
+
+    @Builder
     record FindById(
             long organizationId
     ) implements IExecute<FindById> {

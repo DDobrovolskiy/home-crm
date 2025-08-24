@@ -4,7 +4,7 @@ import lombok.Builder;
 import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
 @Builder
-public record OrganizationInfoDTO(
+public record OrganizationDTO(
         Long id,
         String name,
         UserAggregate.DTO.UserBaseDTO owner

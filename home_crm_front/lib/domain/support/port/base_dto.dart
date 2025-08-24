@@ -5,7 +5,7 @@ part 'base_dto.g.dart';
 
 @JsonSerializable()
 class BaseDTO {
-  final int status;
+  final int? status;
   final ErrorDate? errorData;
 
   BaseDTO({required this.status, required this.errorData});

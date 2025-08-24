@@ -1,6 +1,9 @@
+import '../../../sub/user/store/user_state.dart';
+
 class AppState {
   String? authToken;
   AuthState authState = AuthState();
+  UserState? userState;
 
   AppState(this.authToken);
 
@@ -24,10 +27,3 @@ class LoginState {
   String? messageError;
 }
 
-class OrganizationState {
-  bool load = false;
-
-  List<>
-
-  ;
-}

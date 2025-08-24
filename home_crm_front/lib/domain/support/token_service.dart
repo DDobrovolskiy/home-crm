@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:home_crm_front/domain/support/router/roters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenService {
   static const String authToken = 'authToken';
+  static const String organizationToken = 'organizationToken';
 
   Future<String?> getToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,7 +24,7 @@ class TokenService {
   Future<void> checkAuthAndRedirect(BuildContext context) async {
     TokenService().getToken(authToken).then((hasToken) {
       if (hasToken == null) {
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, RoutersApp.login);
       }
     });
   }
