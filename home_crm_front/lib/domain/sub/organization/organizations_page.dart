@@ -22,10 +22,13 @@ class _OrganizationPageState extends State<OrganizationPage> {
     return StoreConnector<AppState, Store<AppState>>(
       converter: (store) => store,
       builder: (context, store) {
+        var orgUpdate = store.state.userState?.organizationInitUpdate;
         return SafeArea(
           child: MaterialApp(
             home: Scaffold(
-              appBar: AppBar(title: Text('Создание организации')),
+              appBar: AppBar(title: Text(orgUpdate == null
+                  ? 'Создание организации'
+                  : 'Обновление организации')),
               body: Form(
                 key: _formKey,
                 child: Padding(
@@ -37,6 +40,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           decoration: InputDecoration(
                             labelText: 'Название организации',
                           ),
+                          initialValue: orgUpdate?.name,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -50,11 +54,19 @@ class _OrganizationPageState extends State<OrganizationPage> {
                         ElevatedButton(
                           child: load
                               ? CircularProgressIndicator(color: Colors.white)
-                              : Text('Создать организацию'),
+                              : orgUpdate == null
+                              ? Text('Создать организацию')
+                              : Text('Обновить организацию'),
                           onPressed: () {
                             load = true;
+                            orgUpdate == null ?
                             store.dispatch(
                               OrganizationCreateAction(
+                                name: _organizationName!,
+                              ),
+                            ) : store.dispatch(
+                              OrganizationUpdateAction(
+                                id: orgUpdate.id,
                                 name: _organizationName!,
                               ),
                             );

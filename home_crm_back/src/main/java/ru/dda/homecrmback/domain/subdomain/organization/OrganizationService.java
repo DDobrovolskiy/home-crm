@@ -46,6 +46,20 @@ public class OrganizationService {
     }
 
     @Transactional
+    public Result<OrganizationAggregate, IFailAggregate> update(Organization.Update command) {
+        try {
+            return organizationRepository.findByIdAndOwnerId(command.organization().organizationId(), command.owner().id())
+                    .map(Result::<OrganizationAggregate, IFailAggregate>success)
+                    .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.ORGANIZATION_NOT_FOUND.fail())))
+                    .then(aggregate -> aggregate.update(command));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.fail(ResultAggregate.Fails.Default.of(
+                    FailEvent.ERROR_ON_SAVE.fail("Ошибка обновлении организации")));
+        }
+    }
+
+    @Transactional
     public Result<Integer, IFailAggregate> delete(Organization.Delete command) {
         try {
             return Result.success(organizationRepository.deleteByIdAndOwnerId(command.organization().organizationId(), command.owner().id()));

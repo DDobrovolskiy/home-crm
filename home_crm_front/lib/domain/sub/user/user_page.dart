@@ -62,10 +62,23 @@ class _UserPageState extends State<UserPage> {
                                     ),
                                   ],
                                 ),
-                                subtitle: Text(
-                                  'Организация: ${org.name}\nВладелец: ${org.owner.name}',
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      'Организация: ${org.name}\nВладелец: ${org
+                                          .owner.name}',
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        store.dispatch(
+                                          OrganizationInitUpdateAction(
+                                              org: org),
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
-
                                 trailing: // Кнопка выбора
                                 OutlinedButton.icon(
                                   icon: Icon(Icons.keyboard_arrow_right),

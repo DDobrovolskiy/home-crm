@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
+import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
@@ -56,6 +57,17 @@ public class OrganizationAggregate {
                     aggregate.name = name;
                     aggregate.owner = owner;
                     return aggregate;
+                });
+    }
+
+    public Result<OrganizationAggregate, IFailAggregate> update(Organization.Update update) {
+        return Validator.create()
+                .is(StringUtils.hasText(update.organizationName()),
+                        () -> log.debug("Command.Create#organizationName is null"),
+                        FailEvent.VALIDATION.fail("Имя организации не заполнено"))
+                .getResult(() -> {
+                    this.name = update.organizationName();
+                    return this;
                 });
     }
 

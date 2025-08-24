@@ -11,8 +11,8 @@ class UserState {
   final List<OrganizationState> ownerOrganizations;
   final List<EmployeeState> employeeOrganizations;
   int chooseOrganizationId = 0;
-  bool createOrganization = false;
   bool hasError = false;
+  OrganizationState? organizationInitUpdate;
 
   UserState({
     required this.id,
@@ -21,6 +21,10 @@ class UserState {
     required this.ownerOrganizations,
     required this.employeeOrganizations,
   });
+
+  void setOrganizationInitUpdate(OrganizationState? org) {
+    organizationInitUpdate = org;
+  }
 
   static UserState fromBase(UserBaseDto dto) {
     return UserState(

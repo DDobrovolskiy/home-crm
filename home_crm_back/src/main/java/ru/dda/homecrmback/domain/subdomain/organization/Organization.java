@@ -17,6 +17,17 @@ public interface Organization {
     }
 
     @Builder
+    record Update(
+            FindById organization,
+            String organizationName,
+            User.FindById owner
+    ) implements IExecute<Update> {
+        public static Update of(long organizationId, String organizationName, long ownerId) {
+            return new Update(Organization.FindById.of(organizationId), organizationName, User.FindById.of(ownerId));
+        }
+    }
+
+    @Builder
     record Delete(
             FindById organization,
             User.FindById owner

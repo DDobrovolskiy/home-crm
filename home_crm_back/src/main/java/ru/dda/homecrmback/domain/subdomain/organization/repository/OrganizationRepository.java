@@ -6,12 +6,13 @@ import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAg
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrganizationRepository extends CrudRepository<OrganizationAggregate, Long> {
     List<OrganizationAggregate> findAllByOwnerId(Long ownerId);
-
     List<OrganizationAggregate> findAllByIdIn(Collection<Long> ids);
-
     int deleteByIdAndOwnerId(Long id, Long ownerId);
+
+    Optional<OrganizationAggregate> findByIdAndOwnerId(Long id, Long ownerId);
 }

@@ -7,6 +7,7 @@ import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationCreateDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationDeleteDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationUpdateDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
@@ -24,6 +25,14 @@ public class OrganizationController {
     public IResponse<OrganizationDTO> createOrganization(@RequestBody OrganizationCreateDTO dto) {
         return Organization.Create.of(dto.name(), UserContextHolder.getCurrentUser().getUserId())
                 .execute(organizationService::create)
+                .map(OrganizationAggregate::organizationInfoDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @PutMapping
+    public IResponse<OrganizationDTO> updateOrganization(@RequestBody OrganizationUpdateDTO dto) {
+        return Organization.Update.of(dto.id(), dto.name(), UserContextHolder.getCurrentUser().getUserId())
+                .execute(organizationService::update)
                 .map(OrganizationAggregate::organizationInfoDTO)
                 .response(ResultAggregate::getErrorData);
     }
