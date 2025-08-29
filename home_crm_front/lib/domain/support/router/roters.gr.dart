@@ -59,7 +59,7 @@ class LoginRoute extends _i6.PageRouteInfo<void> {
 class OrganizationRoute extends _i6.PageRouteInfo<OrganizationRouteArgs> {
   OrganizationRoute({
     _i7.Key? key,
-    required _i8.OrganizationDto organization,
+    required _i8.OrganizationDto? organization,
     List<_i6.PageRouteInfo>? children,
   }) : super(
          OrganizationRoute.name,
@@ -86,7 +86,7 @@ class OrganizationRouteArgs {
 
   final _i7.Key? key;
 
-  final _i8.OrganizationDto organization;
+  final _i8.OrganizationDto? organization;
 
   @override
   String toString() {

@@ -1,11 +1,9 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_state.dart';
-import 'package:redux/redux.dart';
 
 import '../../support/widgets/stamp.dart';
 import 'bloc/organization_bloc.dart';
@@ -14,7 +12,7 @@ import 'bloc/organization_bloc.dart';
 class OrganizationPage extends StatefulWidget {
   const OrganizationPage({super.key, required this.organization});
 
-  final OrganizationDto organization;
+  final OrganizationDto? organization;
 
   @override
   _OrganizationPageState createState() => _OrganizationPageState();
@@ -28,13 +26,15 @@ class _OrganizationPageState extends State<OrganizationPage> {
 
   @override
   void initState() {
-    _organizationBloc.add(OrganizationLoad(organization: widget.organization));
+    _organizationBloc.add(
+        OrganizationLoadEvent(organization: widget.organization));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrganizationBloc, OrganizationState>(
+      bloc: _organizationBloc,
       builder: (context, state) {
         if (state is OrganizationCreateState) {
           return SafeArea(
@@ -66,18 +66,9 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Создать организацию'),
                             onPressed: () {
-                              // load = true;
-                              // orgUpdate == null ?
-                              // store.dispatch(
-                              //   OrganizationCreateAction(
-                              //     name: _organizationName!,
-                              //   ),
-                              // ) : store.dispatch(
-                              //   OrganizationUpdateAction(
-                              //     id: orgUpdate.id,
-                              //     name: _organizationName!,
-                              //   ),
-                              // );
+                              _organizationBloc.add(OrganizationCreateEvent(
+                                  name: _organizationName!));
+                              context.router.back();
                             },
                           ),
                         ],
@@ -107,9 +98,11 @@ class _OrganizationPageState extends State<OrganizationPage> {
                             ),
                             initialValue: state.organization.name,
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
+                              if (value == null || value
+                                  .trim()
+                                  .isEmpty) {
                                 return 'Необходимо ввести название';
                               }
                               return null;
@@ -120,18 +113,11 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Обновить организацию'),
                             onPressed: () {
-                              // load = true;
-                              // orgUpdate == null ?
-                              // store.dispatch(
-                              //   OrganizationCreateAction(
-                              //     name: _organizationName!,
-                              //   ),
-                              // ) : store.dispatch(
-                              //   OrganizationUpdateAction(
-                              //     id: orgUpdate.id,
-                              //     name: _organizationName!,
-                              //   ),
-                              // );
+                              _organizationBloc.add(OrganizationUpdateEvent(
+                                  id: state.organization.id,
+                                  name: _organizationName ??
+                                      state.organization.name));
+                              context.router.back();
                             },
                           ),
                         ],
@@ -142,6 +128,8 @@ class _OrganizationPageState extends State<OrganizationPage> {
               ),
             ),
           );
+        } else if (state is OrganizationAuthState) {
+          return Stamp.authErrorWidget(context);
         } else {
           return Stamp.errorWidget(context);
         }

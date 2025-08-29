@@ -31,11 +31,7 @@ class _UserPageState extends State<UserPage> {
       bloc: _userBloc,
       builder: (context, state) {
         if (state is UserInitial) {
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(), // Стандартное кольцо загрузки
-            ),
-          );
+          return Stamp.loadWidget(context);
         } else if (state is UserLoadState) {
           return SafeArea(
             child: MaterialApp(
@@ -71,9 +67,10 @@ class _UserPageState extends State<UserPage> {
                                       IconButton(
                                         icon: Icon(Icons.close),
                                         onPressed: () {
-                                          // store.dispatch(
-                                          //   OrganizationDeleteAction(id: org.id),
-                                          // );
+                                          _userBloc.add(
+                                              UserOrganizationDeleteEvent(
+                                                  organizationId: org.id,
+                                                  state: state));
                                         },
                                       ),
                                     ],
@@ -86,10 +83,11 @@ class _UserPageState extends State<UserPage> {
                                       IconButton(
                                         icon: Icon(Icons.edit),
                                         onPressed: () {
-                                          // store.dispatch(
-                                          //   OrganizationInitUpdateAction(
-                                          //       org: org),
-                                          // );
+                                          AutoRouter.of(context).push(
+                                            OrganizationRoute(
+                                              organization: org,
+                                            ),
+                                          );
                                         },
                                       ),
                                     ],
@@ -114,11 +112,9 @@ class _UserPageState extends State<UserPage> {
                               leading: Icon(Icons.add_circle_outline),
                               title: Text("Добавить организацию"),
                               onTap: () {
-                                // store.dispatch(
-                                //   NavigateToAction.replace(
-                                //     RoutersApp.organization,
-                                //   ),
-                                // );
+                                AutoRouter.of(
+                                  context,
+                                ).push(OrganizationRoute(organization: null));
                               }, // Обработчик нажатия
                             ),
                           ),
@@ -164,8 +160,7 @@ class _UserPageState extends State<UserPage> {
             ),
           );
         } else if (state is UserAuthState) {
-          AutoRouter.of(context).push(LoginRoute());
-          return Text('Пользователь не авторизован');
+          return Stamp.authErrorWidget(context);
         } else {
           return Stamp.errorWidget(context);
         }

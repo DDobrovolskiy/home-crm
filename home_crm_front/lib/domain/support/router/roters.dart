@@ -44,7 +44,8 @@ class AppRouter extends RootStackRouter {
       if (token != null ||
           resolver.routeName == LoginRoute.name ||
           resolver.routeName == RegistrationRoute.name ||
-          resolver.routeName == UserRoute.name) {
+          resolver.routeName == UserRoute.name ||
+          resolver.routeName == OrganizationRoute.name) {
         resolver.next();
       } else {
         resolver.redirect(UserRoute());

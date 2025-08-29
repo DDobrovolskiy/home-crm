@@ -1,15 +1,18 @@
+import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
 import 'package:home_crm_front/domain/sub/user/dto/user_dto.dart';
 import 'package:home_crm_front/domain/sub/user/dto/user_employee_dto.dart';
 import 'package:home_crm_front/domain/sub/user/dto/user_organization_dto.dart';
 
 abstract class UserState {}
 
-class UserInitial extends UserState {}
+class UserInitial extends UserState {
+  String tets = '';
+}
 
 class UserLoadState extends UserState {
-  final UserDto? user;
-  final UserOrganizationDto? organization;
-  final UserEmployeeDto? employee;
+  UserDto? user;
+  UserOrganizationDto? organization;
+  UserEmployeeDto? employee;
 
   UserLoadState({
     required this.user,
@@ -18,7 +21,7 @@ class UserLoadState extends UserState {
   });
 }
 
-class UserAuthState extends UserState {}
+class UserAuthState extends UserState implements AuthState {}
 
 class UserErrorState extends UserState {
   final String message;

@@ -45,6 +45,38 @@ class Port {
     return responseDTO.data;
   }
 
+  static Future<T?> put<T>(String path,
+      Map<String, dynamic> body,
+      T Function(Object? json) fromJsonT) async {
+    Map<String, dynamic>? headers = await getHeaders();
+    var fullPath = Port.path(path);
+    debugPrint('PUT: $fullPath');
+    final response = await Dio()
+        .put(
+      fullPath,
+      data: body,
+      options: Options(contentType: 'application/json', headers: headers),
+    );
+    ResponseDTO<dynamic> responseDTO = await handle(response, fromJsonT);
+    return responseDTO.data;
+  }
+
+  static Future<T?> delete<T>(String path,
+      Map<String, dynamic> body,
+      T Function(Object? json) fromJsonT) async {
+    Map<String, dynamic>? headers = await getHeaders();
+    var fullPath = Port.path(path);
+    debugPrint('DELETE: $fullPath');
+    final response = await Dio()
+        .delete(
+      fullPath,
+      data: body,
+      options: Options(contentType: 'application/json', headers: headers),
+    );
+    ResponseDTO<dynamic> responseDTO = await handle(response, fromJsonT);
+    return responseDTO.data;
+  }
+
   static Future<ResponseDTO<dynamic>> handle(Response<dynamic> response,
       Function(Object? json) fromJsonT) async {
     if (response.statusCode == 401) {

@@ -11,3 +11,11 @@ class OrganizationUpdateState extends OrganizationState {
 
   OrganizationUpdateState({required this.organization});
 }
+
+class OrganizationAuthState extends OrganizationState {}
+
+class OrganizationErrorState extends OrganizationState {
+  final String message;
+
+  OrganizationErrorState({required this.message});
+}
