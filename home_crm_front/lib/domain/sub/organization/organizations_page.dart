@@ -22,19 +22,23 @@ class _OrganizationPageState extends State<OrganizationPage> {
   final _formKey = GlobalKey<FormState>();
   String? _organizationName;
   bool load = false;
-  OrganizationBloc _organizationBloc = OrganizationBloc();
 
   @override
   void initState() {
-    _organizationBloc.add(
-        OrganizationLoadEvent(organization: widget.organization));
+    BlocProvider.of<OrganizationBloc>(
+      context,
+    ).add(OrganizationLoadEvent(organization: widget.organization));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrganizationBloc, OrganizationState>(
-      bloc: _organizationBloc,
+    return BlocConsumer<OrganizationBloc, OrganizationState>(
+      listener: (context, state) {
+        if (state is OrganizationSuccessState) {
+          context.router.back();
+        }
+      },
       builder: (context, state) {
         if (state is OrganizationCreateState) {
           return SafeArea(
@@ -66,9 +70,11 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Создать организацию'),
                             onPressed: () {
-                              _organizationBloc.add(OrganizationCreateEvent(
-                                  name: _organizationName!));
-                              context.router.back();
+                              BlocProvider.of<OrganizationBloc>(context).add(
+                                OrganizationCreateEvent(
+                                  name: _organizationName!,
+                                ),
+                              );
                             },
                           ),
                         ],
@@ -98,11 +104,9 @@ class _OrganizationPageState extends State<OrganizationPage> {
                             ),
                             initialValue: state.organization.name,
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value == null || value
-                                  .trim()
-                                  .isEmpty) {
+                              if (value == null || value.trim().isEmpty) {
                                 return 'Необходимо ввести название';
                               }
                               return null;
@@ -113,11 +117,14 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Обновить организацию'),
                             onPressed: () {
-                              _organizationBloc.add(OrganizationUpdateEvent(
+                              BlocProvider.of<OrganizationBloc>(context).add(
+                                OrganizationUpdateEvent(
                                   id: state.organization.id,
-                                  name: _organizationName ??
-                                      state.organization.name));
-                              context.router.back();
+                                  name:
+                                      _organizationName ??
+                                      state.organization.name,
+                                ),
+                              );
                             },
                           ),
                         ],
@@ -128,8 +135,6 @@ class _OrganizationPageState extends State<OrganizationPage> {
               ),
             ),
           );
-        } else if (state is OrganizationAuthState) {
-          return Stamp.authErrorWidget(context);
         } else {
           return Stamp.errorWidget(context);
         }

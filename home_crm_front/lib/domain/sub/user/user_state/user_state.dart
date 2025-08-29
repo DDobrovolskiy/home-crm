@@ -1,30 +1,19 @@
-import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
 import 'package:home_crm_front/domain/sub/user/dto/user_dto.dart';
-import 'package:home_crm_front/domain/sub/user/dto/user_employee_dto.dart';
-import 'package:home_crm_front/domain/sub/user/dto/user_organization_dto.dart';
+
+import '../../../support/exceptions/exceptions.dart';
 
 abstract class UserState {}
 
-class UserInitial extends UserState {
-  String tets = '';
-}
+class UserInitState extends UserState {}
 
-class UserLoadState extends UserState {
+class UserLoadedState extends UserState {
   UserDto? user;
-  UserOrganizationDto? organization;
-  UserEmployeeDto? employee;
 
-  UserLoadState({
-    required this.user,
-    required this.organization,
-    required this.employee,
-  });
+  UserLoadedState({required this.user});
 }
-
-class UserAuthState extends UserState implements AuthState {}
 
 class UserErrorState extends UserState {
-  final String message;
+  final PortException error;
 
-  UserErrorState({required this.message});
+  UserErrorState({required this.error});
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
@@ -24,10 +26,17 @@ class Stamp {
   }
 
   static Widget loadWidget(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(), // Стандартное кольцо загрузки
-      ),
+    return Center(
+      child: CircularProgressIndicator(), // Стандартное кольцо загрузки
     );
+  }
+
+  static void showTemporarySnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)));
+    Timer(Duration(seconds: 5), () {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar(
+          reason: SnackBarClosedReason.timeout);
+    });
   }
 }

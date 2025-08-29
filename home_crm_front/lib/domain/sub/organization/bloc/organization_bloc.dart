@@ -1,15 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/request/organization_create_dto.dart';
+import 'package:home_crm_front/domain/sub/organization/dto/request/organization_delete_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/request/organization_update_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/repository/organization_repository.dart';
+import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
+import 'package:home_crm_front/domain/sub/user/event/user_organization_event.dart';
 
-import '../../../support/exceptions/exceptions.dart';
+import '../../../support/port/port.dart';
 import '../event/organization_event.dart';
 import '../state/organization_state.dart';
 
 class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
   final OrganizationRepository _repository = OrganizationRepository();
+  late final UserOrganizationBloc _userOrganizationBloc = GetIt.instance
+      .get<UserOrganizationBloc>();
 
   OrganizationBloc() : super(OrganizationInitial()) {
     on<OrganizationLoadEvent>((event, emit) {
@@ -20,48 +25,33 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
       }
     });
     on<OrganizationCreateEvent>((event, emit) async {
-      try {
-        var organization = await _repository.organizationCreate(
-          OrganizationCreateDto(name: event.name),
-        );
-        emit.call(OrganizationUpdateState(organization: organization!));
-      } catch (e) {
-        if (e is AuthException) {
-          debugPrint('Ответ сервиса: 401');
-          emit.call(OrganizationAuthState());
-        } else if (e is PortException) {
-          debugPrint('Ошибка сервиса: $e');
-          emit.call(OrganizationErrorState(message: 'Ошибка сервера'));
-        } else if (e is ResponseException) {
-          debugPrint('Ошибка выполнения логики: ${e.message}');
-          emit.call(OrganizationErrorState(message: e.message));
-        } else {
-          debugPrint('Ошибка приложения: $e');
-          emit.call(OrganizationErrorState(message: '-'));
-        }
-      }
+      await _repository.organizationCreate(
+        OrganizationCreateDto(name: event.name),
+      );
+      _userOrganizationBloc.add(UserOrganizationLoadEvent());
+      emit.call(OrganizationSuccessState());
     });
     on<OrganizationUpdateEvent>((event, emit) async {
-      try {
-        var organization = await _repository.organizationUpdate(
-          OrganizationUpdateDto(name: event.name, id: event.id),
-        );
-        emit.call(OrganizationUpdateState(organization: organization!));
-      } catch (e) {
-        if (e is AuthException) {
-          debugPrint('Ответ сервиса: 401');
-          emit.call(OrganizationAuthState());
-        } else if (e is PortException) {
-          debugPrint('Ошибка сервиса: $e');
-          emit.call(OrganizationErrorState(message: 'Ошибка сервера'));
-        } else if (e is ResponseException) {
-          debugPrint('Ошибка выполнения логики: ${e.message}');
-          emit.call(OrganizationErrorState(message: e.message));
-        } else {
-          debugPrint('Ошибка приложения: $e');
-          emit.call(OrganizationErrorState(message: '-'));
-        }
-      }
+      await _repository.organizationUpdate(
+        OrganizationUpdateDto(name: event.name, id: event.id),
+      );
+      _userOrganizationBloc.add(UserOrganizationLoadEvent());
+      emit.call(OrganizationSuccessState());
     });
+    on<OrganizationDeleteEvent>((event, emit) async {
+      await _repository.organizationDelete(OrganizationDeleteDto(id: event.id));
+      _userOrganizationBloc.add(UserOrganizationLoadEvent());
+      emit.call(OrganizationSuccessState());
+    });
+    on<OrganizationErrorEvent>((event, emit) {
+      emit.call(OrganizationErrorState(error: event.error));
+    });
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    final e = Port.errorHandler(error, stackTrace);
+    add(OrganizationErrorEvent(error: e));
+    super.onError(error, stackTrace);
   }
 }

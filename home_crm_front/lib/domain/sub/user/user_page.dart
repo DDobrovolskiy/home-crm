@@ -1,12 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/bloc/organization_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/event/organization_event.dart';
+import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/event/user_event.dart';
+import 'package:home_crm_front/domain/sub/user/user_state/user_employee_state.dart';
+import 'package:home_crm_front/domain/sub/user/user_state/user_organization_state.dart';
 import 'package:home_crm_front/domain/sub/user/user_state/user_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import 'bloc/user_bloc.dart';
+import 'bloc/user_employee_bloc.dart';
 
 @RoutePage()
 class UserPage extends StatefulWidget {
@@ -17,150 +23,191 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  UserBloc _userBloc = UserBloc();
-
   @override
   void initState() {
-    _userBloc.add(UserLoadEvent());
+    BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
-      bloc: _userBloc,
+    return SafeArea(
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(title: Text('Пользовательские данные')),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                // Отображаем основное имя и телефон
+                _user(context),
+                // Список организаций владельца
+                _userOrganization(context),
+                // Список сотрудников/организаций сотрудника
+                _userEmployee(context),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _user(BuildContext context) {
+    return BlocConsumer<UserBloc, UserState>(
+      listener: (context, state) {
+        if (state is UserErrorState) {
+          Stamp.showTemporarySnackbar(context, state.error.message);
+        }
+      },
       builder: (context, state) {
-        if (state is UserInitial) {
+        if (state is UserInitState) {
           return Stamp.loadWidget(context);
-        } else if (state is UserLoadState) {
-          return SafeArea(
-            child: MaterialApp(
-              home: Scaffold(
-                appBar: AppBar(title: Text('Пользовательские данные')),
-                body: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      // Отображаем основное имя и телефон
-                      Text(
-                        'Имя: ${state.user?.name}',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      Text('Телефон: ${state.user?.phone}'),
-                      // Список организаций владельца
-                      Column(
+        } else if (state is UserLoadedState) {
+          return Column(
+            children: [
+              Text(
+                'Имя: ${state.user?.name}',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              Text('Телефон: ${state.user?.phone}'),
+            ],
+          );
+        } else {
+          return Stamp.errorWidget(context);
+        }
+      },
+    );
+  }
+
+  Widget _userEmployee(BuildContext context) {
+    return BlocConsumer<UserEmployeeBloc, UserEmployeeState>(
+      listener: (context, state) {
+        if (state is UserEmployeeErrorState) {
+          Stamp.showTemporarySnackbar(context, state.error.message);
+        }
+      },
+      builder: (context, state) {
+        if (state is UserEmployeeInitState) {
+          return Stamp.loadWidget(context);
+        } else if (state is UserEmployeeLoadedState) {
+          return Column(
+            children: [
+              const Divider(),
+              const Text(
+                'Вы работник в организациях:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              for (final empOrg in state.employee!.employees)
+                Card(
+                  margin: const EdgeInsets.all(8),
+                  child: ListTile(
+                    leading: Icon(Icons.work),
+                    title: Text(empOrg.organization.name),
+                    subtitle: Text(
+                      'Организация: ${empOrg.organization.name}, Роль: ${empOrg.role.name}',
+                    ),
+                    trailing: OutlinedButton.icon(
+                      // Добавили кнопку с иконкой
+                      icon: Icon(Icons.keyboard_arrow_right),
+                      label: Text("Выбрать"),
+                      onPressed: () {
+                        // store.dispatch(
+                        //   OrganizationChooseAction(id: empOrg.id),
+                        // );
+                      },
+                    ),
+                  ),
+                ),
+            ],
+          );
+        } else {
+          return Stamp.errorWidget(context);
+        }
+      },
+    );
+  }
+
+  Widget _userOrganization(BuildContext context) {
+    return BlocConsumer<UserOrganizationBloc, UserOrganizationState>(
+      listener: (BuildContext context, UserOrganizationState state) {
+        if (state is UserOrganizationErrorState) {
+          Stamp.showTemporarySnackbar(context, state.error.message);
+        }
+      },
+      builder: (context, state) {
+        if (state is UserOrganizationInitState) {
+          return Stamp.loadWidget(context);
+        } else if (state is UserOrganizationLoadedState) {
+          return Column(
+            children: [
+              const Divider(),
+              const Text(
+                'Ваши организации:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              if (state.organization?.organizations != null)
+                for (final org in state.organization!.organizations)
+                  Card(
+                    margin: const EdgeInsets.all(8),
+                    child: ListTile(
+                      leading: Icon(Icons.business),
+                      title: Row(
                         children: [
-                          const Divider(),
-                          const Text(
-                            'Ваши организации:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (state.organization?.organizations != null)
-                            for (final org in state.organization!.organizations)
-                              Card(
-                                margin: const EdgeInsets.all(8),
-                                child: ListTile(
-                                  leading: Icon(Icons.business),
-                                  title: Row(
-                                    children: [
-                                      Text(org.name),
-                                      IconButton(
-                                        icon: Icon(Icons.close),
-                                        onPressed: () {
-                                          _userBloc.add(
-                                              UserOrganizationDeleteEvent(
-                                                  organizationId: org.id,
-                                                  state: state));
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      Text(
-                                        'Организация: ${org.name}\nВладелец: ${org.owner.name}',
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.edit),
-                                        onPressed: () {
-                                          AutoRouter.of(context).push(
-                                            OrganizationRoute(
-                                              organization: org,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  trailing: // Кнопка выбора
-                                  OutlinedButton.icon(
-                                    icon: Icon(Icons.keyboard_arrow_right),
-                                    label: Text("Выбрать"),
-                                    onPressed: () {
-                                      // store.dispatch(
-                                      //   OrganizationChooseAction(id: org.id),
-                                      // );
-                                    },
-                                  ),
-                                ),
-                              ),
-                          // Кнопка добавления новой организации-владельца
-                          Card(
-                            color: Colors.blue.shade100,
-                            margin: const EdgeInsets.all(8),
-                            child: ListTile(
-                              leading: Icon(Icons.add_circle_outline),
-                              title: Text("Добавить организацию"),
-                              onTap: () {
-                                AutoRouter.of(
-                                  context,
-                                ).push(OrganizationRoute(organization: null));
-                              }, // Обработчик нажатия
-                            ),
+                          Text(org.name),
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              BlocProvider.of<OrganizationBloc>(
+                                context,
+                              ).add(OrganizationDeleteEvent(id: org.id));
+                            },
                           ),
                         ],
                       ),
-
-                      // Список сотрудников/организаций сотрудника
-                      if (state.employee?.employees != null)
-                        Column(
-                          children: [
-                            const Divider(),
-                            const Text(
-                              'Вы работник в организациях:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            for (final empOrg in state.employee!.employees)
-                              Card(
-                                margin: const EdgeInsets.all(8),
-                                child: ListTile(
-                                  leading: Icon(Icons.work),
-                                  title: Text(empOrg.organization.name),
-                                  subtitle: Text(
-                                    'Организация: ${empOrg.organization.name}, Роль: ${empOrg.role.name}',
-                                  ),
-                                  trailing: OutlinedButton.icon(
-                                    // Добавили кнопку с иконкой
-                                    icon: Icon(Icons.keyboard_arrow_right),
-                                    label: Text("Выбрать"),
-                                    onPressed: () {
-                                      // store.dispatch(
-                                      //   OrganizationChooseAction(id: empOrg.id),
-                                      // );
-                                    },
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                    ],
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            'Организация: ${org.name}\nВладелец: ${org.owner.name}',
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              AutoRouter.of(
+                                context,
+                              ).push(OrganizationRoute(organization: org));
+                            },
+                          ),
+                        ],
+                      ),
+                      trailing: // Кнопка выбора
+                      OutlinedButton.icon(
+                        icon: Icon(Icons.keyboard_arrow_right),
+                        label: Text("Выбрать"),
+                        onPressed: () {
+                          // store.dispatch(
+                          //   OrganizationChooseAction(id: org.id),
+                          // );
+                        },
+                      ),
+                    ),
                   ),
+              // Кнопка добавления новой организации-владельца
+              Card(
+                color: Colors.blue.shade100,
+                margin: const EdgeInsets.all(8),
+                child: ListTile(
+                  leading: Icon(Icons.add_circle_outline),
+                  title: Text("Добавить организацию"),
+                  onTap: () {
+                    AutoRouter.of(
+                      context,
+                    ).push(OrganizationRoute(organization: null));
+                  }, // Обработчик нажатия
                 ),
               ),
-            ),
+            ],
           );
-        } else if (state is UserAuthState) {
-          return Stamp.authErrorWidget(context);
         } else {
           return Stamp.errorWidget(context);
         }

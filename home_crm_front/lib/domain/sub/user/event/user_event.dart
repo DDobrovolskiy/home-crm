@@ -1,13 +1,11 @@
-import 'package:home_crm_front/domain/sub/user/user_state/user_state.dart';
+import '../../../support/exceptions/exceptions.dart';
 
 abstract class UserEvent {}
 
 class UserLoadEvent extends UserEvent {}
 
-class UserOrganizationDeleteEvent extends UserEvent {
-  final int organizationId;
-  final UserLoadState state;
+class UserErrorEvent extends UserEvent {
+  final PortException error;
 
-  UserOrganizationDeleteEvent(
-      {required this.organizationId, required this.state});
+  UserErrorEvent({required this.error});
 }
