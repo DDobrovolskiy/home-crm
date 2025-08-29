@@ -10,7 +10,7 @@ OrganizationDto _$OrganizationDtoFromJson(Map<String, dynamic> json) =>
     OrganizationDto(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      owner: UserBaseDto.fromJson(json['owner'] as Map<String, dynamic>),
+      owner: UserDto.fromJson(json['owner'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OrganizationDtoToJson(OrganizationDto instance) =>

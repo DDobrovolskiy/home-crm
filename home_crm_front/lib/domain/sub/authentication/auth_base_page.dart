@@ -1,22 +1,27 @@
 import 'dart:ui'; // Для эффектов размытия
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
+import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
+import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/theme/theme.dart';
-import 'package:redux/redux.dart';
 
-import '../../support/redux/state/app_state.dart';
+import 'bloc/auth_bloc.dart';
 
 abstract class AuthPageBase<T extends StatefulWidget> extends State<T>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _parallaxOffset;
+  final authBloc = AuthBloc();
 
-  Form getForm(Store<AppState> store);
+  Form getForm(AuthState state);
 
   @override
   void initState() {
+    authBloc.add(AuthInitEvent());
     super.initState();
 
     // Настройка контроллера анимации
@@ -55,14 +60,17 @@ abstract class AuthPageBase<T extends StatefulWidget> extends State<T>
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, Store<AppState>>(
-      converter: (store) => store,
-      builder: (context, store) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      bloc: authBloc,
+      builder: (context, state) {
         debugPrint('Build LoginMainPage at timestamp: ${DateTime.now()}');
         // Получаем размеры экрана
         final screenWidth = MediaQuery.of(context).size.width;
         // Определяем адаптивные размеры окна авторизации
         final windowWidth = screenWidth <= 600 ? screenWidth * 0.8 : 480.0;
+        if (state is AuthSuccessState) {
+          AutoRouter.of(context).push(UserRoute());
+        }
         return SafeArea(
           child: AnimatedBuilder(
             animation: _parallaxOffset,
@@ -141,7 +149,7 @@ abstract class AuthPageBase<T extends StatefulWidget> extends State<T>
                                   ).textTheme.headlineSmall,
                                 ),
                                 Divider(thickness: 1.0),
-                                getForm(store),
+                                getForm(state),
                               ],
                             ),
                           ),

@@ -1,6 +1,6 @@
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 import 'package:home_crm_front/domain/sub/role/dto/role_dto.dart';
-import 'package:home_crm_front/domain/sub/user/dto/user_base_dto.dart';
+import 'package:home_crm_front/domain/sub/user/dto/user_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../support/port/base_dto.dart';
@@ -11,7 +11,7 @@ part 'employee_dto.g.dart';
 @JsonSerializable()
 class EmployeeDto {
   final int id;
-  final UserBaseDto user;
+  final UserDto user;
   final OrganizationDto organization;
   final RoleDto role;
 

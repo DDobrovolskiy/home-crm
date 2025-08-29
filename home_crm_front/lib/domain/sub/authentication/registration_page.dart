@@ -1,14 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
-import 'package:home_crm_front/domain/sub/authentication/action/registration_action.dart';
-import 'package:home_crm_front/domain/support/redux/state/app_state.dart';
-import 'package:home_crm_front/domain/support/router/roters.dart';
-import 'package:redux/redux.dart';
+import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
+import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
+import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../../theme/theme.dart';
 import '../../support/phone.dart';
 import 'auth_base_page.dart';
 
+@RoutePage()
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
 
@@ -24,7 +24,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
   bool _isHidden = true; // Переменная для управления отображением пароля
 
   @override
-  Form getForm(Store<AppState> store) {
+  Form getForm(AuthState state) {
     return Form(
       key: _formKey,
       child: Column(
@@ -32,8 +32,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
         children: [
           TextButton(
             onPressed: () {
-              store.state.authState.registrationState.messageError = null;
-              store.dispatch(NavigateToAction.replace(RoutersApp.login));
+              AutoRouter.of(context).push(LoginRoute());
             },
             child: Text(
               '← У меня уже есть аккаунт',
@@ -45,12 +44,11 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             'РЕГИСТРАЦИЯ',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-          if (store.state.authState.registrationState.messageError !=
-              null) Column(
+          if (state is AuthLoginErrorState) Column(
             children: [
               SizedBox(height: 5),
               Text(
-                  store.state.authState.registrationState.messageError!,
+                  state.message,
                   style: TextStyle(color: Colors.red)),
             ],
           ),
@@ -64,7 +62,6 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
           _buildMatchingPasswordField(),
           const SizedBox(height: 5),
 
-          // Ссылка на восстановление пароля
           TextButton(
             style: ButtonStyle(
               foregroundColor: WidgetStateProperty.all(
@@ -87,13 +84,11 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                store.state.authState.registrationState.load = true;
-                store.dispatch(
-                    RegistrationAction(
-                        name: _name!, phone: _login!, password: _password!));
+                authBloc.add(AuthRegistrationEvent(
+                    name: _name!, phone: _login!, password: _password!));
               }
             },
-            child: store.state.authState.registrationState.load
+            child: state is AuthProcessingState
                 ? CircularProgressIndicator()
                 : const Text('Зарегистрироваться'),
           ),

@@ -92,7 +92,7 @@ public class EmployeeAggregate {
         return EmployeeDTO.builder()
                 .id(id)
                 .user(user.getUserDTO())
-                .organization(organization.organizationInfoDTO())
+                .organization(organization.organizationDTO())
                 .role(role.getRoleDTO())
                 .build();
     }

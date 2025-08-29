@@ -15,4 +15,8 @@ class ErrorDate {
 
   factory ErrorDate.fromJson(Map<String, dynamic> json) =>
       _$ErrorDateFromJson(json);
+
+  String convertToString() {
+    return errors?.map((f) => f.message).join('\n') ?? '';
+  }
 }

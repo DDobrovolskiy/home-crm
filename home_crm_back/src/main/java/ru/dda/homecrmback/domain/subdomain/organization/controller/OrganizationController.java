@@ -25,7 +25,7 @@ public class OrganizationController {
     public IResponse<OrganizationDTO> createOrganization(@RequestBody OrganizationCreateDTO dto) {
         return Organization.Create.of(dto.name(), UserContextHolder.getCurrentUser().getUserId())
                 .execute(organizationService::create)
-                .map(OrganizationAggregate::organizationInfoDTO)
+                .map(OrganizationAggregate::organizationDTO)
                 .response(ResultAggregate::getErrorData);
     }
 
@@ -33,7 +33,7 @@ public class OrganizationController {
     public IResponse<OrganizationDTO> updateOrganization(@RequestBody OrganizationUpdateDTO dto) {
         return Organization.Update.of(dto.id(), dto.name(), UserContextHolder.getCurrentUser().getUserId())
                 .execute(organizationService::update)
-                .map(OrganizationAggregate::organizationInfoDTO)
+                .map(OrganizationAggregate::organizationDTO)
                 .response(ResultAggregate::getErrorData);
     }
 

@@ -8,7 +8,7 @@ part of 'employee_dto.dart';
 
 EmployeeDto _$EmployeeDtoFromJson(Map<String, dynamic> json) => EmployeeDto(
   id: (json['id'] as num).toInt(),
-  user: UserBaseDto.fromJson(json['user'] as Map<String, dynamic>),
+  user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
   organization: OrganizationDto.fromJson(
     json['organization'] as Map<String, dynamic>,
   ),

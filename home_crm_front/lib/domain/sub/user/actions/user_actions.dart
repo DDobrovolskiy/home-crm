@@ -1,3 +1,0 @@
-class GetInfoUserAction {}
-
-class RefreshInfoUserAction {}

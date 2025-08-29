@@ -6,11 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.StringUtils;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -38,10 +41,13 @@ public class OrganizationAggregate {
     @JoinColumn(name = "owner_id")
     private UserAggregate owner;
     @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @BatchSize(size = 20)
     private List<EmployeeAggregate> employees = new ArrayList<>();
     @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @BatchSize(size = 20)
     private List<RoleAggregate> roles = new ArrayList<>();
     @OneToMany(mappedBy = "organization", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @BatchSize(size = 20)
     private List<TestAggregate> tests = new ArrayList<>();
 
     public static Result<OrganizationAggregate, IFailAggregate> create(UserAggregate owner, String name) {
@@ -76,11 +82,27 @@ public class OrganizationAggregate {
         test.setOrganization(this);
     }
 
-    public OrganizationDTO organizationInfoDTO() {
+    public OrganizationDTO organizationDTO() {
         return OrganizationDTO.builder()
                 .id(id)
                 .name(name)
                 .owner(owner.getUserDTO())
+                .build();
+    }
+
+    public OrganizationEmployeesDTO organizationEmployees() {
+        return OrganizationEmployeesDTO.builder()
+                .employees(employees.stream()
+                        .map(EmployeeAggregate::getEmployeeDTO)
+                        .toList())
+                .build();
+    }
+
+    public OrganizationRolesDTO organizationRoles() {
+        return OrganizationRolesDTO.builder()
+                .roles(roles.stream()
+                        .map(RoleAggregate::getRoleDTO)
+                        .toList())
                 .build();
     }
 }

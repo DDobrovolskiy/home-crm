@@ -8,7 +8,7 @@ import ru.dda.homecrmback.domain.support.result.dto.Fail;
 @RequiredArgsConstructor
 public enum FailEvent {
     ERROR_ON_SAVE("%s"),
-    USER_IS_EXISTS("%s eже существует"),
+    USER_IS_EXISTS("Пользователь eже существует"),
     USER_NOT_FOUND("Пользователь не найден"),
     ROLE_NOT_FOUND("Роль не найдена"),
     ORGANIZATION_NOT_FOUND("Организация не найдена"),

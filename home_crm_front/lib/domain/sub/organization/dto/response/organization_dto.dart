@@ -1,4 +1,4 @@
-import 'package:home_crm_front/domain/sub/user/dto/user_base_dto.dart';
+import 'package:home_crm_front/domain/sub/user/dto/user_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'organization_dto.g.dart';
@@ -7,7 +7,7 @@ part 'organization_dto.g.dart';
 class OrganizationDto {
   final int id;
   final String name;
-  final UserBaseDto owner;
+  final UserDto owner;
 
   OrganizationDto({required this.id, required this.name, required this.owner});
 

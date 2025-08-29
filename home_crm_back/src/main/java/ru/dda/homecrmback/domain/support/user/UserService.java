@@ -9,6 +9,9 @@ import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
+import ru.dda.homecrmback.domain.support.user.dto.response.UserDTO;
+import ru.dda.homecrmback.domain.support.user.dto.response.UserEmployeesDTO;
+import ru.dda.homecrmback.domain.support.user.dto.response.UserOrganizationsDTO;
 
 @Slf4j
 @Service
@@ -23,10 +26,24 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Result<UserAggregate.DTO.UserDTO, IFailAggregate> getUserOrganization() {
+    public Result<UserDTO, IFailAggregate> getUser() {
         return User.FindById.of(UserContextHolder.getCurrentUser().getUserId())
                 .execute(userDomainService::getUserAggregateById)
-                .map(UserAggregate::userOrganizationDTO);
+                .map(UserAggregate::getUserDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Result<UserOrganizationsDTO, IFailAggregate> getUserOrganization() {
+        return User.FindById.of(UserContextHolder.getCurrentUser().getUserId())
+                .execute(userDomainService::getUserAggregateById)
+                .map(UserAggregate::getUserOrganizationsDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Result<UserEmployeesDTO, IFailAggregate> getUserEmployee() {
+        return User.FindById.of(UserContextHolder.getCurrentUser().getUserId())
+                .execute(userDomainService::getUserAggregateById)
+                .map(UserAggregate::getUserEmployeesDTO);
     }
 
     @Transactional(readOnly = true)
