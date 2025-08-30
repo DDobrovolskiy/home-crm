@@ -4,13 +4,12 @@ import '../../../support/exceptions/exceptions.dart';
 
 abstract class OrganizationState {}
 
-class OrganizationInitial extends OrganizationState {}
+class OrganizationUnSelectedState extends OrganizationState {}
 
-class OrganizationCreateState extends OrganizationState {}
-
-class OrganizationUpdateState extends OrganizationState {
+class OrganizationSelectedState extends OrganizationState {
   final OrganizationDto organization;
-  OrganizationUpdateState({required this.organization});
+
+  OrganizationSelectedState({required this.organization});
 }
 
 class OrganizationErrorState extends OrganizationState {
@@ -18,5 +17,3 @@ class OrganizationErrorState extends OrganizationState {
 
   OrganizationErrorState({required this.error});
 }
-
-class OrganizationSuccessState extends OrganizationState {}

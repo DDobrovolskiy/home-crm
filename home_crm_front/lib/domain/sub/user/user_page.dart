@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_crm_front/domain/sub/organization/bloc/organization_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/bloc/organization_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/event/organization_edit_event.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_event.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/event/user_event.dart';
@@ -11,6 +12,8 @@ import 'package:home_crm_front/domain/sub/user/user_state/user_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
+import '../organization/bloc/organization_bloc.dart';
+import '../organization/state/organization_state.dart';
 import 'bloc/user_bloc.dart';
 import 'bloc/user_employee_bloc.dart';
 
@@ -41,6 +44,8 @@ class _UserPageState extends State<UserPage> {
               children: [
                 // Отображаем основное имя и телефон
                 _user(context),
+                const Divider(),
+                _organization(context),
                 // Список организаций владельца
                 _userOrganization(context),
                 // Список сотрудников/организаций сотрудника
@@ -80,6 +85,43 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  Widget _organization(BuildContext context) {
+    return BlocConsumer<OrganizationBloc, OrganizationState>(
+      listener: (context, state) {
+        if (state is OrganizationErrorState) {
+          Stamp.showTemporarySnackbar(context, state.error.message);
+        }
+      },
+      builder: (context, state) {
+        if (state is OrganizationUnSelectedState) {
+          return Text('Выбирете организацию, с которой будете работать');
+        } else if (state is OrganizationSelectedState) {
+          return Card(
+            color: Colors.blue.shade100,
+            margin: const EdgeInsets.all(8),
+            child: ListTile(
+              leading: Icon(Icons.workspace_premium),
+              title: Text('Выбранная организация'),
+              subtitle: Text(
+                'Организация: ${state.organization.name}',
+              ),
+              trailing: OutlinedButton.icon(
+                // Добавили кнопку с иконкой
+                icon: Icon(Icons.keyboard_arrow_right),
+                label: Text("Продолжить"),
+                onPressed: () {
+                  AutoRouter.of(context).push(HomeRoute());
+                },
+              ),
+            ),
+          );
+        } else {
+          return Stamp.errorWidget(context);
+        }
+      },
+    );
+  }
+
   Widget _userEmployee(BuildContext context) {
     return BlocConsumer<UserEmployeeBloc, UserEmployeeState>(
       listener: (context, state) {
@@ -105,16 +147,17 @@ class _UserPageState extends State<UserPage> {
                     leading: Icon(Icons.work),
                     title: Text(empOrg.organization.name),
                     subtitle: Text(
-                      'Организация: ${empOrg.organization.name}, Роль: ${empOrg.role.name}',
+                      'Роль: ${empOrg.role.name}',
                     ),
                     trailing: OutlinedButton.icon(
                       // Добавили кнопку с иконкой
                       icon: Icon(Icons.keyboard_arrow_right),
                       label: Text("Выбрать"),
                       onPressed: () {
-                        // store.dispatch(
-                        //   OrganizationChooseAction(id: empOrg.id),
-                        // );
+                        BlocProvider.of<OrganizationBloc>(context).add(
+                          OrganizationSelectedEvent(id: empOrg.organization.id),
+                        );
+                        AutoRouter.of(context).push(HomeRoute());
                       },
                     ),
                   ),
@@ -158,9 +201,9 @@ class _UserPageState extends State<UserPage> {
                           IconButton(
                             icon: Icon(Icons.close),
                             onPressed: () {
-                              BlocProvider.of<OrganizationBloc>(
+                              BlocProvider.of<OrganizationEditBloc>(
                                 context,
-                              ).add(OrganizationDeleteEvent(id: org.id));
+                              ).add(OrganizationEditDeleteEvent(id: org.id));
                             },
                           ),
                         ],
@@ -168,7 +211,7 @@ class _UserPageState extends State<UserPage> {
                       subtitle: Row(
                         children: [
                           Text(
-                            'Организация: ${org.name}\nВладелец: ${org.owner.name}',
+                            'Владелец: ${org.owner.name}',
                           ),
                           IconButton(
                             icon: Icon(Icons.edit),
@@ -185,9 +228,10 @@ class _UserPageState extends State<UserPage> {
                         icon: Icon(Icons.keyboard_arrow_right),
                         label: Text("Выбрать"),
                         onPressed: () {
-                          // store.dispatch(
-                          //   OrganizationChooseAction(id: org.id),
-                          // );
+                          BlocProvider.of<OrganizationBloc>(
+                            context,
+                          ).add(OrganizationSelectedEvent(id: org.id));
+                          AutoRouter.of(context).push(HomeRoute());
                         },
                       ),
                     ),

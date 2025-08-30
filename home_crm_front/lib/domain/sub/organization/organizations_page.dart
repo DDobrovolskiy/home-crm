@@ -2,11 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
-import 'package:home_crm_front/domain/sub/organization/event/organization_event.dart';
-import 'package:home_crm_front/domain/sub/organization/state/organization_state.dart';
+import 'package:home_crm_front/domain/sub/organization/event/organization_edit_event.dart';
+import 'package:home_crm_front/domain/sub/organization/state/organization_edit_state.dart';
 
 import '../../support/widgets/stamp.dart';
-import 'bloc/organization_bloc.dart';
+import 'bloc/organization_edit_bloc.dart';
 
 @RoutePage()
 class OrganizationPage extends StatefulWidget {
@@ -25,22 +25,22 @@ class _OrganizationPageState extends State<OrganizationPage> {
 
   @override
   void initState() {
-    BlocProvider.of<OrganizationBloc>(
+    BlocProvider.of<OrganizationEditBloc>(
       context,
-    ).add(OrganizationLoadEvent(organization: widget.organization));
+    ).add(OrganizationEditLoadEvent(organization: widget.organization));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrganizationBloc, OrganizationState>(
+    return BlocConsumer<OrganizationEditBloc, OrganizationEditState>(
       listener: (context, state) {
-        if (state is OrganizationSuccessState) {
+        if (state is OrganizationEditSuccessState) {
           context.router.back();
         }
       },
       builder: (context, state) {
-        if (state is OrganizationCreateState) {
+        if (state is OrganizationEditCreateState) {
           return SafeArea(
             child: MaterialApp(
               home: Scaffold(
@@ -70,8 +70,10 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Создать организацию'),
                             onPressed: () {
-                              BlocProvider.of<OrganizationBloc>(context).add(
-                                OrganizationCreateEvent(
+                              BlocProvider
+                                  .of<OrganizationEditBloc>(context)
+                                  .add(
+                                OrganizationEditCreateEvent(
                                   name: _organizationName!,
                                 ),
                               );
@@ -86,7 +88,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
             ),
           );
         }
-        if (state is OrganizationUpdateState) {
+        if (state is OrganizationEditUpdateState) {
           return SafeArea(
             child: MaterialApp(
               home: Scaffold(
@@ -117,8 +119,10 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Обновить организацию'),
                             onPressed: () {
-                              BlocProvider.of<OrganizationBloc>(context).add(
-                                OrganizationUpdateEvent(
+                              BlocProvider
+                                  .of<OrganizationEditBloc>(context)
+                                  .add(
+                                OrganizationEditUpdateEvent(
                                   id: state.organization.id,
                                   name:
                                       _organizationName ??

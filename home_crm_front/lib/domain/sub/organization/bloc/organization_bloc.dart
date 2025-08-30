@@ -1,51 +1,42 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/organization/dto/request/organization_create_dto.dart';
-import 'package:home_crm_front/domain/sub/organization/dto/request/organization_delete_dto.dart';
-import 'package:home_crm_front/domain/sub/organization/dto/request/organization_update_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/repository/organization_repository.dart';
-import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
-import 'package:home_crm_front/domain/sub/user/event/user_organization_event.dart';
+import 'package:home_crm_front/domain/support/token_service.dart';
 
 import '../../../support/port/port.dart';
 import '../event/organization_event.dart';
 import '../state/organization_state.dart';
 
 class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
-  final OrganizationRepository _repository = OrganizationRepository();
-  late final UserOrganizationBloc _userOrganizationBloc = GetIt.instance
-      .get<UserOrganizationBloc>();
+  late final OrganizationRepository _repository = GetIt.instance
+      .get<OrganizationRepository>();
+  late final TokenService _tokenService = GetIt.instance
+      .get<TokenService>();
 
-  OrganizationBloc() : super(OrganizationInitial()) {
-    on<OrganizationLoadEvent>((event, emit) {
-      if (event.organization != null) {
-        emit.call(OrganizationUpdateState(organization: event.organization!));
+  OrganizationBloc() : super(OrganizationUnSelectedState()) {
+    on<OrganizationRefreshEvent>((event, emit) async {
+      var token = await _tokenService.getToken(TokenService.organizationToken);
+      if (token == null) {
+        emit.call(OrganizationUnSelectedState());
       } else {
-        emit.call(OrganizationCreateState());
+        var organization = await _repository.organization();
+        if (organization != null) {
+          emit.call(OrganizationSelectedState(organization: organization));
+        } else {
+          emit.call(OrganizationUnSelectedState());
+        }
       }
     });
-    on<OrganizationCreateEvent>((event, emit) async {
-      await _repository.organizationCreate(
-        OrganizationCreateDto(name: event.name),
-      );
-      _userOrganizationBloc.add(UserOrganizationLoadEvent());
-      emit.call(OrganizationSuccessState());
+    on<OrganizationSelectedEvent>((event, emit) async {
+      await _tokenService.saveToken(
+          TokenService.organizationToken, event.id.toString());
+      add(OrganizationRefreshEvent());
     });
-    on<OrganizationUpdateEvent>((event, emit) async {
-      await _repository.organizationUpdate(
-        OrganizationUpdateDto(name: event.name, id: event.id),
-      );
-      _userOrganizationBloc.add(UserOrganizationLoadEvent());
-      emit.call(OrganizationSuccessState());
+    on<OrganizationErrorEvent>((event, emit) async {
+      await _tokenService.clearToken(TokenService.organizationToken);
+      add(OrganizationRefreshEvent());
     });
-    on<OrganizationDeleteEvent>((event, emit) async {
-      await _repository.organizationDelete(OrganizationDeleteDto(id: event.id));
-      _userOrganizationBloc.add(UserOrganizationLoadEvent());
-      emit.call(OrganizationSuccessState());
-    });
-    on<OrganizationErrorEvent>((event, emit) {
-      emit.call(OrganizationErrorState(error: event.error));
-    });
+    add(OrganizationRefreshEvent());
   }
 
   @override

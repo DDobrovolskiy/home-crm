@@ -1,32 +1,14 @@
-import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 
 abstract class OrganizationEvent {}
 
-class OrganizationLoadEvent extends OrganizationEvent {
-  final OrganizationDto? organization;
-
-  OrganizationLoadEvent({required this.organization});
-}
-
-class OrganizationCreateEvent extends OrganizationEvent {
-  final String name;
-
-  OrganizationCreateEvent({required this.name});
-}
-
-class OrganizationUpdateEvent extends OrganizationEvent {
-  final int id;
-  final String name;
-
-  OrganizationUpdateEvent({required this.id, required this.name});
-}
-
-class OrganizationDeleteEvent extends OrganizationEvent {
+class OrganizationSelectedEvent extends OrganizationEvent {
   final int id;
 
-  OrganizationDeleteEvent({required this.id});
+  OrganizationSelectedEvent({required this.id});
 }
+
+class OrganizationRefreshEvent extends OrganizationEvent {}
 
 class OrganizationErrorEvent extends OrganizationEvent {
   final PortException error;

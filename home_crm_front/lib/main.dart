@@ -4,5 +4,6 @@ import 'package:home_crm_front/home_crm_app.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
+  setupLocator();
   runApp(HomeCrmApp());
 }
