@@ -28,4 +28,10 @@ class TokenService {
       }
     });
   }
+
+  Future<void> clearAllToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(authToken);
+    await prefs.remove(organizationToken);
+  }
 }

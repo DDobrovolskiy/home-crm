@@ -4,7 +4,9 @@ class AuthInitial extends AuthState {}
 
 class AuthProcessingState extends AuthState {}
 
-class AuthSuccessState extends AuthState {}
+class AuthLoginState extends AuthState {}
+
+class AuthLogoutState extends AuthState {}
 
 class AuthLoginErrorState extends AuthState {
   final String message;

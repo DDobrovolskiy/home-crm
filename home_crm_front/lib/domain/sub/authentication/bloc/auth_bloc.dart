@@ -1,21 +1,23 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/dto/simple_auth_dto.dart';
 import 'package:home_crm_front/domain/sub/authentication/dto/simple_login_dto.dart';
 import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
 import 'package:home_crm_front/domain/sub/authentication/repository/auth_repository.dart';
 import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
+import 'package:home_crm_front/domain/sub/user/bloc/user_bloc.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
 
 import '../../../support/exceptions/exceptions.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _repository = AuthRepository();
+  late final AuthRepository _repository = GetIt.instance.get<AuthRepository>();
+  late final TokenService _tokenService = GetIt.instance.get<TokenService>();
+
+  late final UserBloc _userBloc = GetIt.instance.get<UserBloc>();
 
   AuthBloc() : super(AuthInitial()) {
-    on<AuthInitEvent>((event, emit) async {
-      emit.call(AuthInitial());
-    });
     on<AuthLoginEvent>((event, emit) async {
       await auth(
         emit,
@@ -36,6 +38,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     });
+    on<AuthLogoutEvent>((event, emit) async {
+      await _tokenService.clearAllToken();
+      emit.call(AuthLogoutState());
+    });
+    on<AuthLogoutAllEvent>((event, emit) async {
+      await _repository.logout();
+      await _tokenService.clearAllToken();
+      emit.call(AuthLogoutState());
+    });
   }
 
   Future<void> auth(
@@ -46,8 +57,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       var token = await responseSupplier();
       if (token != null) {
-        await TokenService().saveToken(TokenService.authToken, token!);
-        emit.call(AuthSuccessState());
+        await _tokenService.saveToken(TokenService.authToken, token!);
+        emit.call(AuthLoginState());
       } else {
         debugPrint('Ответ сервиса при авторизации: token is null');
         emit.call(

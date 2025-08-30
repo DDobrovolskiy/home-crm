@@ -1,7 +1,5 @@
 abstract class AuthEvent {}
 
-class AuthInitEvent extends AuthEvent {}
-
 class AuthLoginEvent extends AuthEvent {
   final String phone;
   final String password;
@@ -20,3 +18,7 @@ class AuthRegistrationEvent extends AuthEvent {
     required this.password,
   });
 }
+
+class AuthLogoutEvent extends AuthEvent {}
+
+class AuthLogoutAllEvent extends AuthEvent {}

@@ -36,7 +36,6 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
       await _tokenService.clearToken(TokenService.organizationToken);
       add(OrganizationRefreshEvent());
     });
-    add(OrganizationRefreshEvent());
   }
 
   @override

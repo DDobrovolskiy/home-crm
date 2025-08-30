@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
 import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
@@ -7,6 +8,7 @@ import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import '../../../theme/theme.dart';
 import '../../support/phone.dart';
 import 'auth_base_page.dart';
+import 'bloc/auth_bloc.dart';
 
 @RoutePage()
 class RegistrationPage extends StatefulWidget {
@@ -84,7 +86,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                authBloc.add(AuthRegistrationEvent(
+                BlocProvider.of<AuthBloc>(context).add(AuthRegistrationEvent(
                     name: _name!, phone: _login!, password: _password!));
               }
             },

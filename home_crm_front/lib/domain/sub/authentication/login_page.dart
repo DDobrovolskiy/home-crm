@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_crm_front/domain/sub/authentication/state/auth_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../../theme/theme.dart';
 import '../../support/phone.dart';
 import 'auth_base_page.dart';
+import 'bloc/auth_bloc.dart';
 import 'event/auth_event.dart';
 
 @RoutePage()
@@ -58,8 +60,9 @@ class _LoginPage extends AuthPageBase<LoginPage> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                authBloc.add(
-                  AuthLoginEvent(phone: _phone!, password: _password!),
+                BlocProvider.of<AuthBloc>(
+                  context,
+                ).add(AuthLoginEvent(phone: _phone!, password: _password!),
                 );
               }
             },

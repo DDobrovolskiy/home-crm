@@ -1,12 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/bloc/organization_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_edit_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_edit_state.dart';
 
 import '../../support/widgets/stamp.dart';
 import 'bloc/organization_edit_bloc.dart';
+import 'event/organization_event.dart';
 
 @RoutePage()
 class OrganizationPage extends StatefulWidget {
@@ -25,6 +27,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
 
   @override
   void initState() {
+    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
     BlocProvider.of<OrganizationEditBloc>(
       context,
     ).add(OrganizationEditLoadEvent(organization: widget.organization));

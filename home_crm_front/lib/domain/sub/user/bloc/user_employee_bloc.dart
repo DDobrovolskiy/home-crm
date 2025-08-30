@@ -17,7 +17,6 @@ class UserEmployeeBloc extends Bloc<UserEmployeeEvent, UserEmployeeState> {
     on<UserEmployeeErrorEvent>((event, emit) {
       emit.call(UserEmployeeErrorState(error: event.error));
     });
-    add(UserEmployeeLoadEvent());
   }
 
   @override

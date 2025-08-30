@@ -5,7 +5,9 @@ import 'package:home_crm_front/domain/sub/organization/bloc/organization_edit_bl
 import 'package:home_crm_front/domain/sub/organization/event/organization_edit_event.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_event.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
+import 'package:home_crm_front/domain/sub/user/event/user_employee_event.dart';
 import 'package:home_crm_front/domain/sub/user/event/user_event.dart';
+import 'package:home_crm_front/domain/sub/user/event/user_organization_event.dart';
 import 'package:home_crm_front/domain/sub/user/user_state/user_employee_state.dart';
 import 'package:home_crm_front/domain/sub/user/user_state/user_organization_state.dart';
 import 'package:home_crm_front/domain/sub/user/user_state/user_state.dart';
@@ -29,6 +31,10 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
+    BlocProvider.of<UserOrganizationBloc>(context).add(
+        UserOrganizationLoadEvent());
+    BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
+    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
     super.initState();
   }
 
@@ -37,7 +43,11 @@ class _UserPageState extends State<UserPage> {
     return SafeArea(
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(title: Text('Пользовательские данные')),
+          endDrawer: Stamp.menu(context),
+          appBar: AppBar(
+            title: Text('Пользовательские данные'),
+            leading: Stamp.buttonMenu(context),
+          ),
           body: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -102,9 +112,7 @@ class _UserPageState extends State<UserPage> {
             child: ListTile(
               leading: Icon(Icons.workspace_premium),
               title: Text('Выбранная организация'),
-              subtitle: Text(
-                'Организация: ${state.organization.name}',
-              ),
+              subtitle: Text('Организация: ${state.organization.name}'),
               trailing: OutlinedButton.icon(
                 // Добавили кнопку с иконкой
                 icon: Icon(Icons.keyboard_arrow_right),
@@ -146,9 +154,7 @@ class _UserPageState extends State<UserPage> {
                   child: ListTile(
                     leading: Icon(Icons.work),
                     title: Text(empOrg.organization.name),
-                    subtitle: Text(
-                      'Роль: ${empOrg.role.name}',
-                    ),
+                    subtitle: Text('Роль: ${empOrg.role.name}'),
                     trailing: OutlinedButton.icon(
                       // Добавили кнопку с иконкой
                       icon: Icon(Icons.keyboard_arrow_right),
@@ -210,9 +216,7 @@ class _UserPageState extends State<UserPage> {
                       ),
                       subtitle: Row(
                         children: [
-                          Text(
-                            'Владелец: ${org.owner.name}',
-                          ),
+                          Text('Владелец: ${org.owner.name}'),
                           IconButton(
                             icon: Icon(Icons.edit),
                             onPressed: () {

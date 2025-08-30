@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
 
+import '../../../home_crm_app.dart';
+import '../../sub/authentication/bloc/auth_bloc.dart';
 import '../router/roters.gr.dart';
 
 class Stamp {
@@ -32,11 +36,62 @@ class Stamp {
   }
 
   static void showTemporarySnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
     Timer(Duration(seconds: 5), () {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar(
-          reason: SnackBarClosedReason.timeout);
+      ScaffoldMessenger.of(
+        context,
+      ).hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
     });
+  }
+
+  static Widget buttonMenu(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        return IconButton(
+          icon: Icon(Icons.menu), // Трехполосочная иконка
+          onPressed: () =>
+              Scaffold.of(context).openEndDrawer(), // Открытие меню
+        );
+      },
+    );
+  }
+
+  static Widget menu(BuildContext context) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(Icons.account_box), // Иконка выхода
+              title: Text('Личный кабинет'),
+              onTap: () {
+                AutoRouter.of(context).push(UserRoute());
+              },
+            ),
+            Spacer(),
+            ListTile(
+              leading: Icon(Icons.exit_to_app), // Иконка выхода
+              title: Text('Выйти'),
+              onTap: () {
+                BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
+                resetBlocs();
+                AutoRouter.of(context).replace(LoginRoute());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app), // Иконка выхода
+              title: Text('Выйти со всех устройств'),
+              onTap: () {
+                BlocProvider.of<AuthBloc>(context).add(AuthLogoutAllEvent());
+                resetBlocs();
+                AutoRouter.of(context).replace(LoginRoute());
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

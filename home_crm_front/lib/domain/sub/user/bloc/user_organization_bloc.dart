@@ -18,7 +18,6 @@ class UserOrganizationBloc
     on<UserOrganizationErrorEvent>((event, emit) {
       emit.call(UserOrganizationErrorState(error: event.error));
     });
-    add(UserOrganizationLoadEvent());
   }
 
   @override

@@ -6,6 +6,7 @@ import '../dto/simple_login_dto.dart';
 class AuthRepository {
   final String _path = 'auth';
   final String _pathLogin = 'auth/login';
+  final String _pathLogout = 'auth/logout';
   final String _pathRegistration = 'auth/registration';
 
   Future<String?> login(SimpleLoginDto dto) {
@@ -14,5 +15,9 @@ class AuthRepository {
 
   Future<String?> registartion(SimpleAuthDto dto) {
     return Port.post(_pathRegistration, dto.toJson(), (j) => j as String);
+  }
+
+  Future<bool?> logout() {
+    return Port.post(_pathLogout, {}, (j) => j as bool);
   }
 }
