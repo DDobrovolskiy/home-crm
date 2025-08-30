@@ -7,6 +7,8 @@ import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
 
 import '../../../home_crm_app.dart';
 import '../../sub/authentication/bloc/auth_bloc.dart';
+import '../../sub/user/bloc/user_bloc.dart';
+import '../../sub/user/user_state/user_state.dart';
 import '../router/roters.gr.dart';
 
 class Stamp {
@@ -46,11 +48,88 @@ class Stamp {
     });
   }
 
-  static Widget buttonMenu(BuildContext context) {
+  static Widget buttonMenuMain(BuildContext context) {
     return Builder(
       builder: (context) {
         return IconButton(
           icon: Icon(Icons.menu), // Трехполосочная иконка
+          onPressed: () => Scaffold.of(context).openDrawer(), // Открытие меню
+        );
+      },
+    );
+  }
+
+  static Widget menuMain(BuildContext context) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(Icons.home), // Иконка выхода
+              title: Text('Домашняя страница'),
+              onTap: () {
+                AutoRouter.of(context).push(HomeRoute());
+              },
+            ),
+            ExpansionTile(
+              leading: Icon(Icons.business),
+              // Иконка домашней страницы
+              title: Text('Организация'),
+              initiallyExpanded: false,
+              // Начальное состояние свернуто
+              childrenPadding: EdgeInsets.all(16),
+              // Внутренние отступы для развернутого меню
+              children: [
+                ListTile(
+                  leading: Icon(Icons.people),
+                  title: Text('Сотрудники'),
+                  onTap: () {
+                    // AutoRouter.of(context).push(AboutRoute());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.account_box),
+                  title: Text('Роли'),
+                  onTap: () {
+                    // AutoRouter.of(context).push(HelpRoute());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.insert_drive_file),
+                  title: Text('Обучение'),
+                  onTap: () {
+                    // AutoRouter.of(context).push(HelpRoute());
+                  },
+                ),
+              ],
+            ),
+            Spacer(),
+            ListTile(
+              leading: Icon(Icons.face), // Иконка выхода
+              title: BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  if (state is UserLoadedState) {
+                    return Text(state.user!.name);
+                  } else {
+                    return Text('unknown');
+                  }
+                },
+              ),
+              onTap: () {
+                AutoRouter.of(context).push(UserRoute());
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget buttonMenuSupplier(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        return IconButton(
+          icon: Icon(Icons.menu_open_outlined), // Трехполосочная иконка
           onPressed: () =>
               Scaffold.of(context).openEndDrawer(), // Открытие меню
         );
@@ -58,7 +137,7 @@ class Stamp {
     );
   }
 
-  static Widget menu(BuildContext context) {
+  static Widget menuSupplier(BuildContext context) {
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -66,6 +145,13 @@ class Stamp {
             ListTile(
               leading: Icon(Icons.account_box), // Иконка выхода
               title: Text('Личный кабинет'),
+              onTap: () {
+                AutoRouter.of(context).push(UserRoute());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.business), // Иконка выхода
+              title: Text('Ваша организация'),
               onTap: () {
                 AutoRouter.of(context).push(UserRoute());
               },

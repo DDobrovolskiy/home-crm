@@ -73,9 +73,9 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Создать организацию'),
                             onPressed: () {
-                              BlocProvider
-                                  .of<OrganizationEditBloc>(context)
-                                  .add(
+                              BlocProvider.of<OrganizationEditBloc>(
+                                context,
+                              ).add(
                                 OrganizationEditCreateEvent(
                                   name: _organizationName!,
                                 ),
@@ -90,8 +90,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
               ),
             ),
           );
-        }
-        if (state is OrganizationEditUpdateState) {
+        } else if (state is OrganizationEditUpdateState) {
           return SafeArea(
             child: MaterialApp(
               home: Scaffold(
@@ -122,9 +121,9 @@ class _OrganizationPageState extends State<OrganizationPage> {
                           ElevatedButton(
                             child: Text('Обновить организацию'),
                             onPressed: () {
-                              BlocProvider
-                                  .of<OrganizationEditBloc>(context)
-                                  .add(
+                              BlocProvider.of<OrganizationEditBloc>(
+                                context,
+                              ).add(
                                 OrganizationEditUpdateEvent(
                                   id: state.organization.id,
                                   name:
@@ -138,6 +137,26 @@ class _OrganizationPageState extends State<OrganizationPage> {
                       ),
                     ),
                   ),
+                ),
+              ),
+            ),
+          );
+        } else if (state is OrganizationEditOnlyWatchState) {
+          return SafeArea(
+            child: MaterialApp(
+              home: Scaffold(
+                appBar: AppBar(title: Text('Создание организации')),
+                body: Column(
+                  children: [
+                    Text('Название организации ${state.organization.name}'),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      child: Text('Назад'),
+                      onPressed: () {
+                        AutoRouter.of(context).back();
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),

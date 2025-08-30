@@ -6,6 +6,12 @@ abstract class OrganizationEditState {}
 
 class OrganizationEditInitState extends OrganizationEditState {}
 
+class OrganizationEditOnlyWatchState extends OrganizationEditState {
+  final OrganizationDto organization;
+
+  OrganizationEditOnlyWatchState({required this.organization});
+}
+
 class OrganizationEditCreateState extends OrganizationEditState {}
 
 class OrganizationEditUpdateState extends OrganizationEditState {

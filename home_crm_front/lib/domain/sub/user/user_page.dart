@@ -31,8 +31,9 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
-    BlocProvider.of<UserOrganizationBloc>(context).add(
-        UserOrganizationLoadEvent());
+    BlocProvider.of<UserOrganizationBloc>(
+      context,
+    ).add(UserOrganizationLoadEvent());
     BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
     BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
     super.initState();
@@ -43,10 +44,11 @@ class _UserPageState extends State<UserPage> {
     return SafeArea(
       child: MaterialApp(
         home: Scaffold(
-          endDrawer: Stamp.menu(context),
+          endDrawer: Stamp.menuSupplier(context),
           appBar: AppBar(
             title: Text('Пользовательские данные'),
-            leading: Stamp.buttonMenu(context),
+            actions: [Stamp.buttonMenuSupplier(context)],
+            // leading: Stamp.buttonMenu(context),
           ),
           body: Padding(
             padding: const EdgeInsets.all(16),
@@ -263,3 +265,5 @@ class _UserPageState extends State<UserPage> {
     );
   }
 }
+
+enum MenuItem { itemOne, itemTwo }

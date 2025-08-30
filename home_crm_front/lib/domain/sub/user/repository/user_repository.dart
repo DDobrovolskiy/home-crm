@@ -9,6 +9,10 @@ class UserRepository {
   final String _path_organization = 'user/organization';
   final String _path_employee = 'user/employee';
 
+  Future<UserDto?> userFromLocalStorage() {
+    return user();
+  }
+
   Future<UserDto?> user() {
     return Port.get(_path, (j) => UserDto.fromJson(j as Map<String, dynamic>));
   }

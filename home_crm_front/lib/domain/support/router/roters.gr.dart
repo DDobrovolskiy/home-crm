@@ -33,7 +33,7 @@ class HomeRoute extends _i6.PageRouteInfo<void> {
   static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return _i1.HomePage();
+      return const _i1.HomePage();
     },
   );
 }

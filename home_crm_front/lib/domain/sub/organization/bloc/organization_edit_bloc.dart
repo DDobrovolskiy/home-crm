@@ -7,6 +7,7 @@ import 'package:home_crm_front/domain/sub/organization/event/organization_event.
 import 'package:home_crm_front/domain/sub/organization/repository/organization_repository.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/event/user_organization_event.dart';
+import 'package:home_crm_front/domain/sub/user/repository/user_repository.dart';
 
 import '../../../support/port/port.dart';
 import '../event/organization_edit_event.dart';
@@ -17,14 +18,22 @@ class OrganizationEditBloc
     extends Bloc<OrganizationEditEvent, OrganizationEditState> {
   late final OrganizationRepository _repository = GetIt.instance
       .get<OrganizationRepository>();
+  late final UserRepository _userRepository = GetIt.instance
+      .get<UserRepository>();
   late final OrganizationBloc _organizationBloc = GetIt.instance
       .get<OrganizationBloc>();
   late final UserOrganizationBloc _userOrganizationBloc = GetIt.instance
       .get<UserOrganizationBloc>();
 
   OrganizationEditBloc() : super(OrganizationEditInitState()) {
-    on<OrganizationEditLoadEvent>((event, emit) {
+    on<OrganizationEditLoadEvent>((event, emit) async {
       if (event.organization != null) {
+        var user = await _userRepository.userFromLocalStorage();
+        if (user != null && event.organization?.owner.id != user.id) {
+          emit.call(
+            OrganizationEditOnlyWatchState(organization: event.organization!),
+          );
+        }
         emit.call(
           OrganizationEditUpdateState(organization: event.organization!),
         );
@@ -36,21 +45,21 @@ class OrganizationEditBloc
       await _repository.organizationCreate(
         OrganizationCreateDto(name: event.name),
       );
-
       _organizationBloc.add(OrganizationRefreshEvent());
       _userOrganizationBloc.add(UserOrganizationLoadEvent());
-
       emit.call(OrganizationEditSuccessState());
     });
     on<OrganizationEditUpdateEvent>((event, emit) async {
       await _repository.organizationUpdate(
         OrganizationUpdateDto(name: event.name, id: event.id),
       );
+      _organizationBloc.add(OrganizationRefreshEvent());
       _userOrganizationBloc.add(UserOrganizationLoadEvent());
       emit.call(OrganizationEditSuccessState());
     });
     on<OrganizationEditDeleteEvent>((event, emit) async {
       await _repository.organizationDelete(OrganizationDeleteDto(id: event.id));
+      _organizationBloc.add(OrganizationRefreshEvent());
       _userOrganizationBloc.add(UserOrganizationLoadEvent());
       emit.call(OrganizationEditSuccessState());
     });
