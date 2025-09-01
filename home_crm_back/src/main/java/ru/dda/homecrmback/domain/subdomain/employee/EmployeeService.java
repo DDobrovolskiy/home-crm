@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.repository.EmployeeRepository;
 import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
+import ru.dda.homecrmback.domain.subdomain.user.UserDomainService;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.role.RoleService;
 import ru.dda.homecrmback.domain.support.scope.ScopeType;
-import ru.dda.homecrmback.domain.support.user.UserDomainService;
 
 @Slf4j
 @Service

@@ -14,12 +14,12 @@ import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
+import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
-import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +90,7 @@ public class OrganizationAggregate {
                 .build();
     }
 
-    public OrganizationEmployeesDTO organizationEmployees() {
+    public OrganizationEmployeesDTO organizationEmployeesDTO() {
         return OrganizationEmployeesDTO.builder()
                 .employees(employees.stream()
                         .map(EmployeeAggregate::getEmployeeDTO)
@@ -98,7 +98,7 @@ public class OrganizationAggregate {
                 .build();
     }
 
-    public OrganizationRolesDTO organizationRoles() {
+    public OrganizationRolesDTO organizationRolesDTO() {
         return OrganizationRolesDTO.builder()
                 .roles(roles.stream()
                         .map(RoleAggregate::getRoleDTO)

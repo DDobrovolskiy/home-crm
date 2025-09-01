@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
@@ -11,7 +12,6 @@ import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.support.role.repository.RoleRepository;
 import ru.dda.homecrmback.domain.support.scope.ScopeType;
-import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
 
 import java.util.function.Supplier;
 

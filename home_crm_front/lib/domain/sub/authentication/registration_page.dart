@@ -46,11 +46,11 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
             'РЕГИСТРАЦИЯ',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-          if (state is AuthLoginErrorState) Column(
+          if (state.error != null) Column(
             children: [
               SizedBox(height: 5),
               Text(
-                  state.message,
+                  state.error!.message,
                   style: TextStyle(color: Colors.red)),
             ],
           ),
@@ -90,7 +90,7 @@ class _LoginRegistrationPage extends AuthPageBase<RegistrationPage> {
                     name: _name!, phone: _login!, password: _password!));
               }
             },
-            child: state is AuthProcessingState
+            child: state.loaded
                 ? CircularProgressIndicator()
                 : const Text('Зарегистрироваться'),
           ),

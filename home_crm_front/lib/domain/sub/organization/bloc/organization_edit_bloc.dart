@@ -10,13 +10,14 @@ import 'package:home_crm_front/domain/sub/user/event/user_organization_event.dar
 import 'package:home_crm_front/domain/sub/user/repository/user_repository.dart';
 
 import '../../../support/port/port.dart';
+import '../../../support/token_service.dart';
 import '../event/organization_edit_event.dart';
 import '../state/organization_edit_state.dart';
 import 'organization_bloc.dart';
 
 class OrganizationEditBloc
     extends Bloc<OrganizationEditEvent, OrganizationEditState> {
-  late final OrganizationRepository _repository = GetIt.instance
+  late final OrganizationRepository _organizationRepository = GetIt.instance
       .get<OrganizationRepository>();
   late final UserRepository _userRepository = GetIt.instance
       .get<UserRepository>();
@@ -24,44 +25,54 @@ class OrganizationEditBloc
       .get<OrganizationBloc>();
   late final UserOrganizationBloc _userOrganizationBloc = GetIt.instance
       .get<UserOrganizationBloc>();
+  late final TokenService _tokenService = GetIt.instance
+      .get<TokenService>();
 
-  OrganizationEditBloc() : super(OrganizationEditInitState()) {
+  OrganizationEditBloc() : super(OrganizationEditInitState(success: false)) {
     on<OrganizationEditLoadEvent>((event, emit) async {
-      if (event.organization != null) {
+      emit.call(OrganizationEditInitState(success: false));
+      var token = await _tokenService.getToken(TokenService.organizationToken);
+      if (token != null) {
+        var organization = await _organizationRepository
+            .organizationFromLocalStorage();
         var user = await _userRepository.userFromLocalStorage();
-        if (user != null && event.organization?.owner.id != user.id) {
+        if (user != null && organization?.owner.id != user.id) {
           emit.call(
-            OrganizationEditOnlyWatchState(organization: event.organization!),
+            OrganizationEditLoadState(organization: organization, isCan: false),
+          );
+        } else {
+          emit.call(
+            OrganizationEditLoadState(organization: organization, isCan: true),
           );
         }
-        emit.call(
-          OrganizationEditUpdateState(organization: event.organization!),
-        );
       } else {
-        emit.call(OrganizationEditCreateState());
+        emit.call(OrganizationEditLoadState(organization: null, isCan: true));
       }
     });
     on<OrganizationEditCreateEvent>((event, emit) async {
-      await _repository.organizationCreate(
+      var organization = await _organizationRepository.organizationCreate(
         OrganizationCreateDto(name: event.name),
       );
+      await _tokenService.saveToken(
+          TokenService.organizationToken, organization!.id.toString());
       _organizationBloc.add(OrganizationRefreshEvent());
-      _userOrganizationBloc.add(UserOrganizationLoadEvent());
-      emit.call(OrganizationEditSuccessState());
+      _userOrganizationBloc.add(UserOrganizationRefreshEvent());
+      emit.call(OrganizationEditInitState(success: true));
     });
     on<OrganizationEditUpdateEvent>((event, emit) async {
-      await _repository.organizationUpdate(
+      await _organizationRepository.organizationUpdate(
         OrganizationUpdateDto(name: event.name, id: event.id),
       );
       _organizationBloc.add(OrganizationRefreshEvent());
-      _userOrganizationBloc.add(UserOrganizationLoadEvent());
-      emit.call(OrganizationEditSuccessState());
+      _userOrganizationBloc.add(UserOrganizationRefreshEvent());
+      emit.call(OrganizationEditInitState(success: true));
     });
     on<OrganizationEditDeleteEvent>((event, emit) async {
-      await _repository.organizationDelete(OrganizationDeleteDto(id: event.id));
+      await _organizationRepository.organizationDelete(
+          OrganizationDeleteDto(id: event.id));
       _organizationBloc.add(OrganizationRefreshEvent());
-      _userOrganizationBloc.add(UserOrganizationLoadEvent());
-      emit.call(OrganizationEditSuccessState());
+      _userOrganizationBloc.add(UserOrganizationRefreshEvent());
+      emit.call(OrganizationEditInitState(success: true));
     });
     on<OrganizationEditErrorEvent>((event, emit) {
       emit.call(OrganizationEditErrorState(error: event.error));

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.repository.OrganizationRepository;
+import ru.dda.homecrmback.domain.subdomain.user.UserDomainService;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.role.RoleService;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
-import ru.dda.homecrmback.domain.support.user.UserDomainService;
 
 import java.util.List;
 

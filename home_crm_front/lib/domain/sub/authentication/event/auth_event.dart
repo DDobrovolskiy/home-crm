@@ -1,4 +1,8 @@
+import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
+
 abstract class AuthEvent {}
+
+class AuthCheckEvent extends AuthEvent {}
 
 class AuthLoginEvent extends AuthEvent {
   final String phone;
@@ -22,3 +26,9 @@ class AuthRegistrationEvent extends AuthEvent {
 class AuthLogoutEvent extends AuthEvent {}
 
 class AuthLogoutAllEvent extends AuthEvent {}
+
+class AuthErrorEvent extends AuthEvent {
+  final PortException error;
+
+  AuthErrorEvent({required this.error});
+}

@@ -2,7 +2,7 @@ package ru.dda.homecrmback.domain.subdomain.organization;
 
 import lombok.Builder;
 import ru.dda.homecrmback.domain.IExecute;
-import ru.dda.homecrmback.domain.support.user.User;
+import ru.dda.homecrmback.domain.subdomain.user.User;
 
 public interface Organization {
 

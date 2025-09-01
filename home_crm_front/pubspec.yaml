@@ -48,10 +48,6 @@ dependencies:
   auto_route: ^9.3.0+1
   get_it: ^8.2.0
 
-  redux: ^5.0.0
-  flutter_redux: ^0.10.0
-  flutter_redux_navigation: ^0.7.1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

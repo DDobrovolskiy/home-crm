@@ -3,7 +3,7 @@ package ru.dda.homecrmback.domain.subdomain.education;
 import lombok.Builder;
 import ru.dda.homecrmback.domain.IExecute;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
-import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
+import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 
 import java.util.List;
 

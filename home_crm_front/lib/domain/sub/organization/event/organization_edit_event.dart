@@ -1,12 +1,8 @@
-import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 
 abstract class OrganizationEditEvent {}
 
 class OrganizationEditLoadEvent extends OrganizationEditEvent {
-  final OrganizationDto? organization;
-
-  OrganizationEditLoadEvent({required this.organization});
 }
 
 class OrganizationEditCreateEvent extends OrganizationEditEvent {

@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                     if (state is OrganizationSelectedState) {
                       return Text(state.organization.name);
                     }
-                    return Text('Организация не выбрана');
+                    return Stamp.loadWidget(context);
                   },
                 ),
                 actions: [Stamp.buttonMenuSupplier(context)],
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
               if (state is OrganizationSelectedState) {
                 return Text(state.organization.name);
               }
-              return Text('Организация не выбрана');
+              return Stamp.loadWidget(context);
             },
           ),
           actions: [Stamp.buttonMenuSupplier(context)],

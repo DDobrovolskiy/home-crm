@@ -2,11 +2,22 @@ import 'package:home_crm_front/domain/sub/organization/dto/request/organization_
 import 'package:home_crm_front/domain/sub/organization/dto/request/organization_delete_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/request/organization_update_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
+import 'package:home_crm_front/domain/sub/organization/dto/response/organization_employee_dto.dart';
+import 'package:home_crm_front/domain/sub/organization/dto/response/organization_role_dto.dart';
 
 import '../../../support/port/port.dart';
 
 class OrganizationRepository {
   final String _path = 'organization';
+  final String _pathEmployee = 'organization/employee';
+  final String _pathRole = 'organization/role';
+
+  Future<OrganizationDto?> organizationFromLocalStorage() {
+    return Port.get(
+      _path,
+      (j) => OrganizationDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
 
   Future<OrganizationDto?> organization() {
     return Port.get(
@@ -33,5 +44,19 @@ class OrganizationRepository {
 
   Future<int?> organizationDelete(OrganizationDeleteDto dto) {
     return Port.delete(_path, dto.toJson(), (j) => j as int);
+  }
+
+  Future<OrganizationEmployeeDto?> organizationEmployee() {
+    return Port.get(
+      _pathEmployee,
+      (j) => OrganizationEmployeeDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<OrganizationRoleDto?> organizationRole() {
+    return Port.get(
+      _pathEmployee,
+      (j) => OrganizationRoleDto.fromJson(j as Map<String, dynamic>),
+    );
   }
 }

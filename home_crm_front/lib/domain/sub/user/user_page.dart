@@ -33,7 +33,7 @@ class _UserPageState extends State<UserPage> {
     BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
     BlocProvider.of<UserOrganizationBloc>(
       context,
-    ).add(UserOrganizationLoadEvent());
+    ).add(UserOrganizationRefreshEvent());
     BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
     BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
     super.initState();
@@ -42,28 +42,26 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: MaterialApp(
-        home: Scaffold(
-          endDrawer: Stamp.menuSupplier(context),
-          appBar: AppBar(
-            title: Text('Пользовательские данные'),
-            actions: [Stamp.buttonMenuSupplier(context)],
-            // leading: Stamp.buttonMenu(context),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                // Отображаем основное имя и телефон
-                _user(context),
-                const Divider(),
-                _organization(context),
-                // Список организаций владельца
-                _userOrganization(context),
-                // Список сотрудников/организаций сотрудника
-                _userEmployee(context),
-              ],
-            ),
+      child: Scaffold(
+        endDrawer: Stamp.menuSupplier(context),
+        appBar: AppBar(
+          title: Text('Пользовательские данные'),
+          actions: [Stamp.buttonMenuSupplier(context)],
+          // leading: Stamp.buttonMenu(context),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Отображаем основное имя и телефон
+              _user(context),
+              const Divider(),
+              _organization(context),
+              // Список организаций владельца
+              _userOrganization(context),
+              // Список сотрудников/организаций сотрудника
+              _userEmployee(context),
+            ],
           ),
         ),
       ),
@@ -205,7 +203,16 @@ class _UserPageState extends State<UserPage> {
                       leading: Icon(Icons.business),
                       title: Row(
                         children: [
-                          Text(org.name),
+                          TextButton(
+                            style: Stamp.giperLink(),
+                            onPressed: () {
+                              BlocProvider.of<OrganizationBloc>(
+                                context,
+                              ).add(OrganizationSelectedEvent(id: org.id));
+                              AutoRouter.of(context).push(OrganizationRoute());
+                            },
+                            child: Text(org.name,),
+                          ),
                           IconButton(
                             icon: Icon(Icons.close),
                             onPressed: () {
@@ -219,14 +226,6 @@ class _UserPageState extends State<UserPage> {
                       subtitle: Row(
                         children: [
                           Text('Владелец: ${org.owner.name}'),
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              AutoRouter.of(
-                                context,
-                              ).push(OrganizationRoute(organization: org));
-                            },
-                          ),
                         ],
                       ),
                       trailing: // Кнопка выбора
@@ -250,9 +249,10 @@ class _UserPageState extends State<UserPage> {
                   leading: Icon(Icons.add_circle_outline),
                   title: Text("Добавить организацию"),
                   onTap: () {
-                    AutoRouter.of(
+                    BlocProvider.of<OrganizationBloc>(
                       context,
-                    ).push(OrganizationRoute(organization: null));
+                    ).add(OrganizationUnSelectedEvent());
+                    AutoRouter.of(context).push(OrganizationRoute());
                   }, // Обработчик нажатия
                 ),
               ),

@@ -1,29 +1,72 @@
+import 'package:equatable/equatable.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 
 import '../../../support/exceptions/exceptions.dart';
 
-abstract class OrganizationEditState {}
+abstract class OrganizationEditState extends Equatable {
+  abstract final bool loaded;
+  abstract final bool isCan;
+  abstract final bool success;
+  abstract final OrganizationDto? organization;
+  abstract final PortException? error;
 
-class OrganizationEditInitState extends OrganizationEditState {}
-
-class OrganizationEditOnlyWatchState extends OrganizationEditState {
-  final OrganizationDto organization;
-
-  OrganizationEditOnlyWatchState({required this.organization});
+  @override
+  List<Object> get props => [loaded, isCan, success, ?organization, ?error];
 }
 
-class OrganizationEditCreateState extends OrganizationEditState {}
+class OrganizationEditInitState extends OrganizationEditState {
+  @override
+  final bool success;
 
-class OrganizationEditUpdateState extends OrganizationEditState {
-  final OrganizationDto organization;
+  OrganizationEditInitState({required this.success});
 
-  OrganizationEditUpdateState({required this.organization});
+  @override
+  bool get loaded => true;
+
+  @override
+  bool get isCan => false;
+
+  @override
+  OrganizationDto? get organization => null;
+
+  @override
+  PortException? get error => null;
+}
+
+class OrganizationEditLoadState extends OrganizationEditState {
+  @override
+  final OrganizationDto? organization;
+  @override
+  final bool isCan;
+
+  OrganizationEditLoadState({required this.organization, required this.isCan});
+
+  @override
+  bool get success => false;
+
+  @override
+  bool get loaded => false;
+
+  @override
+  PortException? get error => null;
 }
 
 class OrganizationEditErrorState extends OrganizationEditState {
+  @override
   final PortException error;
 
   OrganizationEditErrorState({required this.error});
+
+  @override
+  bool get loaded => false;
+
+  @override
+  bool get isCan => false;
+
+  @override
+  bool get success => false;
+
+  @override
+  OrganizationDto? get organization => null;
 }
 
-class OrganizationEditSuccessState extends OrganizationEditState {}

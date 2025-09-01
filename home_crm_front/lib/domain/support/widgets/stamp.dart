@@ -68,7 +68,7 @@ class Stamp {
               leading: Icon(Icons.home), // Иконка выхода
               title: Text('Домашняя страница'),
               onTap: () {
-                AutoRouter.of(context).push(HomeRoute());
+                // AutoRouter.of(context).push(HomeRoute());
               },
             ),
             ExpansionTile(
@@ -84,7 +84,7 @@ class Stamp {
                   leading: Icon(Icons.people),
                   title: Text('Сотрудники'),
                   onTap: () {
-                    // AutoRouter.of(context).push(AboutRoute());
+                    // AutoRouter.of(context).push(OrganizationEmployeesRoute());
                   },
                 ),
                 ListTile(
@@ -111,12 +111,12 @@ class Stamp {
                   if (state is UserLoadedState) {
                     return Text(state.user!.name);
                   } else {
-                    return Text('unknown');
+                    return Stamp.loadWidget(context);
                   }
                 },
               ),
               onTap: () {
-                AutoRouter.of(context).push(UserRoute());
+                // AutoRouter.of(context).push(UserRoute());
               },
             ),
           ],
@@ -146,14 +146,14 @@ class Stamp {
               leading: Icon(Icons.account_box), // Иконка выхода
               title: Text('Личный кабинет'),
               onTap: () {
-                AutoRouter.of(context).push(UserRoute());
+                // AutoRouter.of(context).push(UserRoute());
               },
             ),
             ListTile(
               leading: Icon(Icons.business), // Иконка выхода
               title: Text('Ваша организация'),
               onTap: () {
-                AutoRouter.of(context).push(UserRoute());
+                // AutoRouter.of(context).push(UserRoute());
               },
             ),
             Spacer(),
@@ -179,5 +179,27 @@ class Stamp {
         ),
       ),
     );
+  }
+
+  static ButtonStyle giperLink() {
+    return ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith((states) {
+        return Colors.blue; // Устанавливаем синий цвет текста
+      }),
+      overlayColor: WidgetStateProperty.resolveWith((states) {
+        return states.contains(WidgetState.pressed)
+            ? Colors.blue.withOpacity(0.1) // Цвет фона при нажатии
+            : Colors.transparent;
+      }),
+      textStyle: WidgetStateProperty.resolveWith((states) {
+        return TextStyle(
+          decoration: TextDecoration.underline,
+        ); // Подчёркивание текста
+      }),
+    );
+  }
+
+  static TextStyle giperLinkText() {
+    return TextStyle();
   }
 }

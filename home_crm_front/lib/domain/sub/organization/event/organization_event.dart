@@ -2,6 +2,8 @@ import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 
 abstract class OrganizationEvent {}
 
+class OrganizationUnSelectedEvent extends OrganizationEvent {}
+
 class OrganizationSelectedEvent extends OrganizationEvent {
   final int id;
 

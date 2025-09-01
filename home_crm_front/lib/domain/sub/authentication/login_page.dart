@@ -31,11 +31,11 @@ class _LoginPage extends AuthPageBase<LoginPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('ВХОД', style: Theme.of(context).textTheme.headlineMedium),
-          if (state is AuthLoginErrorState)
+          if (state.error != null)
             Column(
               children: [
                 SizedBox(height: 5),
-                Text(state.message, style: TextStyle(color: Colors.red)),
+                Text(state.error!.message, style: TextStyle(color: Colors.red)),
               ],
             ),
           SizedBox(height: 5),
@@ -66,7 +66,7 @@ class _LoginPage extends AuthPageBase<LoginPage> {
                 );
               }
             },
-            child: state is AuthProcessingState
+            child: state.loaded
                 ? CircularProgressIndicator()
                 : const Text('Войти'),
           ),

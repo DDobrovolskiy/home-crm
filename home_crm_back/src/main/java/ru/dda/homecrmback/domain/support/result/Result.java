@@ -3,6 +3,7 @@ package ru.dda.homecrmback.domain.support.result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.dto.ErrorData;
@@ -13,7 +14,6 @@ import ru.dda.homecrmback.domain.support.result.response.SuccessResponse;
 import ru.dda.homecrmback.domain.support.role.Role;
 import ru.dda.homecrmback.domain.support.role.RoleService;
 import ru.dda.homecrmback.domain.support.scope.ScopeType;
-import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

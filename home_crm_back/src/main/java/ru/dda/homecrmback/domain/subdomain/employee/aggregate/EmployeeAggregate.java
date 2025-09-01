@@ -13,12 +13,12 @@ import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestResultAggrega
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
+import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
 import ru.dda.homecrmback.domain.support.role.aggregate.RoleAggregate;
-import ru.dda.homecrmback.domain.support.user.aggregate.UserAggregate;
 
 import java.util.*;
 

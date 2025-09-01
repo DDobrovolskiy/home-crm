@@ -9,9 +9,11 @@ import ru.dda.homecrmback.domain.subdomain.organization.dto.request.Organization
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationDeleteDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationUpdateDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
+import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
-import ru.dda.homecrmback.domain.support.user.context.UserContextHolder;
 
 @RestController
 @RequestMapping(OrganizationController.PATH)
@@ -52,4 +54,19 @@ public class OrganizationController {
                 .response(ResultAggregate::getErrorData);
     }
 
+    @GetMapping("/employee")
+    public IResponse<OrganizationEmployeesDTO> getOrganizationEmployee() {
+        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
+                .execute(organizationService::findById)
+                .map(OrganizationAggregate::organizationEmployeesDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping("/role")
+    public IResponse<OrganizationRolesDTO> getOrganizationRole() {
+        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
+                .execute(organizationService::findById)
+                .map(OrganizationAggregate::organizationRolesDTO)
+                .response(ResultAggregate::getErrorData);
+    }
 }

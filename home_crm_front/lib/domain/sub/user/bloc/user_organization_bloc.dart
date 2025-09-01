@@ -10,7 +10,7 @@ class UserOrganizationBloc
   final UserRepository _repository = UserRepository();
 
   UserOrganizationBloc() : super(UserOrganizationInitState()) {
-    on<UserOrganizationLoadEvent>((event, emit) async {
+    on<UserOrganizationRefreshEvent>((event, emit) async {
       emit.call(UserOrganizationInitState());
       final organization = await _repository.organization();
       emit.call(UserOrganizationLoadedState(organization: organization));

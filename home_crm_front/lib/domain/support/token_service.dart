@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenService {
   static const String authToken = 'authToken';
+  static const String userToken = 'userToken';
   static const String organizationToken = 'organizationToken';
 
   Future<String?> getToken(String token) async {
@@ -32,6 +33,7 @@ class TokenService {
   Future<void> clearAllToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(authToken);
+    await prefs.remove(userToken);
     await prefs.remove(organizationToken);
   }
 }
