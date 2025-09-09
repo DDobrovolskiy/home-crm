@@ -28,12 +28,12 @@ import 'package:home_crm_front/domain/sub/user/user_page.dart' as _i7;
 class EmployeeRoute extends _i8.PageRouteInfo<EmployeeRouteArgs> {
   EmployeeRoute({
     _i9.Key? key,
-    required int id,
+    required int? employeeId,
     List<_i8.PageRouteInfo>? children,
   }) : super(
          EmployeeRoute.name,
-         args: EmployeeRouteArgs(key: key, id: id),
-         rawPathParams: {'id': id},
+         args: EmployeeRouteArgs(key: key, employeeId: employeeId),
+         rawPathParams: {'employeeId': employeeId},
          initialChildren: children,
        );
 
@@ -44,23 +44,24 @@ class EmployeeRoute extends _i8.PageRouteInfo<EmployeeRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EmployeeRouteArgs>(
-        orElse: () => EmployeeRouteArgs(id: pathParams.getInt('id')),
+        orElse: () =>
+            EmployeeRouteArgs(employeeId: pathParams.optInt('employeeId')),
       );
-      return _i1.EmployeePage(key: args.key, id: args.id);
+      return _i1.EmployeePage(key: args.key, employeeId: args.employeeId);
     },
   );
 }
 
 class EmployeeRouteArgs {
-  const EmployeeRouteArgs({this.key, required this.id});
+  const EmployeeRouteArgs({this.key, required this.employeeId});
 
   final _i9.Key? key;
 
-  final int id;
+  final int? employeeId;
 
   @override
   String toString() {
-    return 'EmployeeRouteArgs{key: $key, id: $id}';
+    return 'EmployeeRouteArgs{key: $key, employeeId: $employeeId}';
   }
 }
 

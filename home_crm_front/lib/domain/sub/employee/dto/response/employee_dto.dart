@@ -3,9 +3,6 @@ import 'package:home_crm_front/domain/sub/role/dto/role_dto.dart';
 import 'package:home_crm_front/domain/sub/user/dto/user_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../support/port/base_dto.dart';
-import '../../../support/port/error_data_dto.dart';
-
 part 'employee_dto.g.dart';
 
 @JsonSerializable()

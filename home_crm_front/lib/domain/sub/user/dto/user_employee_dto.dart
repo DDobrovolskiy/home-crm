@@ -1,4 +1,4 @@
-import 'package:home_crm_front/domain/sub/employee/dto/employee_dto.dart';
+import 'package:home_crm_front/domain/sub/employee/dto/response/employee_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_employee_dto.g.dart';

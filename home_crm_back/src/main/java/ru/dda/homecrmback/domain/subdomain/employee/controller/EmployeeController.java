@@ -22,7 +22,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @PostMapping(path = "/registration")
+    @PostMapping
     private IResponse<EmployeeDTO> registrationEmployee(@RequestBody RegistrationEmployeeDTO dto) {
         return Employee.Registration.of(dto.name(), dto.phone(), dto.password(), dto.roleId())
                 .execute(employeeService::registrationEmployee)

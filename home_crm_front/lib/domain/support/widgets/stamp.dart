@@ -68,7 +68,7 @@ class Stamp {
               leading: Icon(Icons.home), // Иконка выхода
               title: Text('Домашняя страница'),
               onTap: () {
-                // AutoRouter.of(context).push(HomeRoute());
+                AutoRouter.of(context).push(HomeRoute());
               },
             ),
             ExpansionTile(
@@ -84,7 +84,7 @@ class Stamp {
                   leading: Icon(Icons.people),
                   title: Text('Сотрудники'),
                   onTap: () {
-                    // AutoRouter.of(context).push(OrganizationEmployeesRoute());
+                    AutoRouter.of(context).push(OrganizationEmployeesRoute());
                   },
                 ),
                 ListTile(
@@ -105,7 +105,7 @@ class Stamp {
             ),
             Spacer(),
             ListTile(
-              leading: Icon(Icons.face), // Иконка выхода
+              leading: Icon(Icons.face),
               title: BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   if (state is UserLoadedState) {
@@ -116,7 +116,7 @@ class Stamp {
                 },
               ),
               onTap: () {
-                // AutoRouter.of(context).push(UserRoute());
+                AutoRouter.of(context).push(UserRoute());
               },
             ),
           ],
@@ -146,14 +146,7 @@ class Stamp {
               leading: Icon(Icons.account_box), // Иконка выхода
               title: Text('Личный кабинет'),
               onTap: () {
-                // AutoRouter.of(context).push(UserRoute());
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.business), // Иконка выхода
-              title: Text('Ваша организация'),
-              onTap: () {
-                // AutoRouter.of(context).push(UserRoute());
+                AutoRouter.of(context).push(UserRoute());
               },
             ),
             Spacer(),

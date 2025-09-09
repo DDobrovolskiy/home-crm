@@ -1,9 +1,17 @@
-import '../../../support/exceptions/exceptions.dart';
 
-abstract class EmployeeEditEvent {}
 
-class EmployeeEditErrorEvent extends EmployeeEditEvent {
-  final PortException error;
+class EmployeeEditEvent {
+  int? id;
+  String? name;
+  String? phone;
+  String? password;
+  int? roleId;
 
-  EmployeeEditErrorEvent({required this.error});
+  EmployeeEditEvent({
+    this.id,
+    this.name,
+    this.phone,
+    this.password,
+    this.roleId,
+  });
 }

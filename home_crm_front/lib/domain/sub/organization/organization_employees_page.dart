@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
+import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../support/widgets/stamp.dart';
 
@@ -89,7 +90,9 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             child: ListTile(
               leading: Icon(Icons.add_circle_outline),
               title: Text("Добавить сотрудника"),
-              onTap: () {},
+              onTap: () {
+                AutoRouter.of(context).push(EmployeeRoute(employeeId: null));
+              },
             ),
           ),
         ],
