@@ -38,11 +38,7 @@ class EmployeeRepository {
     );
   }
 
-  Future<EmployeeDto?> employeeDelete(EmployeeDeleteDto dto) {
-    return Port.delete(
-      _path,
-      dto.toJson(),
-      (j) => EmployeeDto.fromJson(j as Map<String, dynamic>),
-    );
+  Future<int?> employeeDelete(EmployeeDeleteDto dto) {
+    return Port.delete(_path, dto.toJson(), (j) => j as int);
   }
 }

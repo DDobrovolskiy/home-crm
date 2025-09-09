@@ -5,6 +5,7 @@ import 'package:home_crm_front/domain/sub/employee/dto/request/employee_update_d
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 
+import '../../../support/port/port.dart';
 import '../dto/request/employee_create_dto.dart';
 import '../event/employee_edit_event.dart';
 import '../repository/employee_repository.dart';
@@ -45,7 +46,7 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
     });
     on<EmployeeEditUpdateEvent>((event, emit) async {
       await _employeeRepository.employeeUpdate(
-        EmployeeUpdateDto(roleId: event.roleId),
+        EmployeeUpdateDto(id: event.id, roleId: event.roleId),
       );
       add(EmployeeEditRefreshEvent());
     });
@@ -56,5 +57,12 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
     on<EmployeeEditErrorEvent>((event, emit) {
       emit.call(EmployeeEditErrorState(error: event.error));
     });
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    final e = Port.errorHandler(error, stackTrace);
+    add(EmployeeEditErrorEvent(error: e));
+    super.onError(error, stackTrace);
   }
 }

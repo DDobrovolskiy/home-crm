@@ -2,14 +2,13 @@ package ru.dda.homecrmback.domain.subdomain.employee.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.dda.homecrmback.domain.subdomain.employee.Employee;
 import ru.dda.homecrmback.domain.subdomain.employee.EmployeeService;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
-import ru.dda.homecrmback.domain.subdomain.employee.dto.RegistrationEmployeeDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.EmployeeCreateDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.EmployeeDeleteDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.EmployeeUpdateDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
@@ -22,11 +21,35 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @PostMapping
-    private IResponse<EmployeeDTO> registrationEmployee(@RequestBody RegistrationEmployeeDTO dto) {
-        return Employee.Registration.of(dto.name(), dto.phone(), dto.password(), dto.roleId())
-                .execute(employeeService::registrationEmployee)
+    @GetMapping(path = "/{id}")
+    private IResponse<EmployeeDTO> getEmployee(@PathVariable Long id) {
+        return Employee.Find.of(id)
+                .execute(employeeService::find)
                 .map(EmployeeAggregate::getEmployeeDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @PostMapping
+    private IResponse<EmployeeDTO> registrationEmployee(@RequestBody EmployeeCreateDTO dto) {
+        return Employee.Create.of(dto.name(), dto.phone(), dto.password(), dto.roleId())
+                .execute(employeeService::create)
+                .map(EmployeeAggregate::getEmployeeDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+
+    @PutMapping
+    public IResponse<EmployeeDTO> updateOrganization(@RequestBody EmployeeUpdateDTO dto) {
+        return Employee.Update.of(dto.id(), dto.roleId())
+                .execute(employeeService::update)
+                .map(EmployeeAggregate::getEmployeeDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @DeleteMapping
+    public IResponse<Integer> deleteOrganization(@RequestBody EmployeeDeleteDTO dto) {
+        return Employee.Delete.of(dto.id())
+                .execute(employeeService::delete)
                 .response(ResultAggregate::getErrorData);
     }
 }

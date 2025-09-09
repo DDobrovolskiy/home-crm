@@ -8,5 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends CrudRepository<EmployeeAggregate, Long> {
+    Optional<EmployeeAggregate> findByIdAndOrganizationId(Long id, Long organizationId);
     Optional<EmployeeAggregate> findByUserIdAndOrganizationId(Long userId, Long organizationId);
+
+    int deleteByIdAndOrganizationId(Long id, Long organizationId);
 }

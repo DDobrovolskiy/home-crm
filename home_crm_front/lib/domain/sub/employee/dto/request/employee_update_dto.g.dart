@@ -7,7 +7,10 @@ part of 'employee_update_dto.dart';
 // **************************************************************************
 
 EmployeeUpdateDto _$EmployeeUpdateDtoFromJson(Map<String, dynamic> json) =>
-    EmployeeUpdateDto(roleId: (json['roleId'] as num).toInt());
+    EmployeeUpdateDto(
+      id: (json['id'] as num).toInt(),
+      roleId: (json['roleId'] as num).toInt(),
+    );
 
 Map<String, dynamic> _$EmployeeUpdateDtoToJson(EmployeeUpdateDto instance) =>
-    <String, dynamic>{'roleId': instance.roleId};
+    <String, dynamic>{'id': instance.id, 'roleId': instance.roleId};

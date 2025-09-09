@@ -142,6 +142,7 @@ class Port {
     }
     var responseDTO = ResponseDTO.fromJson(response.data, fromJsonT);
     if (responseDTO.status != 0) {
+      debugPrint(responseDTO.convertToString());
       throw PortException(message: responseDTO.convertToString(), auth: false);
     }
     return responseDTO;

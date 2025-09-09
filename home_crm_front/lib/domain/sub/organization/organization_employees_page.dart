@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
@@ -68,6 +70,14 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                       },
                     ),
                     Text('Описание: ${empOrg.role.description}'),
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        BlocProvider.of<EmployeeEditBloc>(
+                          context,
+                        ).add(EmployeeEditDeleteEvent(id: empOrg.id));
+                      },
+                    ),
                   ],
                 ),
                 trailing: OutlinedButton.icon(
@@ -75,10 +85,8 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                   icon: Icon(Icons.keyboard_arrow_right),
                   label: Text("Выбрать"),
                   onPressed: () {
-                    // BlocProvider.of<OrganizationBloc>(context).add(
-                    //   OrganizationSelectedEvent(id: empOrg.organization.id),
-                    // );
-                    // AutoRouter.of(context).push(HomeRoute());
+                    AutoRouter.of(context).push(
+                        EmployeeRoute(employeeId: empOrg.id));
                   },
                 ),
               ),

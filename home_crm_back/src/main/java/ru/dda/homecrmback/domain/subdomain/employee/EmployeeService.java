@@ -24,8 +24,15 @@ public class EmployeeService {
     private final RoleService roleService;
     private final EmployeeRepository employeeRepository;
 
+    @Transactional(readOnly = true)
+    public Result<EmployeeAggregate, IFailAggregate> find(Employee.Find command) {
+        return employeeRepository.findByIdAndOrganizationId(command.id(), command.organization().organizationId())
+                .map(Result::<EmployeeAggregate, IFailAggregate>success)
+                .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.EMPLOYEE_NOT_FOUND.fail())));
+    }
+
     @Transactional
-    public Result<EmployeeAggregate, IFailAggregate> registrationEmployee(Employee.Registration command) {
+    public Result<EmployeeAggregate, IFailAggregate> create(Employee.Create command) {
         return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () ->
                 Result.merge(
                                 command.user().execute(userDomainService::registrationOrGet),
@@ -44,5 +51,29 @@ public class EmployeeService {
                                         FailEvent.ERROR_ON_SAVE.fail("Ошибка сохранения отрудника")));
                             }
                         }));
+    }
+
+    @Transactional
+    public Result<EmployeeAggregate, IFailAggregate> update(Employee.Update command) {
+        return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () ->
+                Result.merge(
+                        command.employee().execute(this::find),
+                        command.role().execute(roleService::findByIdAndOrganizationId),
+                        (EmployeeAggregate::update)));
+    }
+
+    @Transactional
+    public Result<Integer, IFailAggregate> delete(Employee.Delete command) {
+        return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () -> {
+            try {
+                return Result.success(employeeRepository.deleteByIdAndOrganizationId(
+                        command.employee().id(),
+                        command.employee().organization().organizationId()));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                return Result.fail(ResultAggregate.Fails.Default.of(
+                        FailEvent.ERROR_ON_SAVE.fail("Ошибка удаления сотрудника: %s".formatted(command.employee().id()))));
+            }
+        });
     }
 }

@@ -53,7 +53,15 @@ class _EmployeePageState extends State<EmployeePage> {
         }
       },
       builder: (context, state) {
-        return getContent(context, state);
+        if (state.error != null) {
+          return SafeArea(
+            child: Scaffold(
+              appBar: AppBar(title: Text(state.error!.message)),
+            ),
+          );
+        } else {
+          return getContent(context, state);
+        }
       },
     );
   }
@@ -132,14 +140,12 @@ class _EmployeePageState extends State<EmployeePage> {
                               ),
                             );
                           } else {
-                            // BlocProvider.of<EmployeeEditBloc>(context).add(
-                            //   OrganizationEditUpdateEvent(
-                            //     id: state.organization!.id,
-                            //     name:
-                            //     _organizationName ??
-                            //         state.organization!.name,
-                            //   ),
-                            // );
+                            BlocProvider.of<EmployeeEditBloc>(context).add(
+                              EmployeeEditUpdateEvent(
+                                id: widget.employeeId!,
+                                roleId: _selectedRole!,
+                              ),
+                            );
                           }
                         },
                       ),
@@ -187,22 +193,26 @@ class _EmployeePageState extends State<EmployeePage> {
     String? val,
     ValueChanged<String>? onChanged,
   ) {
-    return TextFormField(
-      inputFormatters: [Phone.phoneFormatter],
-      decoration: InputDecoration(
-        labelText: nameVal,
-        hintText: '+7 (___) ___-__-__',
-      ),
-      keyboardType: TextInputType.phone,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        if (Phone.isValidPhoneNumber(value)) {
-          return null;
-        }
-        return 'Поле обязательно для заполнения';
-      },
-      onChanged: onChanged,
-    );
+    if (isOnlyWatch) {
+      return Text('$nameVal: $val');
+    } else {
+      return TextFormField(
+        inputFormatters: [Phone.phoneFormatter],
+        decoration: InputDecoration(
+          labelText: nameVal,
+          hintText: '+7 (___) ___-__-__',
+        ),
+        keyboardType: TextInputType.phone,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (Phone.isValidPhoneNumber(value)) {
+            return null;
+          }
+          return 'Поле обязательно для заполнения';
+        },
+        onChanged: onChanged,
+      );
+    }
   }
 
   Widget _roleSelect(BuildContext context, OrganizationRoleState state) {

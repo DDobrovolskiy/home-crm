@@ -23,9 +23,10 @@ class EmployeeEditCreateEvent extends EmployeeEditEvent {
 }
 
 class EmployeeEditUpdateEvent extends EmployeeEditEvent {
+  final int id;
   final int roleId;
 
-  EmployeeEditUpdateEvent({required this.roleId});
+  EmployeeEditUpdateEvent({required this.id, required this.roleId});
 }
 
 class EmployeeEditDeleteEvent extends EmployeeEditEvent {

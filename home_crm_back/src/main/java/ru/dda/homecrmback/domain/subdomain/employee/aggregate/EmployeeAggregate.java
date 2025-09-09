@@ -76,6 +76,11 @@ public class EmployeeAggregate {
                 });
     }
 
+    public Result<EmployeeAggregate, IFailAggregate> update(RoleAggregate roleAggregate) {
+        this.role = roleAggregate;
+        return Result.success(this);
+    }
+
     // Методы для назначения тестов
     public void assignTest(TestAggregate test) {
         this.assignedTests.add(test);
