@@ -4,70 +4,57 @@ import 'package:home_crm_front/domain/sub/employee/dto/request/employee_delete_d
 import 'package:home_crm_front/domain/sub/employee/dto/request/employee_update_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
-import 'package:home_crm_front/domain/support/bloc/edit/bloc/edit_bloc.dart';
-import 'package:home_crm_front/domain/support/bloc/edit/event/edit_event.dart';
-import 'package:home_crm_front/domain/support/bloc/edit/state/edit_state.dart';
 
-import '../../../support/port/port.dart';
 import '../dto/request/employee_create_dto.dart';
-import '../dto/response/employee_dto.dart';
 import '../event/employee_edit_event.dart';
 import '../repository/employee_repository.dart';
+import '../state/employee_edit_state.dart';
 
-class EmployeeEditBloc extends EditBloc<EmployeeEditEvent, EmployeeDto> {
+class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
   late final EmployeeRepository _employeeRepository = GetIt.instance
       .get<EmployeeRepository>();
   late final OrganizationEmployeeBloc _organizationEmployeeBloc = GetIt.instance
       .get<OrganizationEmployeeBloc>();
 
-  @override
-  void refreshOtherBloc() async {
-    _organizationEmployeeBloc.add(OrganizationEmployeeRefreshEvent());
-  }
-
-  @override
-  Future<void> onCreate(
-    EmployeeEditEvent? data,
-    Emitter<EditState<EmployeeDto>> emit,
-  ) async {
-    await _employeeRepository.employeeCreate(
-      EmployeeCreateDto(
-        name: data!.name!,
-        phone: data.phone!,
-        password: data.password!,
-        roleId: data.roleId!,
-      ),
-    );
-  }
-
-  @override
-  Future<void> onDelete(
-    EmployeeEditEvent? data,
-    Emitter<EditState<EmployeeDto>> emit,
-  ) async {
-    await _employeeRepository.employeeDelete(EmployeeDeleteDto(id: data!.id!));
-  }
-
-  }
-
-  @override
-  Future<void> onLoad(EmployeeEditEvent? data,
-      Emitter<EditState<EmployeeDto>> emit,) async {
-    if (data?.id == null) {
-      emit.call(EditLoadedState(data: null, isOnlyWatch: false));
-    } else {
-      var employee = await _employeeRepository.getEmployeeLocalStorage(
-          data!.id!);
-      //TODO Проверка прав
-      emit.call(EditLoadedState(data: employee, isOnlyWatch: false));
-    }
-  }
-
-  @override
-  Future<void> onUpdate(EmployeeEditEvent? data,
-      Emitter<EditState<EmployeeDto>> emit,) async {
-    await _employeeRepository.employeeUpdate(
-      EmployeeUpdateDto(roleId: data!.roleId!),
-    );
+  EmployeeEditBloc()
+      : super(EmployeeEditPointState(isEndEdit: false, isLoading: true)) {
+    on<EmployeeEditRefreshEvent>((event, emit) async {
+      _organizationEmployeeBloc.add(OrganizationEmployeeRefreshEvent());
+      emit.call(EmployeeEditPointState(isEndEdit: true, isLoading: false));
+    });
+    on<EmployeeEditLoadEvent>((event, emit) async {
+      if (event.id == null) {
+        emit.call(EmployeeEditLoadedState(data: null, isOnlyWatch: false));
+      } else {
+        var employee = await _employeeRepository.getEmployeeLocalStorage(
+            event.id!);
+        //TODO Проверка прав
+        emit.call(EmployeeEditLoadedState(data: employee, isOnlyWatch: false));
+      }
+    });
+    on<EmployeeEditCreateEvent>((event, emit) async {
+      await _employeeRepository.employeeCreate(
+        EmployeeCreateDto(
+          name: event.name,
+          phone: event.phone,
+          password: event.password,
+          roleId: event.roleId,
+        ),
+      );
+      add(EmployeeEditRefreshEvent());
+    });
+    on<EmployeeEditUpdateEvent>((event, emit) async {
+      await _employeeRepository.employeeUpdate(
+        EmployeeUpdateDto(roleId: event.roleId),
+      );
+      add(EmployeeEditRefreshEvent());
+    });
+    on<EmployeeEditDeleteEvent>((event, emit) async {
+      await _employeeRepository.employeeDelete(EmployeeDeleteDto(id: event.id));
+      add(EmployeeEditRefreshEvent());
+    });
+    on<EmployeeEditErrorEvent>((event, emit) {
+      emit.call(EmployeeEditErrorState(error: event.error));
+    });
   }
 }

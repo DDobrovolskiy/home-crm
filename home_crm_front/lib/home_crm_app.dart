@@ -5,6 +5,7 @@ import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
@@ -27,13 +28,18 @@ void setupLocator() {
   GetIt.instance.registerLazySingleton(() => OrganizationRepository());
   GetIt.instance.registerLazySingleton(() => EmployeeRepository());
 
+
   GetIt.instance.registerLazySingleton(() => AuthBloc());
   GetIt.instance.registerLazySingleton(() => UserBloc());
+
   GetIt.instance.registerLazySingleton(() => UserOrganizationBloc());
   GetIt.instance.registerLazySingleton(() => UserEmployeeBloc());
+
   GetIt.instance.registerLazySingleton(() => OrganizationBloc());
   GetIt.instance.registerLazySingleton(() => OrganizationEditBloc());
   GetIt.instance.registerLazySingleton(() => OrganizationEmployeeBloc());
+  GetIt.instance.registerLazySingleton(() => OrganizationRoleBloc());
+
   GetIt.instance.registerLazySingleton(() => EmployeeEditBloc());
 }
 
@@ -62,6 +68,8 @@ class HomeCrmApp extends StatelessWidget {
             value: GetIt.instance.get<OrganizationEditBloc>()),
         BlocProvider<OrganizationEmployeeBloc>.value(
             value: GetIt.instance.get<OrganizationEmployeeBloc>()),
+        BlocProvider<OrganizationRoleBloc>.value(
+            value: GetIt.instance.get<OrganizationRoleBloc>()),
         BlocProvider<EmployeeEditBloc>.value(
             value: GetIt.instance.get<EmployeeEditBloc>()),
       ],

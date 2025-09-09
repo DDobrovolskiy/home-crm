@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dart';
-import 'package:home_crm_front/domain/support/bloc/edit/event/edit_event.dart';
-import 'package:home_crm_front/domain/support/bloc/edit/state/edit_state.dart';
+import 'package:home_crm_front/domain/sub/employee/state/employee_edit_state.dart';
 
 import '../../support/phone.dart';
 import '../../support/widgets/stamp.dart';
+import '../organization/bloc/organization_role_bloc.dart';
+import '../organization/event/organization_role_event.dart';
+import '../organization/state/organization_role_state.dart';
 import 'bloc/employee_edit_bloc.dart';
-import 'dto/response/employee_dto.dart';
 
 @RoutePage()
 class EmployeePage extends StatefulWidget {
@@ -29,20 +30,21 @@ class _EmployeePageState extends State<EmployeePage> {
   String? _name;
   String? _phone;
   String? _password;
+  int? _selectedRole;
 
   final _employeeEditBloc = GetIt.instance.get<EmployeeEditBloc>();
+  final _organizationRoleBloc = GetIt.instance.get<OrganizationRoleBloc>();
 
   @override
   void initState() {
-    _employeeEditBloc.add(
-      EditLoadEvent(data: EmployeeEditEvent(id: widget.employeeId)),
-    );
+    _employeeEditBloc.add(EmployeeEditLoadEvent(id: widget.employeeId));
+    _organizationRoleBloc.add(OrganizationRoleRefreshEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<EmployeeEditBloc, EditState<EmployeeDto>>(
+    return BlocConsumer<EmployeeEditBloc, EmployeeEditState>(
       listener: (context, state) {
         if (state.isEndEdit) {
           context.router.back();
@@ -56,7 +58,7 @@ class _EmployeePageState extends State<EmployeePage> {
     );
   }
 
-  getContent(BuildContext context, EditState<EmployeeDto> state) {
+  getContent(BuildContext context, EmployeeEditState state) {
     if (state.isLoading) {
       return SafeArea(
         child: Scaffold(
@@ -79,28 +81,38 @@ class _EmployeePageState extends State<EmployeePage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SizedBox(height: 5),
                     fieldEdit(
                       state.data != null,
                       'Имя',
                       state.data?.user.name,
-                          (value) {
+                      (value) {
                         _name = value;
                       },
                     ),
+                    SizedBox(height: 5),
                     fieldPhone(
                       state.data != null,
                       'Телефон',
                       state.data?.user.phone,
-                          (value) {
+                      (value) {
                         _phone = value;
                       },
                     ),
-                    fieldEdit(
-                      state.data != null,
-                      'Транспортный пароль',
-                      null,
-                          (value) {
-                        _password = value;
+                    SizedBox(height: 5),
+                    fieldEdit(state.data != null, 'Транспортный пароль', null, (
+                      value,
+                    ) {
+                      _password = value;
+                    }),
+                    SizedBox(height: 5),
+                    BlocBuilder<OrganizationRoleBloc, OrganizationRoleState>(
+                      builder: (context, state) {
+                        if (!state.loaded) {
+                          return Stamp.loadWidget(context);
+                        } else {
+                          return _roleSelect(context, state);
+                        }
                       },
                     ),
                     const SizedBox(height: 32),
@@ -112,10 +124,12 @@ class _EmployeePageState extends State<EmployeePage> {
                         onPressed: () {
                           if (state.data == null) {
                             BlocProvider.of<EmployeeEditBloc>(context).add(
-                                EditCreateEvent(data: EmployeeEditEvent(
-                                    name: _name,
-                                    phone: _phone,
-                                    password: _password))
+                              EmployeeEditCreateEvent(
+                                name: _name!,
+                                phone: _phone!,
+                                password: _password!,
+                                roleId: _selectedRole!,
+                              ),
                             );
                           } else {
                             // BlocProvider.of<EmployeeEditBloc>(context).add(
@@ -139,10 +153,12 @@ class _EmployeePageState extends State<EmployeePage> {
     }
   }
 
-  Widget fieldEdit(bool isOnlyWatch,
-      String nameVal,
-      String? val,
-      ValueChanged<String>? onChanged,) {
+  Widget fieldEdit(
+    bool isOnlyWatch,
+    String nameVal,
+    String? val,
+    ValueChanged<String>? onChanged,
+  ) {
     if (isOnlyWatch) {
       return Text('$nameVal: $val');
     } else {
@@ -151,9 +167,7 @@ class _EmployeePageState extends State<EmployeePage> {
         initialValue: val,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
-          if (value == null || value
-              .trim()
-              .isEmpty) {
+          if (value == null || value.trim().isEmpty) {
             return 'Поле не должно быть пустым';
           }
           return null;
@@ -167,10 +181,12 @@ class _EmployeePageState extends State<EmployeePage> {
     return Text('$nameVal: $val');
   }
 
-  Widget fieldPhone(bool isOnlyWatch,
-      String nameVal,
-      String? val,
-      ValueChanged<String>? onChanged,) {
+  Widget fieldPhone(
+    bool isOnlyWatch,
+    String nameVal,
+    String? val,
+    ValueChanged<String>? onChanged,
+  ) {
     return TextFormField(
       inputFormatters: [Phone.phoneFormatter],
       decoration: InputDecoration(
@@ -186,6 +202,23 @@ class _EmployeePageState extends State<EmployeePage> {
         return 'Поле обязательно для заполнения';
       },
       onChanged: onChanged,
+    );
+  }
+
+  Widget _roleSelect(BuildContext context, OrganizationRoleState state) {
+    return DropdownButton<int>(
+      value: state.organization?.roles.first.id,
+      // The currently selected value
+      hint: const Text('Выберите'),
+      icon: const Icon(Icons.arrow_drop_down),
+      elevation: 8,
+      isExpanded: true,
+      items: state.organization?.roles.map((role) {
+        return DropdownMenuItem<int>(value: role.id, child: Text(role.name));
+      }).toList(),
+      onChanged: (int? newValue) {
+        _selectedRole = newValue;
+      },
     );
   }
 }

@@ -55,7 +55,7 @@ class OrganizationRepository {
 
   Future<OrganizationRoleDto?> organizationRole() {
     return Port.get(
-      _pathEmployee,
+      _pathRole,
       (j) => OrganizationRoleDto.fromJson(j as Map<String, dynamic>),
     );
   }
