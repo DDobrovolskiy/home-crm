@@ -1,4 +1,4 @@
-package ru.dda.homecrmback.domain.support.role.dto.response;
+package ru.dda.homecrmback.domain.subdomain.role.dto.response;
 
 import lombok.Builder;
 

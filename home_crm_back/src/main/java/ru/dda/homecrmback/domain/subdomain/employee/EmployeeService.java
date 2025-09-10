@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.repository.EmployeeRepository;
 import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
+import ru.dda.homecrmback.domain.subdomain.role.RoleService;
+import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
 import ru.dda.homecrmback.domain.subdomain.user.UserDomainService;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
-import ru.dda.homecrmback.domain.support.role.RoleService;
-import ru.dda.homecrmback.domain.support.scope.ScopeType;
 
 @Slf4j
 @Service
@@ -37,7 +37,7 @@ public class EmployeeService {
                 Result.merge(
                                 command.user().execute(userDomainService::registrationOrGet),
                                 command.organization().execute(organizationService::findById),
-                                command.role().execute(roleService::findByIdAndOrganizationId),
+                                command.role().execute(roleService::find),
                                 (EmployeeAggregate::create))
                         .isTrue(employeeAggregate -> employeeRepository.findByUserIdAndOrganizationId(
                                         employeeAggregate.getUser().getId(), employeeAggregate.getOrganization().getId()).isEmpty(),
@@ -58,7 +58,7 @@ public class EmployeeService {
         return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () ->
                 Result.merge(
                         command.employee().execute(this::find),
-                        command.role().execute(roleService::findByIdAndOrganizationId),
+                        command.role().execute(roleService::find),
                         (EmployeeAggregate::update)));
     }
 

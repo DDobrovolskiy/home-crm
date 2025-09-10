@@ -1,4 +1,4 @@
-package ru.dda.homecrmback.domain.support.scope;
+package ru.dda.homecrmback.domain.subdomain.scope.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

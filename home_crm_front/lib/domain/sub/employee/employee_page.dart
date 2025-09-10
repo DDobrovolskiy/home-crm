@@ -55,9 +55,7 @@ class _EmployeePageState extends State<EmployeePage> {
       builder: (context, state) {
         if (state.error != null) {
           return SafeArea(
-            child: Scaffold(
-              appBar: AppBar(title: Text(state.error!.message)),
-            ),
+            child: Scaffold(appBar: AppBar(title: Text(state.error!.message))),
           );
         } else {
           return getContent(context, state);
@@ -223,12 +221,79 @@ class _EmployeePageState extends State<EmployeePage> {
       icon: const Icon(Icons.arrow_drop_down),
       elevation: 8,
       isExpanded: true,
-      items: state.organization?.roles.map((role) {
-        return DropdownMenuItem<int>(value: role.id, child: Text(role.name));
-      }).toList(),
+      items: [
+        ...?state.organization?.roles.map((role) {
+          return DropdownMenuItem<int>(value: role.id, child: Text(role.name));
+        }).toList(),
+        DropdownMenuItem<int>(
+          // Элемент с кнопкой "+"
+          enabled: false, // Отключаем выделение элемента
+          alignment: Alignment.centerRight,
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.add_circle_outline),
+            label: const Text('Добавить'),
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.resolveWith(
+                (states) => states.contains(MaterialState.disabled)
+                    ? Theme.of(context).disabledColor
+                    : Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            onPressed: () => addNewItem(),
+          ),
+        ),
+      ],
       onChanged: (int? newValue) {
         _selectedRole = newValue;
       },
+    );
+  }
+
+  void addNewItem() async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (_) => AddItemDialog(),
+    );
+  }
+}
+
+// Диалог для добавления нового элемента
+class AddItemDialog extends Dialog {
+  const AddItemDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String inputText = '';
+
+    return SimpleDialog(
+      title: const Text('Введите название нового элемента'),
+      contentPadding: const EdgeInsets.all(16.0),
+      children: [
+        TextField(
+          decoration: const InputDecoration(hintText: 'Название элемента'),
+          onChanged: (value) => inputText = value.trim(),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              child: const Text('Отмена'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text('Добавить'),
+              onPressed: () {
+                if (inputText.isNotEmpty) {
+                  Navigator.pop(
+                    context,
+                    inputText,
+                  ); // Возвращаем введенное значение обратно в родительский экран
+                }
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -3,22 +3,14 @@ package ru.dda.homecrmback.domain.support.result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
-import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
-import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.dto.ErrorData;
-import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.response.FailResponse;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 import ru.dda.homecrmback.domain.support.result.response.SuccessResponse;
-import ru.dda.homecrmback.domain.support.role.Role;
-import ru.dda.homecrmback.domain.support.role.RoleService;
-import ru.dda.homecrmback.domain.support.scope.ScopeType;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 
 @Slf4j
@@ -110,14 +102,6 @@ public class Result<S, F> {
             return fail(result2.error);
         }
         return fail(result1.error);
-    }
-
-    public static <S> Result<S, IFailAggregate> checkScope(ScopeType scopeType, RoleService roleService, Supplier<Result<S, IFailAggregate>> supplier) {
-        return Role.FindById.of(UserContextHolder.getCurrentUser().getRoleId())
-                .execute(roleService)
-                .isTrue(roleAggregate -> roleAggregate.roleHasScope(scopeType),
-                        onFail -> ResultAggregate.Fails.Default.of(FailEvent.PERMISSION_DENIED.fail(scopeType.getDescription())))
-                .then(r -> supplier.get());
     }
 
     public void consumer(ConsumerThrow<S> onSuccess, ConsumerThrow<F> onFail) {

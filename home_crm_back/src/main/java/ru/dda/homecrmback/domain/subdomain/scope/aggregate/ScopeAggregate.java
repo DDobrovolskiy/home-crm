@@ -1,11 +1,12 @@
-package ru.dda.homecrmback.domain.support.scope.aggregate;
+package ru.dda.homecrmback.domain.subdomain.scope.aggregate;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.dda.homecrmback.domain.support.scope.ScopeType;
+import ru.dda.homecrmback.domain.subdomain.scope.dto.ScopeDTO;
+import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
 
 @Slf4j
 @Getter
@@ -19,4 +20,12 @@ public class ScopeAggregate {
     @NotNull
     @Enumerated(EnumType.STRING)
     private ScopeType type;
+
+    @Transient
+    public ScopeDTO getScopeDTO() {
+        return ScopeDTO.builder()
+                .id(id)
+                .description(type.getDescription())
+                .build();
+    }
 }
