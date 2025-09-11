@@ -24,4 +24,9 @@ public class ScopeService {
         }
         return Result.success(scopeRepository.findAllByIdIn(command.scopeIds()));
     }
+
+    @Transactional(readOnly = true)
+    public Result<Set<ScopeAggregate>, IFailAggregate> findAll() {
+        return Result.success(scopeRepository.findAll());
+    }
 }

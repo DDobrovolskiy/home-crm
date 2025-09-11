@@ -91,7 +91,7 @@ class Stamp {
                   leading: Icon(Icons.account_box),
                   title: Text('Роли'),
                   onTap: () {
-                    // AutoRouter.of(context).push(HelpRoute());
+                    AutoRouter.of(context).push(OrganizationRolesRoute());
                   },
                 ),
                 ListTile(

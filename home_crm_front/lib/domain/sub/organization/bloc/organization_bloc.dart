@@ -1,9 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/organization/repository/organization_repository.dart';
+import 'package:home_crm_front/domain/sub/role/event/role_current_scopes_event.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
 
 import '../../../support/port/port.dart';
+import '../../role/bloc/role_current_scopes.dart';
 import '../event/organization_event.dart';
 import '../state/organization_state.dart';
 
@@ -12,6 +14,8 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
       .get<OrganizationRepository>();
   late final TokenService _tokenService = GetIt.instance
       .get<TokenService>();
+  late final RoleCurrentScopesBloc _roleCurrentScopesBloc = GetIt.instance
+      .get<RoleCurrentScopesBloc>();
 
   OrganizationBloc() : super(OrganizationUnSelectedState()) {
     on<OrganizationRefreshEvent>((event, emit) async {
@@ -22,6 +26,7 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
       } else {
         var organization = await _repository.organization();
         if (organization != null) {
+          _roleCurrentScopesBloc.add(RoleCurrentScopesRefreshEvent());
           emit.call(OrganizationSelectedState(organization: organization));
         } else {
           emit.call(OrganizationUnSelectedState());

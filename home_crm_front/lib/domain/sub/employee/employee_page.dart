@@ -6,6 +6,7 @@ import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dar
 import 'package:home_crm_front/domain/sub/employee/state/employee_edit_state.dart';
 
 import '../../support/phone.dart';
+import '../../support/router/roters.gr.dart';
 import '../../support/widgets/stamp.dart';
 import '../organization/bloc/organization_role_bloc.dart';
 import '../organization/event/organization_role_event.dart';
@@ -113,11 +114,12 @@ class _EmployeePageState extends State<EmployeePage> {
                     }),
                     SizedBox(height: 5),
                     BlocBuilder<OrganizationRoleBloc, OrganizationRoleState>(
-                      builder: (context, state) {
-                        if (!state.loaded) {
+                      builder: (context, stateOrg) {
+                        if (!stateOrg.loaded) {
                           return Stamp.loadWidget(context);
                         } else {
-                          return _roleSelect(context, state);
+                          return _roleSelect(
+                              context, state.data?.role.id, stateOrg);
                         }
                       },
                     ),
@@ -141,7 +143,7 @@ class _EmployeePageState extends State<EmployeePage> {
                             BlocProvider.of<EmployeeEditBloc>(context).add(
                               EmployeeEditUpdateEvent(
                                 id: widget.employeeId!,
-                                roleId: _selectedRole!,
+                                roleId: _selectedRole ?? state.data!.role.id,
                               ),
                             );
                           }
@@ -213,9 +215,10 @@ class _EmployeePageState extends State<EmployeePage> {
     }
   }
 
-  Widget _roleSelect(BuildContext context, OrganizationRoleState state) {
+  Widget _roleSelect(BuildContext context, int? initRole,
+      OrganizationRoleState state) {
     return DropdownButton<int>(
-      value: state.organization?.roles.first.id,
+      value: _selectedRole ?? initRole ?? state.organization?.roles.first.id,
       // The currently selected value
       hint: const Text('Выберите'),
       icon: const Icon(Icons.arrow_drop_down),
@@ -224,76 +227,12 @@ class _EmployeePageState extends State<EmployeePage> {
       items: [
         ...?state.organization?.roles.map((role) {
           return DropdownMenuItem<int>(value: role.id, child: Text(role.name));
-        }).toList(),
-        DropdownMenuItem<int>(
-          // Элемент с кнопкой "+"
-          enabled: false, // Отключаем выделение элемента
-          alignment: Alignment.centerRight,
-          child: OutlinedButton.icon(
-            icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Добавить'),
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.resolveWith(
-                (states) => states.contains(MaterialState.disabled)
-                    ? Theme.of(context).disabledColor
-                    : Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            onPressed: () => addNewItem(),
-          ),
-        ),
+        }).toList()
       ],
       onChanged: (int? newValue) {
         _selectedRole = newValue;
+        setState(() {});
       },
-    );
-  }
-
-  void addNewItem() async {
-    final result = await showDialog<String>(
-      context: context,
-      builder: (_) => AddItemDialog(),
-    );
-  }
-}
-
-// Диалог для добавления нового элемента
-class AddItemDialog extends Dialog {
-  const AddItemDialog({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    String inputText = '';
-
-    return SimpleDialog(
-      title: const Text('Введите название нового элемента'),
-      contentPadding: const EdgeInsets.all(16.0),
-      children: [
-        TextField(
-          decoration: const InputDecoration(hintText: 'Название элемента'),
-          onChanged: (value) => inputText = value.trim(),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              child: const Text('Отмена'),
-              onPressed: () => Navigator.pop(context),
-            ),
-            TextButton(
-              child: const Text('Добавить'),
-              onPressed: () {
-                if (inputText.isNotEmpty) {
-                  Navigator.pop(
-                    context,
-                    inputText,
-                  ); // Возвращаем введенное значение обратно в родительский экран
-                }
-              },
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

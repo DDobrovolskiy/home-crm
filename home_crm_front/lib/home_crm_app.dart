@@ -6,6 +6,11 @@ import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart'
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
+import 'package:home_crm_front/domain/sub/role/bloc/role_current_scopes.dart';
+import 'package:home_crm_front/domain/sub/role/bloc/role_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
+import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
+import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
@@ -15,6 +20,7 @@ import 'domain/sub/authentication/repository/auth_repository.dart';
 import 'domain/sub/organization/bloc/organization_bloc.dart';
 import 'domain/sub/organization/bloc/organization_edit_bloc.dart';
 import 'domain/sub/organization/repository/organization_repository.dart';
+import 'domain/sub/role/bloc/role_current.dart';
 import 'domain/sub/user/bloc/user_bloc.dart';
 import 'domain/sub/user/repository/user_repository.dart';
 import 'domain/support/router/roters.dart';
@@ -27,7 +33,8 @@ void setupLocator() {
   GetIt.instance.registerLazySingleton(() => UserRepository());
   GetIt.instance.registerLazySingleton(() => OrganizationRepository());
   GetIt.instance.registerLazySingleton(() => EmployeeRepository());
-
+  GetIt.instance.registerLazySingleton(() => RoleRepository());
+  GetIt.instance.registerLazySingleton(() => ScopeRepository());
 
   GetIt.instance.registerLazySingleton(() => AuthBloc());
   GetIt.instance.registerLazySingleton(() => UserBloc());
@@ -41,6 +48,12 @@ void setupLocator() {
   GetIt.instance.registerLazySingleton(() => OrganizationRoleBloc());
 
   GetIt.instance.registerLazySingleton(() => EmployeeEditBloc());
+
+  GetIt.instance.registerLazySingleton(() => RoleCurrentBloc());
+  GetIt.instance.registerLazySingleton(() => RoleCurrentScopesBloc());
+  GetIt.instance.registerLazySingleton(() => RoleEditBloc());
+
+  GetIt.instance.registerLazySingleton(() => ScopeBloc());
 }
 
 Future<void> resetBlocs() async {
@@ -72,6 +85,14 @@ class HomeCrmApp extends StatelessWidget {
             value: GetIt.instance.get<OrganizationRoleBloc>()),
         BlocProvider<EmployeeEditBloc>.value(
             value: GetIt.instance.get<EmployeeEditBloc>()),
+        BlocProvider<RoleCurrentBloc>.value(
+            value: GetIt.instance.get<RoleCurrentBloc>()),
+        BlocProvider<RoleCurrentScopesBloc>.value(
+            value: GetIt.instance.get<RoleCurrentScopesBloc>()),
+        BlocProvider<RoleEditBloc>.value(
+            value: GetIt.instance.get<RoleEditBloc>()),
+        BlocProvider<ScopeBloc>.value(
+            value: GetIt.instance.get<ScopeBloc>()),
       ],
       child: MaterialApp.router(
         title: 'homeCRM',

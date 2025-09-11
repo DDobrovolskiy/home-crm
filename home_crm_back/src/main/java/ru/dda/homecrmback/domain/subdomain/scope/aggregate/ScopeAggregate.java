@@ -25,6 +25,7 @@ public class ScopeAggregate {
     public ScopeDTO getScopeDTO() {
         return ScopeDTO.builder()
                 .id(id)
+                .name(type.name())
                 .description(type.getDescription())
                 .build();
     }

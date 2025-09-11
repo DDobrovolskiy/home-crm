@@ -6,9 +6,3 @@ class PortException implements Exception {
 
   PortException({required this.message, required this.auth});
 }
-
-class ResponseException implements Exception {
-  final String message;
-
-  ResponseException({required this.message});
-}

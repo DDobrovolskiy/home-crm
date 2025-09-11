@@ -10,4 +10,6 @@ import java.util.Set;
 @Repository
 public interface ScopeRepository extends CrudRepository<ScopeAggregate, Long> {
     Set<ScopeAggregate> findAllByIdIn(Collection<Long> ids);
+
+    Set<ScopeAggregate> findAll();
 }

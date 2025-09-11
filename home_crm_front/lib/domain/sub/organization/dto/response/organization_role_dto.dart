@@ -1,4 +1,4 @@
-import 'package:home_crm_front/domain/sub/role/dto/role_dto.dart';
+import 'package:home_crm_front/domain/sub/role/dto/response/role_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'organization_role_dto.g.dart';

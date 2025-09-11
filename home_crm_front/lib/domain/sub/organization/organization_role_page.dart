@@ -9,30 +9,34 @@ import 'package:home_crm_front/domain/sub/organization/state/organization_employ
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../support/widgets/stamp.dart';
+import '../role/bloc/role_edit_bloc.dart';
+import '../role/event/role_edit_event.dart';
+import 'bloc/organization_role_bloc.dart';
+import 'event/organization_role_event.dart';
+import 'state/organization_role_state.dart';
 
 @RoutePage()
-class OrganizationEmployeesPage extends StatefulWidget {
-  const OrganizationEmployeesPage({super.key});
+class OrganizationRolesPage extends StatefulWidget {
+  const OrganizationRolesPage({super.key});
 
   @override
-  _OrganizationEmployeesPageState createState() =>
-      _OrganizationEmployeesPageState();
+  _OrganizationRolesPageState createState() => _OrganizationRolesPageState();
 }
 
-class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
+class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
   @override
   void initState() {
-    BlocProvider.of<OrganizationEmployeeBloc>(
+    BlocProvider.of<OrganizationRoleBloc>(
       context,
-    ).add(OrganizationEmployeeRefreshEvent());
+    ).add(OrganizationRoleRefreshEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrganizationEmployeeBloc, OrganizationEmployeeState>(
+    return BlocConsumer<OrganizationRoleBloc, OrganizationRoleState>(
       listener: (context, state) {
-        if (state is OrganizationEmployeeErrorState) {
+        if (state is OrganizationRoleErrorState) {
           Stamp.showTemporarySnackbar(context, state.error.message);
         }
       },
@@ -47,36 +51,27 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
     );
   }
 
-  Widget getContent(BuildContext context, OrganizationEmployeeState state) {
+  Widget getContent(BuildContext context, OrganizationRoleState state) {
     if (!state.loaded) {
       return Stamp.loadWidget(context);
     } else if (state.organization != null) {
       return Column(
         children: [
-          for (final empOrg in state.organization!.employees)
+          for (final role in state.organization!.roles)
             Card(
               margin: const EdgeInsets.all(8),
               child: ListTile(
-                leading: Icon(Icons.face),
-                title: Text(empOrg.user.name),
+                leading: Icon(Icons.account_box),
+                title: Text(role.name),
                 subtitle: Row(
                   children: [
-                    Text('Роль: '),
-                    TextButton(
-                      style: Stamp.giperLink(),
-                      child: Text('${empOrg.role.name}'),
-                      onPressed: () {
-                        AutoRouter.of(context).push(RoleRoute(roleId: empOrg
-                            .role.id));
-                      },
-                    ),
-                    Text('Описание: ${empOrg.role.description}'),
+                    Text('Описание: ${role.description}'),
                     IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
-                        BlocProvider.of<EmployeeEditBloc>(
+                        BlocProvider.of<RoleEditBloc>(
                           context,
-                        ).add(EmployeeEditDeleteEvent(id: empOrg.id));
+                        ).add(RoleEditDeleteEvent(id: role.id));
                       },
                     ),
                   ],
@@ -86,8 +81,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                   icon: Icon(Icons.edit),
                   label: Text("Редактировать"),
                   onPressed: () {
-                    AutoRouter.of(context).push(
-                        EmployeeRoute(employeeId: empOrg.id));
+                    AutoRouter.of(context).push(RoleRoute(roleId: role.id));
                   },
                 ),
               ),
@@ -98,9 +92,9 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             margin: const EdgeInsets.all(8),
             child: ListTile(
               leading: Icon(Icons.add_circle_outline),
-              title: Text("Добавить сотрудника"),
+              title: Text("Добавить роль"),
               onTap: () {
-                AutoRouter.of(context).push(EmployeeRoute(employeeId: null));
+                AutoRouter.of(context).push(RoleRoute(roleId: null));
               },
             ),
           ),

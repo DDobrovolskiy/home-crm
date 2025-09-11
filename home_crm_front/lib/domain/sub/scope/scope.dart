@@ -1,0 +1,1 @@
+enum ScopeType { ORGANIZATION_UPDATE, TEST_CREATE }
