@@ -10,6 +10,7 @@ import ru.dda.homecrmback.domain.subdomain.role.dto.request.RoleCreateDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.request.RoleDeleteDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.request.RoleUpdateDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleDTO;
+import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleEmployeeDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleScopesDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
@@ -75,6 +76,14 @@ public class RoleController {
         return Role.Find.of(id)
                 .execute(roleService::find)
                 .map(RoleAggregate::getRoleScopesDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping(path = "/{id}/employees")
+    private IResponse<RoleEmployeeDTO> getEmployee(@PathVariable Long id) {
+        return Role.Find.of(id)
+                .execute(roleService::find)
+                .map(RoleAggregate::getRoleEmployeesDTO)
                 .response(ResultAggregate::getErrorData);
     }
 }

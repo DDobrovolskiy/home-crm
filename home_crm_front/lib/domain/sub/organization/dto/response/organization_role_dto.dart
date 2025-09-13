@@ -1,11 +1,11 @@
-import 'package:home_crm_front/domain/sub/role/dto/response/role_dto.dart';
+import 'package:home_crm_front/domain/sub/role/dto/response/role_full_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'organization_role_dto.g.dart';
 
 @JsonSerializable()
 class OrganizationRoleDto {
-  final List<RoleDto> roles;
+  final List<RoleFullDto> roles;
 
   OrganizationRoleDto({required this.roles});
 

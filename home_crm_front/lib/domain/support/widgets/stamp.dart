@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
+import 'package:home_crm_front/domain/support/router/roters.dart';
 
 import '../../../home_crm_app.dart';
 import '../../sub/authentication/bloc/auth_bloc.dart';
@@ -37,13 +39,13 @@ class Stamp {
     );
   }
 
-  static void showTemporarySnackbar(BuildContext context, String message) {
+  static void showTemporarySnackbar(BuildContext? context, String message) {
     ScaffoldMessenger.of(
-      context,
+      context ?? GetIt.instance.get<AppRouter>().navigatorKey.currentContext!,
     ).showSnackBar(SnackBar(content: Text(message)));
     Timer(Duration(seconds: 5), () {
       ScaffoldMessenger.of(
-        context,
+        context ?? GetIt.instance.get<AppRouter>().navigatorKey.currentContext!,
       ).hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
     });
   }
@@ -192,7 +194,11 @@ class Stamp {
     );
   }
 
-  static TextStyle giperLinkText() {
-    return TextStyle();
+  static Widget giperLinkText(Widget text, VoidCallback? onPressed) {
+    return TextButton(
+      style: Stamp.giperLink(),
+      onPressed: onPressed,
+      child: text,
+    );
   }
 }

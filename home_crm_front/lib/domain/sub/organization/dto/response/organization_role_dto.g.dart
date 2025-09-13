@@ -9,7 +9,7 @@ part of 'organization_role_dto.dart';
 OrganizationRoleDto _$OrganizationRoleDtoFromJson(Map<String, dynamic> json) =>
     OrganizationRoleDto(
       roles: (json['roles'] as List<dynamic>)
-          .map((e) => RoleDto.fromJson(e as Map<String, dynamic>))
+          .map((e) => RoleFullDto.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

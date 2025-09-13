@@ -2,6 +2,7 @@ import 'package:home_crm_front/domain/sub/role/dto/request/role_create_dto.dart'
 import 'package:home_crm_front/domain/sub/role/dto/request/role_delete_dto.dart';
 import 'package:home_crm_front/domain/sub/role/dto/request/role_update_dto.dart';
 import 'package:home_crm_front/domain/sub/role/dto/response/role_dto.dart';
+import 'package:home_crm_front/domain/sub/role/dto/response/role_employees_dto.dart';
 import 'package:home_crm_front/domain/sub/role/dto/response/role_scopes_dto.dart';
 
 import '../../../support/port/port.dart';
@@ -52,6 +53,13 @@ class RoleRepository {
     return Port.get(
       'role/$id/scopes',
       (j) => RoleScopesDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<RoleEmployeeDto?> roleEmployees(int id) {
+    return Port.get(
+      'role/$id/employees',
+      (j) => RoleEmployeeDto.fromJson(j as Map<String, dynamic>),
     );
   }
 }

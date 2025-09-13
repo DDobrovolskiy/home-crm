@@ -5,9 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.StringUtils;
+import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleDTO;
+import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleEmployeeDTO;
+import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleFullDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleScopesDTO;
 import ru.dda.homecrmback.domain.subdomain.scope.aggregate.ScopeAggregate;
 import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
@@ -16,9 +20,7 @@ import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Getter
@@ -36,6 +38,9 @@ public class RoleAggregate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id")
     private OrganizationAggregate organization;
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @BatchSize(size = 20)
+    private List<EmployeeAggregate> employees = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "role_scopes",
             joinColumns = @JoinColumn(name = "role_id"),
@@ -91,6 +96,22 @@ public class RoleAggregate {
                 .scopes(scopes.stream()
                         .map(ScopeAggregate::getScopeDTO)
                         .toList())
+                .build();
+    }
+
+    public RoleEmployeeDTO getRoleEmployeesDTO() {
+        return RoleEmployeeDTO.builder()
+                .employees(employees.stream()
+                        .map(EmployeeAggregate::getEmployeeDTO)
+                        .toList())
+                .build();
+    }
+
+    public RoleFullDTO getRoleFullDTO() {
+        return RoleFullDTO.builder()
+                .role(getRoleDTO())
+                .employee(getRoleEmployeesDTO())
+                .scopes(getRoleScopesDTO())
                 .build();
     }
 }

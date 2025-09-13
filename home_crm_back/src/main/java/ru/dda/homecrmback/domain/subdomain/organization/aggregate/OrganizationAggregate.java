@@ -106,7 +106,7 @@ public class OrganizationAggregate {
     public OrganizationRolesDTO organizationRolesDTO() {
         return OrganizationRolesDTO.builder()
                 .roles(roles.stream()
-                        .map(RoleAggregate::getRoleDTO)
+                        .map(RoleAggregate::getRoleFullDTO)
                         .toList())
                 .build();
     }

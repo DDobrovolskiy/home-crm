@@ -1,15 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
-import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dart';
-import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
-import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
-import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../support/widgets/stamp.dart';
 import '../role/bloc/role_edit_bloc.dart';
+import '../role/dto/response/role_full_dto.dart';
 import '../role/event/role_edit_event.dart';
 import 'bloc/organization_role_bloc.dart';
 import 'event/organization_role_event.dart';
@@ -43,7 +39,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
       builder: (context, state) {
         return SafeArea(
           child: Scaffold(
-            appBar: AppBar(title: Text('Работники в организации')),
+            appBar: AppBar(title: Text('Роли в организации')),
             body: getContent(context, state),
           ),
         );
@@ -62,46 +58,84 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
               margin: const EdgeInsets.all(8),
               child: ListTile(
                 leading: Icon(Icons.account_box),
-                title: Text(role.name),
-                subtitle: Row(
+                  title: Text(role.role.name),
+                  subtitle: Column(
                   children: [
-                    Text('Описание: ${role.description}'),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        BlocProvider.of<RoleEditBloc>(
-                          context,
-                        ).add(RoleEditDeleteEvent(id: role.id));
-                      },
-                    ),
-                  ],
-                ),
-                trailing: OutlinedButton.icon(
-                  // Добавили кнопку с иконкой
-                  icon: Icon(Icons.edit),
-                  label: Text("Редактировать"),
-                  onPressed: () {
-                    AutoRouter.of(context).push(RoleRoute(roleId: role.id));
+                  Row(
+                  children: [
+                  Text('Описание: ${role.role.description}'),
+                  ?delete(context, role, state),
+              ],
+            ),
+          Text('Сотрудники с ролью:', textAlign: TextAlign.left),
+          Column(
+            children: [
+              for (final employee in role.employee.employees)
+                Stamp.giperLinkText(
+                  Text(employee.user.name, textAlign: TextAlign.left),
+                      () {
+                    AutoRouter.of(context).push(
+                        EmployeeRoute(employeeId: employee.id));
                   },
                 ),
+            ],
+          ),
+        ],
+                ),
+    trailing: edit(context, role, state),
               ),
             ),
           // Кнопка добавления новой организации-владельца
-          Card(
-            color: Colors.blue.shade100,
-            margin: const EdgeInsets.all(8),
-            child: ListTile(
-              leading: Icon(Icons.add_circle_outline),
-              title: Text("Добавить роль"),
-              onTap: () {
-                AutoRouter.of(context).push(RoleRoute(roleId: null));
-              },
-            ),
-          ),
+    if (state.hasEdit)
+    Card(
+    color: Colors.blue.shade100,
+    margin: const EdgeInsets.all(8),
+    child: ListTile(
+    leading: Icon(Icons.add_circle_outline),
+    title: Text("Добавить роль"),
+    onTap: () {
+    AutoRouter.of(context).push(RoleRoute(roleId: null));
+    },
+    ),
+    ),
         ],
       );
     } else {
       return Stamp.errorWidget(context);
+    }
+  }
+
+  Widget? edit(BuildContext context,
+      RoleFullDto role,
+      OrganizationRoleState state,) {
+    if (state.hasEdit) {
+      return OutlinedButton.icon(
+        // Добавили кнопку с иконкой
+        icon: Icon(Icons.edit),
+        label: Text("Редактировать"),
+        onPressed: () {
+          AutoRouter.of(context).push(RoleRoute(roleId: role.role.id));
+        },
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Widget? delete(BuildContext context,
+      RoleFullDto role,
+      OrganizationRoleState state,) {
+    if (state.hasEdit) {
+      return IconButton(
+        icon: Icon(Icons.close),
+        onPressed: () {
+          BlocProvider.of<RoleEditBloc>(
+            context,
+          ).add(RoleEditDeleteEvent(id: role.role.id));
+        },
+      );
+    } else {
+      return null;
     }
   }
 }

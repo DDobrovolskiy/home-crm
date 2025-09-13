@@ -19,10 +19,10 @@ import 'package:home_crm_front/domain/sub/employee/employee_page.dart' as _i1;
 import 'package:home_crm_front/domain/sub/home/home_page.dart' as _i2;
 import 'package:home_crm_front/domain/sub/organization/organization_employees_page.dart'
     as _i4;
-import 'package:home_crm_front/domain/sub/organization/organizations_page.dart'
-    as _i5;
 import 'package:home_crm_front/domain/sub/organization/organization_role_page.dart'
     as _i6;
+import 'package:home_crm_front/domain/sub/organization/organizations_page.dart'
+    as _i5;
 import 'package:home_crm_front/domain/sub/role/role_page.dart' as _i8;
 import 'package:home_crm_front/domain/sub/user/user_page.dart' as _i9;
 

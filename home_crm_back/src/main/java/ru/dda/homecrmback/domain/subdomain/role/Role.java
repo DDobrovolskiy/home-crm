@@ -62,12 +62,11 @@ public interface Role {
 
     @Builder
     record Delete(
-            long id,
-            long organizationId
+            Role.Find role
     ) implements IExecute<Delete> {
 
         public static Delete of(long id) {
-            return new Delete(id, UserContextHolder.getCurrentUser().getOrganizationId());
+            return new Delete(Find.of(id));
         }
     }
 }

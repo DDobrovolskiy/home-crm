@@ -18,6 +18,7 @@ public enum FailEvent {
     WRONG_PASSWORD("Неправильный логин или пароль"),
     WRONG_HEADER("Неправильный значение в заголовке"),
     PERMISSION_DENIED("Нет разрешения: %s"),
+    ROLE_HAS_EMPLOYEE("Для удаления роли: %s необходимо отвязать всех сотрудников"),
     NOT_FOUND("Не найден: %s");
 
     private final String pattern;

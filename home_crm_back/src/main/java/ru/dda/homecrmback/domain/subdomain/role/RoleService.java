@@ -55,17 +55,20 @@ public class RoleService {
 
     @Transactional
     public Result<Integer, IFailAggregate> delete(Role.Delete command) {
-        return checkScope(ScopeType.ORGANIZATION_UPDATE, () -> {
-            try {
-                return Result.success(roleRepository.deleteByIdAndOrganizationId(
-                        command.id(),
-                        command.organizationId()));
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                return Result.fail(ResultAggregate.Fails.Default.of(
-                        FailEvent.ERROR_ON_SAVE.fail("Ошибка удаления роли: %s".formatted(command.id()))));
-            }
-        });
+        return checkScope(ScopeType.ORGANIZATION_UPDATE, () ->
+                command.role().execute(this::find)
+                        .isTrue(role -> role.getEmployees().isEmpty(),
+                                onFail -> ResultAggregate.Fails.Default.of(FailEvent.ROLE_HAS_EMPLOYEE.fail(onFail.getName())))
+                        .then(roleAggregate -> {
+                            try {
+                                roleRepository.delete(roleAggregate);
+                                return Result.success(1);
+                            } catch (Exception e) {
+                                log.error(e.getMessage(), e);
+                                return Result.fail(ResultAggregate.Fails.Default.of(
+                                        FailEvent.ERROR_ON_SAVE.fail("Ошибка удаления роли: %s".formatted(command.role().roleId()))));
+                            }
+                        }));
     }
 
     @Transactional(readOnly = true)

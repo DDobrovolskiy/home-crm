@@ -1,11 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/role/bloc/role_current_scopes.dart';
-import 'package:home_crm_front/domain/sub/role/event/role_current_scopes_event.dart';
-import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
 import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
-import 'package:home_crm_front/domain/sub/scope/scope.dart';
-import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
+import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../../../support/port/port.dart';
 import '../../organization/bloc/organization_role_bloc.dart';
@@ -33,8 +29,6 @@ class RoleEditBloc extends Bloc<RoleEditEvent, RoleEditState> {
     });
     on<RoleEditLoadEvent>((event, emit) async {
       emit.call(RoleEditPointState(isEndEdit: false, isLoading: true));
-      var roleScopes = await _roleRepository.roleCurrentScopes();
-      if (roleScopes?.hasScope(ScopeType.ORGANIZATION_UPDATE) ?? false) {
         var scopes = await _scopeRepository.scopes();
         if (event.id == null) {
           emit.call(
@@ -57,17 +51,6 @@ class RoleEditBloc extends Bloc<RoleEditEvent, RoleEditState> {
             ),
           );
         }
-      } else {
-        add(
-          RoleEditErrorEvent(
-            error: PortException(
-              message:
-                  'Недостаточно прав: ${ScopeType.ORGANIZATION_UPDATE.name}',
-              auth: false,
-            ),
-          ),
-        );
-      }
     });
     on<RoleEditCreateEvent>((event, emit) async {
       await _roleRepository.roleCreate(
@@ -95,6 +78,7 @@ class RoleEditBloc extends Bloc<RoleEditEvent, RoleEditState> {
       add(RoleEditRefreshEvent());
     });
     on<RoleEditErrorEvent>((event, emit) {
+      Stamp.showTemporarySnackbar(null, event.error.message);
       emit.call(RoleEditErrorState(error: event.error));
     });
   }

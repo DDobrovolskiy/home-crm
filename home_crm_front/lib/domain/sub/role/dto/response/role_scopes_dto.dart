@@ -21,4 +21,8 @@ class RoleScopesDto {
   bool hasScope(ScopeType scope) {
     return scopes.where((s) => s.name == scope.name).isNotEmpty;
   }
+
+  ScopeDTO? getScope(ScopeType scope) {
+    return scopes.where((s) => s.name == scope.name).first;
+  }
 }

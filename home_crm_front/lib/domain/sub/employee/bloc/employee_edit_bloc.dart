@@ -4,13 +4,13 @@ import 'package:home_crm_front/domain/sub/employee/dto/request/employee_delete_d
 import 'package:home_crm_front/domain/sub/employee/dto/request/employee_update_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
-import 'package:home_crm_front/domain/sub/role/bloc/role_current_scopes.dart';
-import 'package:home_crm_front/domain/sub/role/event/role_current_scopes_event.dart';
+import 'package:home_crm_front/domain/sub/organization/event/organization_role_event.dart';
 import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
 import 'package:home_crm_front/domain/sub/scope/scope.dart';
 import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 
 import '../../../support/port/port.dart';
+import '../../organization/bloc/organization_role_bloc.dart';
 import '../dto/request/employee_create_dto.dart';
 import '../event/employee_edit_event.dart';
 import '../repository/employee_repository.dart';
@@ -21,6 +21,8 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       .get<EmployeeRepository>();
   late final OrganizationEmployeeBloc _organizationEmployeeBloc = GetIt.instance
       .get<OrganizationEmployeeBloc>();
+  late final OrganizationRoleBloc _organizationRoleBloc = GetIt.instance
+      .get<OrganizationRoleBloc>();
   late final RoleRepository _roleRepository = GetIt.instance
       .get<RoleRepository>();
 
@@ -28,6 +30,7 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       : super(EmployeeEditPointState(isEndEdit: false, isLoading: true)) {
     on<EmployeeEditRefreshEvent>((event, emit) async {
       _organizationEmployeeBloc.add(OrganizationEmployeeRefreshEvent());
+      _organizationRoleBloc.add(OrganizationRoleRefreshEvent());
       emit.call(EmployeeEditPointState(isEndEdit: true, isLoading: false));
     });
     on<EmployeeEditLoadEvent>((event, emit) async {

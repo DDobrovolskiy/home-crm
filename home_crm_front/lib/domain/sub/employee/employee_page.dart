@@ -6,7 +6,6 @@ import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dar
 import 'package:home_crm_front/domain/sub/employee/state/employee_edit_state.dart';
 
 import '../../support/phone.dart';
-import '../../support/router/roters.gr.dart';
 import '../../support/widgets/stamp.dart';
 import '../organization/bloc/organization_role_bloc.dart';
 import '../organization/event/organization_role_event.dart';
@@ -218,7 +217,8 @@ class _EmployeePageState extends State<EmployeePage> {
   Widget _roleSelect(BuildContext context, int? initRole,
       OrganizationRoleState state) {
     return DropdownButton<int>(
-      value: _selectedRole ?? initRole ?? state.organization?.roles.first.id,
+      value: _selectedRole ?? initRole ??
+          state.organization?.roles.first.role.id,
       // The currently selected value
       hint: const Text('Выберите'),
       icon: const Icon(Icons.arrow_drop_down),
@@ -226,7 +226,8 @@ class _EmployeePageState extends State<EmployeePage> {
       isExpanded: true,
       items: [
         ...?state.organization?.roles.map((role) {
-          return DropdownMenuItem<int>(value: role.id, child: Text(role.name));
+          return DropdownMenuItem<int>(
+              value: role.role.id, child: Text(role.role.name));
         }).toList()
       ],
       onChanged: (int? newValue) {
