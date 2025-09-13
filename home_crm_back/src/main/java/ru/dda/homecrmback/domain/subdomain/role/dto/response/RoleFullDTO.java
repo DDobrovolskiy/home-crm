@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record RoleFullDTO(
         RoleDTO role,
-        RoleEmployeeDTO employee,
-        RoleScopesDTO scopes
+        RoleEmployeeDTO roleEmployee,
+        RoleScopesDTO roleScopes
 ) {
 }

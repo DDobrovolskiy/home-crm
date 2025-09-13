@@ -110,8 +110,8 @@ public class RoleAggregate {
     public RoleFullDTO getRoleFullDTO() {
         return RoleFullDTO.builder()
                 .role(getRoleDTO())
-                .employee(getRoleEmployeesDTO())
-                .scopes(getRoleScopesDTO())
+                .roleEmployee(getRoleEmployeesDTO())
+                .roleScopes(getRoleScopesDTO())
                 .build();
     }
 }

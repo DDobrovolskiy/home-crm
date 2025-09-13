@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../support/exceptions/exceptions.dart';
+import '../../scope/scope.dart';
 import '../dto/response/employee_dto.dart';
 
 abstract class EmployeeEditState extends Equatable {
+  static ScopeType scope = ScopeType.ORGANIZATION_UPDATE;
   abstract final bool isLoading;
   abstract final bool isOnlyWatch;
   abstract final bool isEndEdit;

@@ -6,8 +6,8 @@ import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart'
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
-import 'package:home_crm_front/domain/sub/role/bloc/role_current_scopes.dart';
 import 'package:home_crm_front/domain/sub/role/bloc/role_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/role/cubit/role_current_scopes.dart';
 import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
 import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
 import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
@@ -24,41 +24,47 @@ import 'domain/sub/role/bloc/role_current.dart';
 import 'domain/sub/user/bloc/user_bloc.dart';
 import 'domain/sub/user/repository/user_repository.dart';
 import 'domain/support/router/roters.dart';
+import 'main.dart';
 
 void setupLocator() {
   GetIt.instance.registerLazySingleton(() => AppRouter());
+  //Repositories
+  GetIt.instance.registerSingleton(TokenService());
+  GetIt.instance.registerSingleton(AuthRepository());
+  GetIt.instance.registerSingleton(UserRepository());
+  GetIt.instance.registerSingleton(OrganizationRepository());
+  GetIt.instance.registerSingleton(EmployeeRepository());
+  GetIt.instance.registerSingleton(RoleRepository());
+  GetIt.instance.registerSingleton(ScopeRepository());
+  //Cubits
+  GetIt.instance.registerSingleton(
+      RoleCurrentScopesCubit(), signalsReady: true);
+  //Bloc
+  GetIt.instance.registerSingleton(AuthBloc());
+  GetIt.instance.registerSingleton(UserBloc());
 
-  GetIt.instance.registerLazySingleton(() => TokenService());
-  GetIt.instance.registerLazySingleton(() => AuthRepository());
-  GetIt.instance.registerLazySingleton(() => UserRepository());
-  GetIt.instance.registerLazySingleton(() => OrganizationRepository());
-  GetIt.instance.registerLazySingleton(() => EmployeeRepository());
-  GetIt.instance.registerLazySingleton(() => RoleRepository());
-  GetIt.instance.registerLazySingleton(() => ScopeRepository());
+  GetIt.instance.registerSingleton(UserOrganizationBloc());
+  GetIt.instance.registerSingleton(UserEmployeeBloc());
 
-  GetIt.instance.registerLazySingleton(() => AuthBloc());
-  GetIt.instance.registerLazySingleton(() => UserBloc());
+  GetIt.instance.registerSingleton(OrganizationBloc());
+  GetIt.instance.registerSingleton(OrganizationEditBloc());
+  GetIt.instance.registerSingleton(
+      OrganizationEmployeeBloc(), signalsReady: true);
+  GetIt.instance.registerSingleton(OrganizationRoleBloc(), signalsReady: true);
 
-  GetIt.instance.registerLazySingleton(() => UserOrganizationBloc());
-  GetIt.instance.registerLazySingleton(() => UserEmployeeBloc());
+  GetIt.instance.registerSingleton(EmployeeEditBloc());
 
-  GetIt.instance.registerLazySingleton(() => OrganizationBloc());
-  GetIt.instance.registerLazySingleton(() => OrganizationEditBloc());
-  GetIt.instance.registerLazySingleton(() => OrganizationEmployeeBloc());
-  GetIt.instance.registerLazySingleton(() => OrganizationRoleBloc());
+  GetIt.instance.registerSingleton(RoleCurrentBloc());
+  GetIt.instance.registerSingleton(RoleEditBloc());
 
-  GetIt.instance.registerLazySingleton(() => EmployeeEditBloc());
-
-  GetIt.instance.registerLazySingleton(() => RoleCurrentBloc());
-  GetIt.instance.registerLazySingleton(() => RoleCurrentScopesBloc());
-  GetIt.instance.registerLazySingleton(() => RoleEditBloc());
-
-  GetIt.instance.registerLazySingleton(() => ScopeBloc());
+  GetIt.instance.registerSingleton(ScopeBloc());
 }
 
-Future<void> resetBlocs() async {
+Future<bool> resetBlocs() async {
+  debugPrint('resetBlocs');
   await GetIt.instance.reset(); // Удаляет все зарегистрированные объекты
-  setupLocator(); // Повторно регистрирует BLoC'и
+  main(); // Повторно регистрирует BLoC'и
+  return true;
 }
 
 class HomeCrmApp extends StatelessWidget {
@@ -69,30 +75,39 @@ class HomeCrmApp extends StatelessWidget {
     debugPrint('Creating HomeCrmApp at timestamp: ${DateTime.now()}');
     return MultiBlocProvider(
       providers: [
+        BlocProvider<RoleCurrentScopesCubit>.value(
+          value: GetIt.instance.get<RoleCurrentScopesCubit>(),
+        ),
         BlocProvider<AuthBloc>.value(value: GetIt.instance.get<AuthBloc>()),
         BlocProvider<UserBloc>.value(value: GetIt.instance.get<UserBloc>()),
         BlocProvider<UserOrganizationBloc>.value(
-            value: GetIt.instance.get<UserOrganizationBloc>()),
+          value: GetIt.instance.get<UserOrganizationBloc>(),
+        ),
         BlocProvider<UserEmployeeBloc>.value(
-            value: GetIt.instance.get<UserEmployeeBloc>()),
+          value: GetIt.instance.get<UserEmployeeBloc>(),
+        ),
         BlocProvider<OrganizationBloc>.value(
-            value: GetIt.instance.get<OrganizationBloc>()),
+          value: GetIt.instance.get<OrganizationBloc>(),
+        ),
         BlocProvider<OrganizationEditBloc>.value(
-            value: GetIt.instance.get<OrganizationEditBloc>()),
+          value: GetIt.instance.get<OrganizationEditBloc>(),
+        ),
         BlocProvider<OrganizationEmployeeBloc>.value(
-            value: GetIt.instance.get<OrganizationEmployeeBloc>()),
+          value: GetIt.instance.get<OrganizationEmployeeBloc>(),
+        ),
         BlocProvider<OrganizationRoleBloc>.value(
-            value: GetIt.instance.get<OrganizationRoleBloc>()),
+          value: GetIt.instance.get<OrganizationRoleBloc>(),
+        ),
         BlocProvider<EmployeeEditBloc>.value(
-            value: GetIt.instance.get<EmployeeEditBloc>()),
+          value: GetIt.instance.get<EmployeeEditBloc>(),
+        ),
         BlocProvider<RoleCurrentBloc>.value(
-            value: GetIt.instance.get<RoleCurrentBloc>()),
-        BlocProvider<RoleCurrentScopesBloc>.value(
-            value: GetIt.instance.get<RoleCurrentScopesBloc>()),
+          value: GetIt.instance.get<RoleCurrentBloc>(),
+        ),
         BlocProvider<RoleEditBloc>.value(
-            value: GetIt.instance.get<RoleEditBloc>()),
-        BlocProvider<ScopeBloc>.value(
-            value: GetIt.instance.get<ScopeBloc>()),
+          value: GetIt.instance.get<RoleEditBloc>(),
+        ),
+        BlocProvider<ScopeBloc>.value(value: GetIt.instance.get<ScopeBloc>()),
       ],
       child: MaterialApp.router(
         title: 'homeCRM',

@@ -5,12 +5,11 @@ import 'package:home_crm_front/domain/sub/employee/dto/request/employee_update_d
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_role_event.dart';
-import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
-import 'package:home_crm_front/domain/sub/scope/scope.dart';
-import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
+import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../../../support/port/port.dart';
 import '../../organization/bloc/organization_role_bloc.dart';
+import '../../role/cubit/role_current_scopes.dart';
 import '../dto/request/employee_create_dto.dart';
 import '../event/employee_edit_event.dart';
 import '../repository/employee_repository.dart';
@@ -23,8 +22,8 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       .get<OrganizationEmployeeBloc>();
   late final OrganizationRoleBloc _organizationRoleBloc = GetIt.instance
       .get<OrganizationRoleBloc>();
-  late final RoleRepository _roleRepository = GetIt.instance
-      .get<RoleRepository>();
+  RoleCurrentScopesCubit _roleCurrentScopesCubit = GetIt.I
+      .get<RoleCurrentScopesCubit>();
 
   EmployeeEditBloc()
       : super(EmployeeEditPointState(isEndEdit: false, isLoading: true)) {
@@ -35,11 +34,9 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
     });
     on<EmployeeEditLoadEvent>((event, emit) async {
       emit.call(EmployeeEditPointState(isEndEdit: false, isLoading: true));
-      var roleScopes = await _roleRepository.roleCurrentScopes();
-      if (roleScopes?.hasScope(
-        ScopeType.ORGANIZATION_UPDATE,
-      ) ?? false) {
-        if (event.id == null) {
+      var bool = await _roleCurrentScopesCubit.checkScopeNoSafe(
+        EmployeeEditState.scope,
+      )if (event.id == null) {
           emit.call(EmployeeEditLoadedState(data: null, isOnlyWatch: false));
         } else {
           var employee = await _employeeRepository.getEmployeeLocalStorage(
@@ -49,17 +46,6 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
             EmployeeEditLoadedState(data: employee, isOnlyWatch: false),
           );
         }
-      } else {
-        add(
-          EmployeeEditErrorEvent(
-            error: PortException(
-              message:
-              'Недостаточно прав: ${ScopeType.ORGANIZATION_UPDATE.name}',
-              auth: false,
-            ),
-          ),
-        );
-      }
     });
     on<EmployeeEditCreateEvent>((event, emit) async {
       await _employeeRepository.employeeCreate(
@@ -83,6 +69,7 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       add(EmployeeEditRefreshEvent());
     });
     on<EmployeeEditErrorEvent>((event, emit) {
+      Stamp.showTemporarySnackbar(null, event.error.message);
       emit.call(EmployeeEditErrorState(error: event.error));
     });
   }

@@ -70,7 +70,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
           Text('Сотрудники с ролью:', textAlign: TextAlign.left),
           Column(
             children: [
-              for (final employee in role.employee.employees)
+              for (final employee in role.roleEmployee.employees)
                 Stamp.giperLinkText(
                   Text(employee.user.name, textAlign: TextAlign.left),
                       () {

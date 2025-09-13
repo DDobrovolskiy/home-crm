@@ -9,6 +9,7 @@ import 'package:home_crm_front/domain/sub/organization/state/organization_employ
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../support/widgets/stamp.dart';
+import '../employee/dto/response/employee_dto.dart';
 
 @RoutePage()
 class OrganizationEmployeesPage extends StatefulWidget {
@@ -71,29 +72,14 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                       },
                     ),
                     Text('Описание: ${empOrg.role.description}'),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        BlocProvider.of<EmployeeEditBloc>(
-                          context,
-                        ).add(EmployeeEditDeleteEvent(id: empOrg.id));
-                      },
-                    ),
+                  ?delete(context, empOrg, state),
                   ],
                 ),
-                trailing: OutlinedButton.icon(
-                  // Добавили кнопку с иконкой
-                  icon: Icon(Icons.edit),
-                  label: Text("Редактировать"),
-                  onPressed: () {
-                    AutoRouter.of(context).push(
-                        EmployeeRoute(employeeId: empOrg.id));
-                  },
-                ),
+    trailing: edit(context, empOrg, state),
               ),
             ),
           // Кнопка добавления новой организации-владельца
-          Card(
+    if(state.hasEdit) Card(
             color: Colors.blue.shade100,
             margin: const EdgeInsets.all(8),
             child: ListTile(
@@ -108,6 +94,41 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
       );
     } else {
       return Stamp.errorWidget(context);
+    }
+  }
+
+  Widget? edit(BuildContext context,
+      EmployeeDto empOrg,
+      OrganizationEmployeeState state,) {
+    if (state.hasEdit) {
+      return OutlinedButton.icon(
+        // Добавили кнопку с иконкой
+        icon: Icon(Icons.edit),
+        label: Text("Редактировать"),
+        onPressed: () {
+          AutoRouter.of(context).push(
+              EmployeeRoute(employeeId: empOrg.id));
+        },
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Widget? delete(BuildContext context,
+      EmployeeDto empOrg,
+      OrganizationEmployeeState state,) {
+    if (state.hasEdit) {
+      return IconButton(
+        icon: Icon(Icons.close),
+        onPressed: () {
+          BlocProvider.of<EmployeeEditBloc>(
+            context,
+          ).add(EmployeeEditDeleteEvent(id: empOrg.id));
+        },
+      );
+    } else {
+      return null;
     }
   }
 }

@@ -8,13 +8,13 @@ part 'role_full_dto.g.dart';
 @JsonSerializable()
 class RoleFullDto {
   final RoleDto role;
-  final RoleEmployeeDto employee;
-  final RoleScopesDto scopes;
+  final RoleEmployeeDto roleEmployee;
+  final RoleScopesDto roleScopes;
 
   RoleFullDto({
     required this.role,
-    required this.employee,
-    required this.scopes,
+    required this.roleEmployee,
+    required this.roleScopes,
   });
 
   Map<String, dynamic> toJson() {

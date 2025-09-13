@@ -6,6 +6,7 @@ import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 import '../../../support/port/port.dart';
 import '../../organization/bloc/organization_role_bloc.dart';
 import '../../organization/event/organization_role_event.dart';
+import '../cubit/role_current_scopes.dart';
 import '../dto/request/role_create_dto.dart';
 import '../dto/request/role_delete_dto.dart';
 import '../dto/request/role_update_dto.dart';
@@ -21,6 +22,9 @@ class RoleEditBloc extends Bloc<RoleEditEvent, RoleEditState> {
   late final ScopeRepository _scopeRepository = GetIt.instance
       .get<ScopeRepository>();
 
+  // late final RoleCurrentScopesCubit _roleCurrentScopesCubit = GetIt.instance
+  //     .get<RoleCurrentScopesCubit>();
+
   RoleEditBloc()
     : super(RoleEditPointState(isEndEdit: false, isLoading: true)) {
     on<RoleEditRefreshEvent>((event, emit) async {
@@ -29,6 +33,8 @@ class RoleEditBloc extends Bloc<RoleEditEvent, RoleEditState> {
     });
     on<RoleEditLoadEvent>((event, emit) async {
       emit.call(RoleEditPointState(isEndEdit: false, isLoading: true));
+      var bool = await GetIt.I.get<RoleCurrentScopesCubit>().checkScopeNoSafe(
+          RoleEditState.scope);
         var scopes = await _scopeRepository.scopes();
         if (event.id == null) {
           emit.call(

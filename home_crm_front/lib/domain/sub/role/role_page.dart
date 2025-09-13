@@ -4,13 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/role/state/role_edit_state.dart';
 
-import '../../support/phone.dart';
 import '../../support/widgets/stamp.dart';
-import '../organization/bloc/organization_role_bloc.dart';
-import '../organization/event/organization_role_event.dart';
-import '../organization/state/organization_role_state.dart';
 import '../scope/dto/response/scope_dto.dart';
-import 'bloc/role_current_scopes.dart';
 import 'bloc/role_edit_bloc.dart';
 import 'event/role_edit_event.dart';
 
@@ -53,7 +48,7 @@ class _RolePageState extends State<RolePage> {
         if (state.isEndEdit) {
           context.router.back();
         } else if (state.error != null) {
-          Stamp.showTemporarySnackbar(context, state.error!.message);
+          context.router.back();
         }
       },
       builder: (context, state) {
@@ -184,8 +179,7 @@ class _RolePageState extends State<RolePage> {
         final currentScope = allScopes[index];
         return CheckboxListTile(
           controlAffinity: ListTileControlAffinity.leading,
-          title: Text(currentScope.name),
-          subtitle: Text(currentScope.description),
+          title: Text(currentScope.description),
           value: selectedItems.contains(currentScope),
           activeColor: Colors.green,
           checkColor: Colors.white,

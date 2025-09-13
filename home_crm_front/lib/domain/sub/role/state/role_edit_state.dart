@@ -3,9 +3,11 @@ import 'package:home_crm_front/domain/sub/role/dto/response/role_scopes_dto.dart
 import 'package:home_crm_front/domain/sub/scope/dto/response/scope_dto.dart';
 
 import '../../../support/exceptions/exceptions.dart';
+import '../../scope/scope.dart';
 import '../dto/response/role_dto.dart';
 
 abstract class RoleEditState extends Equatable {
+  static ScopeType scope = ScopeType.ORGANIZATION_UPDATE;
   abstract final bool isLoading;
   abstract final bool isOnlyWatch;
   abstract final bool isEndEdit;

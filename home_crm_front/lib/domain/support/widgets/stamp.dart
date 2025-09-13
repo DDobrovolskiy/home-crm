@@ -155,18 +155,18 @@ class Stamp {
             ListTile(
               leading: Icon(Icons.exit_to_app), // Иконка выхода
               title: Text('Выйти'),
-              onTap: () {
+              onTap: () async {
                 BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
-                resetBlocs();
+                var bool = await resetBlocs();
                 AutoRouter.of(context).replace(LoginRoute());
               },
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app), // Иконка выхода
               title: Text('Выйти со всех устройств'),
-              onTap: () {
+              onTap: () async {
                 BlocProvider.of<AuthBloc>(context).add(AuthLogoutAllEvent());
-                resetBlocs();
+                var bool = await resetBlocs();
                 AutoRouter.of(context).replace(LoginRoute());
               },
             ),

@@ -49,7 +49,7 @@ class _EmployeePageState extends State<EmployeePage> {
         if (state.isEndEdit) {
           context.router.back();
         } else if (state.error != null) {
-          Stamp.showTemporarySnackbar(context, state.error!.message);
+          context.router.back();
         }
       },
       builder: (context, state) {
