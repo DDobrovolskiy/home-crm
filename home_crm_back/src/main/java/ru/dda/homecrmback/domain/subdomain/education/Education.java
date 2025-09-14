@@ -5,8 +5,6 @@ import ru.dda.homecrmback.domain.IExecute;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 
-import java.util.List;
-
 public interface Education {
     interface Test {
         @Builder
@@ -73,37 +71,118 @@ public interface Education {
 
     interface Question {
         @Builder
+        record Find(
+                long id,
+                Test.Find test,
+                Organization.FindById organization
+        ) implements IExecute<Find> {
+
+            public static Find of(long id, long testId) {
+                return new Find(id,
+                        Test.Find.of(testId),
+                        Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+            }
+        }
+
+        @Builder
         record Create(
                 String text,
                 Test.Find test,
-                List<Education.Question.Create.Option> options
+                Organization.FindById organization
 
         ) implements IExecute<Education.Question.Create> {
 
-            public static Education.Question.Create of(String text, long testId, List<Education.Question.Create.Option> options) {
+            public static Education.Question.Create of(String text, long testId) {
                 return new Education.Question.Create(
                         text,
                         Test.Find.of(testId),
-                        options);
+                        Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
             }
+        }
 
-            @Builder
-            public record Option(
-                    String text,
-                    boolean correct
+        @Builder
+        record Update(
+                Find question,
+                String text
 
-            ) implements IExecute<Education.Test.Create> {
+        ) implements IExecute<Update> {
 
-                public static Education.Test.Create of(String name) {
-                    return new Education.Test.Create(
-                            name,
-                            Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
-                }
+            public static Update of(long id, String text, long testId) {
+                return new Update(
+                        Find.of(id, testId),
+                        text);
+            }
+        }
+
+        @Builder
+        record Delete(
+                Find question
+
+        ) implements IExecute<Delete> {
+
+            public static Delete of(long id, long testId) {
+                return new Delete(Find.of(id, testId));
             }
         }
     }
 
     interface Option {
+        @Builder
+        record Find(
+                long id,
+                Question.Find question,
+                Organization.FindById organization
 
+        ) implements IExecute<Find> {
+
+            public static Find of(long id, long questionId, long testId) {
+                return new Find(
+                        id,
+                        Question.Find.of(questionId, testId),
+                        Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+            }
+        }
+
+        @Builder
+        record Create(
+                String text,
+                boolean correct,
+                Question.Find question,
+                Organization.FindById organization
+
+        ) implements IExecute<Create> {
+
+            public static Create of(String text, boolean correct, long questionId, long testId) {
+                return new Create(
+                        text,
+                        correct,
+                        Question.Find.of(questionId, testId),
+                        Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+            }
+        }
+
+        @Builder
+        record Update(
+                Find option,
+                String text,
+                boolean correct
+
+        ) implements IExecute<Update> {
+
+            public static Update of(long id, String text, boolean correct, long questionId, long testId) {
+                return new Update(Find.of(id, questionId, testId), text, correct);
+            }
+        }
+
+        @Builder
+        record Delete(
+                Find option
+
+        ) implements IExecute<Delete> {
+
+            public static Delete of(long id, long questionId, long testId) {
+                return new Delete(Find.of(id, questionId, testId));
+            }
+        }
     }
 }

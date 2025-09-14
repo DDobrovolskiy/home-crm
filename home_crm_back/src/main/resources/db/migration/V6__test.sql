@@ -33,6 +33,7 @@ CREATE TABLE question
     text       VARCHAR(255)                            NOT NULL,
     one_answer BOOLEAN                                 NOT NULL,
     test_id    BIGINT,
+    organization_id BIGINT NOT NULL,
     CONSTRAINT pk_question PRIMARY KEY (id)
 );
 
@@ -46,6 +47,7 @@ CREATE TABLE option
     text        VARCHAR(255)                            NOT NULL,
     correct     BOOLEAN                                 NOT NULL,
     question_id BIGINT,
+    organization_id BIGINT NOT NULL,
     CONSTRAINT pk_option PRIMARY KEY (id)
 );
 
@@ -59,6 +61,7 @@ CREATE TABLE test_result
     completed_at TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     employee_id  BIGINT,
     test_id      BIGINT,
+    organization_id BIGINT NOT NULL,
     CONSTRAINT pk_test_result PRIMARY KEY (id)
 );
 
@@ -78,6 +81,7 @@ CREATE TABLE test_result_detail
     correct_answer  VARCHAR(255),
     is_correct      BOOLEAN                                 NOT NULL,
     result_id       BIGINT,
+    organization_id BIGINT NOT NULL,
     CONSTRAINT pk_test_result_detail PRIMARY KEY (id)
 );
 
@@ -91,6 +95,7 @@ CREATE TABLE employee_test_assignments
     status      SMALLINT,
     employee_id BIGINT NOT NULL,
     test_id     BIGINT NOT NULL,
+    organization_id BIGINT NOT NULL,
     CONSTRAINT pk_employee_test_assignments PRIMARY KEY (employee_id, test_id)
 );
 
@@ -109,6 +114,7 @@ CREATE TABLE test_sessions
     end_time    TIMESTAMP WITHOUT TIME ZONE,
     employee_id BIGINT,
     test_id     BIGINT,
+    organization_id BIGINT NOT NULL,
     CONSTRAINT pk_test_sessions PRIMARY KEY (id)
 );
 

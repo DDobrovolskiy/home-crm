@@ -14,6 +14,7 @@ import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -92,6 +93,12 @@ public class TestAggregate {
                 .is(!this.questions.isEmpty(),
                         () -> log.debug("Нету вопросов в тесте"),
                         FailEvent.VALIDATION.fail("В тесте должен быть хотя бы один вопрос"))
+                .is(this.questions.stream().noneMatch(questionAggregate -> Objects.nonNull(questionAggregate.getValidFail())),
+                        () -> log.debug("Есть ошибки валидации вопросов"),
+                        FailEvent.VALIDATION.fail(this.questions.stream()
+                                .map(QuestionAggregate::getValidFail)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.joining(System.lineSeparator()))))
                 .getResult(() -> {
                     this.ready = ready;
                     return this;
@@ -100,11 +107,6 @@ public class TestAggregate {
 
     public void assignTo(EmployeeAggregate employee) {
         this.employees.add(employee);
-    }
-
-    public void addQuestion(QuestionAggregate question) {
-        this.questions.add(question);
-        question.setTest(this); // Убедимся, что связь установлена правильно
     }
 
     public EducationTestDTO getEducationTestDTO() {

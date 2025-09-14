@@ -22,7 +22,7 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       .get<OrganizationEmployeeBloc>();
   late final OrganizationRoleBloc _organizationRoleBloc = GetIt.instance
       .get<OrganizationRoleBloc>();
-  RoleCurrentScopesCubit _roleCurrentScopesCubit = GetIt.I
+  late final RoleCurrentScopesCubit _roleCurrentScopesCubit = GetIt.I
       .get<RoleCurrentScopesCubit>();
 
   EmployeeEditBloc()

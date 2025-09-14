@@ -8,6 +8,7 @@ import ru.dda.homecrmback.domain.support.result.response.FailResponse;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 import ru.dda.homecrmback.domain.support.result.response.SuccessResponse;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -29,6 +30,10 @@ public class Result<S, F> {
 
     boolean isSuccess() {
         return error == null;
+    }
+
+    boolean isFailure() {
+        return error != null;
     }
 
     public Result<S, F> isTrue(Predicate<S> flag, Function<S, F> onError) {
@@ -148,6 +153,16 @@ public class Result<S, F> {
             return onSuccess.apply(value);
         }
         return onFail.apply(error);
+    }
+
+    public static <S, F> Result<List<S>, F> extract(List<Result<S, F>> list) {
+        return list.stream()
+                .filter(Result::isFailure)
+                .map(f -> Result.<List<S>, F>fail(f.error))
+                .findFirst()
+                .orElseGet(() -> Result.success(list.stream()
+                        .map(r -> r.value)
+                        .toList()));
     }
 
     public IResponse<S> response(Function<F, ErrorData> convert) {

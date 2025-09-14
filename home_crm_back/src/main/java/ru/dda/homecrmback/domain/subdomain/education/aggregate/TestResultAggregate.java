@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
+import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class TestResultAggregate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_id")
     private TestAggregate originalTest;
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "organization_id")
+    private OrganizationAggregate organization;
 
     // Детали всех пройденных вопросов и ответов
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, orphanRemoval = true)

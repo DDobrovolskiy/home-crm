@@ -15,6 +15,8 @@ public enum FailEvent {
     EMPLOYEE_IS_EXIST("Данный сотрудник уже есть в организации"),
     EMPLOYEE_NOT_FOUND("Сотрудник не найден"),
     TEST_NOT_FOUND("Тест не найден"),
+    OPTION_NOT_FOUND("Ответ не найден"),
+    QUESTION_NOT_FOUND("Вопрос не найден"),
     VALIDATION("%s"),
     WRONG_PASSWORD("Неправильный логин или пароль"),
     WRONG_HEADER("Неправильный значение в заголовке"),

@@ -38,6 +38,9 @@ class _TestSuitPageState extends State<TestSuitPage> {
       listener: (context, state) {
         if (state.error != null) {
           _testEditBloc.add(TestEditLoadEvent(id: widget.testId));
+        } else if (state.isEndEdit) {
+          Stamp.showTemporarySnackbar(context, 'Значения обновлены');
+          _testEditBloc.add(TestEditLoadEvent(id: widget.testId));
         }
       },
       builder: (context, state) {
@@ -84,6 +87,21 @@ class _TestSuitPageState extends State<TestSuitPage> {
                       },
                     ),
                     SizedBox(height: 5),
+                    ElevatedButton(
+                      child: Text('Обновить значения'),
+                      onPressed: () {
+                        _testEditBloc.add(
+                          TestEditUpdateEvent(
+                            id: state.data!.test.id,
+                            name: _name ?? state.data!.test.name,
+                            timeLimitMinutes:
+                                _timeLimitMinutes ??
+                                state.data!.test.timeLimitMinutes,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 5),
                     Row(
                       children: [
                         Text('Тест готов: '),
@@ -99,21 +117,6 @@ class _TestSuitPageState extends State<TestSuitPage> {
                           },
                         ),
                       ],
-                    ),
-                    SizedBox(height: 5),
-                    ElevatedButton(
-                      child: Text('Обновить значения'),
-                      onPressed: () {
-                        _testEditBloc.add(
-                          TestEditUpdateEvent(
-                            id: state.data!.test.id,
-                            name: _name ?? state.data!.test.name,
-                            timeLimitMinutes:
-                                _timeLimitMinutes ??
-                                state.data!.test.timeLimitMinutes,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 5),
                     Text('Вопросы: '),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
@@ -30,44 +32,46 @@ import 'domain/support/router/roters.dart';
 import 'main.dart';
 
 void setupLocator() {
-  GetIt.instance.registerLazySingleton(() => AppRouter());
+  GetIt.I.registerLazySingleton(() => AppRouter());
   //Repositories
-  GetIt.instance.registerSingleton(TokenService());
-  GetIt.instance.registerSingleton(AuthRepository());
-  GetIt.instance.registerSingleton(UserRepository());
-  GetIt.instance.registerSingleton(OrganizationRepository());
-  GetIt.instance.registerSingleton(EmployeeRepository());
-  GetIt.instance.registerSingleton(RoleRepository());
-  GetIt.instance.registerSingleton(ScopeRepository());
-  GetIt.instance.registerSingleton(TestRepository());
+  GetIt.I.registerSingleton(TokenService());
+  GetIt.I.registerSingleton(AuthRepository());
+  GetIt.I.registerSingleton(UserRepository());
+  GetIt.I.registerSingleton(OrganizationRepository());
+  GetIt.I.registerSingleton(EmployeeRepository());
+  GetIt.I.registerSingleton(RoleRepository());
+  GetIt.I.registerSingleton(ScopeRepository());
+  GetIt.I.registerSingleton(TestRepository());
+  GetIt.I.registerSingleton(QuestionRepository());
   //Cubits
-  GetIt.instance.registerSingleton(RoleCurrentScopesCubit());
+  GetIt.I.registerSingleton(RoleCurrentScopesCubit());
   //Bloc
-  GetIt.instance.registerSingleton(AuthBloc());
-  GetIt.instance.registerSingleton(UserBloc());
+  GetIt.I.registerSingleton(AuthBloc());
+  GetIt.I.registerSingleton(UserBloc());
 
-  GetIt.instance.registerSingleton(UserOrganizationBloc());
-  GetIt.instance.registerSingleton(UserEmployeeBloc());
+  GetIt.I.registerSingleton(UserOrganizationBloc());
+  GetIt.I.registerSingleton(UserEmployeeBloc());
 
-  GetIt.instance.registerSingleton(OrganizationBloc());
-  GetIt.instance.registerSingleton(OrganizationEditBloc());
-  GetIt.instance.registerSingleton(OrganizationEmployeeBloc());
-  GetIt.instance.registerSingleton(OrganizationRoleBloc());
-  GetIt.instance.registerSingleton(OrganizationTestBloc());
+  GetIt.I.registerSingleton(OrganizationBloc());
+  GetIt.I.registerSingleton(OrganizationEditBloc());
+  GetIt.I.registerSingleton(OrganizationEmployeeBloc());
+  GetIt.I.registerSingleton(OrganizationRoleBloc());
+  GetIt.I.registerSingleton(OrganizationTestBloc());
 
-  GetIt.instance.registerSingleton(EmployeeEditBloc());
+  GetIt.I.registerSingleton(EmployeeEditBloc());
 
-  GetIt.instance.registerSingleton(RoleCurrentBloc());
-  GetIt.instance.registerSingleton(RoleEditBloc());
+  GetIt.I.registerSingleton(RoleCurrentBloc());
+  GetIt.I.registerSingleton(RoleEditBloc());
 
-  GetIt.instance.registerSingleton(ScopeBloc());
+  GetIt.I.registerSingleton(ScopeBloc());
 
-  GetIt.instance.registerSingleton(TestEditBloc());
+  GetIt.I.registerSingleton(TestEditBloc());
+  GetIt.I.registerSingleton(QuestionEditBloc());
 }
 
 Future<bool> resetBlocs() async {
   debugPrint('resetBlocs');
-  await GetIt.instance.reset(); // Удаляет все зарегистрированные объекты
+  await GetIt.I.reset(); // Удаляет все зарегистрированные объекты
   main(); // Повторно регистрирует BLoC'и
   return true;
 }
@@ -81,43 +85,42 @@ class HomeCrmApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RoleCurrentScopesCubit>.value(
-          value: GetIt.instance.get<RoleCurrentScopesCubit>(),
+          value: GetIt.I.get<RoleCurrentScopesCubit>(),
         ),
-        BlocProvider<AuthBloc>.value(value: GetIt.instance.get<AuthBloc>()),
-        BlocProvider<UserBloc>.value(value: GetIt.instance.get<UserBloc>()),
+        BlocProvider<AuthBloc>.value(value: GetIt.I.get<AuthBloc>()),
+        BlocProvider<UserBloc>.value(value: GetIt.I.get<UserBloc>()),
         BlocProvider<UserOrganizationBloc>.value(
-          value: GetIt.instance.get<UserOrganizationBloc>(),
+          value: GetIt.I.get<UserOrganizationBloc>(),
         ),
         BlocProvider<UserEmployeeBloc>.value(
-          value: GetIt.instance.get<UserEmployeeBloc>(),
+          value: GetIt.I.get<UserEmployeeBloc>(),
         ),
         BlocProvider<OrganizationBloc>.value(
-          value: GetIt.instance.get<OrganizationBloc>(),
+          value: GetIt.I.get<OrganizationBloc>(),
         ),
         BlocProvider<OrganizationEditBloc>.value(
-          value: GetIt.instance.get<OrganizationEditBloc>(),
+          value: GetIt.I.get<OrganizationEditBloc>(),
         ),
         BlocProvider<OrganizationEmployeeBloc>.value(
-          value: GetIt.instance.get<OrganizationEmployeeBloc>(),
+          value: GetIt.I.get<OrganizationEmployeeBloc>(),
         ),
         BlocProvider<OrganizationRoleBloc>.value(
-          value: GetIt.instance.get<OrganizationRoleBloc>(),
+          value: GetIt.I.get<OrganizationRoleBloc>(),
         ),
         BlocProvider<OrganizationTestBloc>.value(
-          value: GetIt.instance.get<OrganizationTestBloc>(),
+          value: GetIt.I.get<OrganizationTestBloc>(),
         ),
         BlocProvider<EmployeeEditBloc>.value(
-          value: GetIt.instance.get<EmployeeEditBloc>(),
+          value: GetIt.I.get<EmployeeEditBloc>(),
         ),
         BlocProvider<RoleCurrentBloc>.value(
-          value: GetIt.instance.get<RoleCurrentBloc>(),
+          value: GetIt.I.get<RoleCurrentBloc>(),
         ),
-        BlocProvider<RoleEditBloc>.value(
-          value: GetIt.instance.get<RoleEditBloc>(),
-        ),
+        BlocProvider<RoleEditBloc>.value(value: GetIt.I.get<RoleEditBloc>()),
         BlocProvider<ScopeBloc>.value(value: GetIt.instance.get<ScopeBloc>()),
-        BlocProvider<TestEditBloc>.value(
-          value: GetIt.instance.get<TestEditBloc>(),
+        BlocProvider<TestEditBloc>.value(value: GetIt.I.get<TestEditBloc>()),
+        BlocProvider<QuestionEditBloc>.value(
+          value: GetIt.I.get<QuestionEditBloc>(),
         ),
       ],
       child: MaterialApp.router(
