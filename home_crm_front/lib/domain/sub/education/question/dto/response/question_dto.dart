@@ -7,13 +7,11 @@ part 'question_dto.g.dart';
 class QuestionDto {
   final int id;
   final String text;
-  final bool oneAnswer;
   final TestDto test;
 
   QuestionDto({
     required this.id,
     required this.text,
-    required this.oneAnswer,
     required this.test,
   });
 

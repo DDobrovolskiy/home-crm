@@ -1,7 +1,8 @@
+import 'package:home_crm_front/domain/sub/education/question/dto/request/question_create_dto.dart';
+import 'package:home_crm_front/domain/sub/education/question/dto/request/question_delete_dto.dart';
+import 'package:home_crm_front/domain/sub/education/question/dto/request/question_update_dto.dart';
 import 'package:home_crm_front/domain/sub/education/question/dto/response/question_dto.dart';
-import 'package:home_crm_front/domain/sub/employee/dto/request/employee_create_dto.dart';
-import 'package:home_crm_front/domain/sub/employee/dto/request/employee_delete_dto.dart';
-import 'package:home_crm_front/domain/sub/employee/dto/request/employee_update_dto.dart';
+import 'package:home_crm_front/domain/sub/education/question/dto/response/question_options_dto.dart';
 
 import '../../../../support/port/port.dart';
 
@@ -15,7 +16,14 @@ class QuestionRepository {
     );
   }
 
-  Future<QuestionDto?> create(EmployeeCreateDto dto) {
+  Future<QuestionOptionsDto?> getOptions(int id) {
+    return Port.get(
+      'education/question/${id}/options',
+      (j) => QuestionOptionsDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<QuestionDto?> create(QuestionCreateDto dto) {
     return Port.post(
       _path,
       dto.toJson(),
@@ -23,7 +31,7 @@ class QuestionRepository {
     );
   }
 
-  Future<QuestionDto?> update(EmployeeUpdateDto dto) {
+  Future<QuestionDto?> update(QuestionUpdateDto dto) {
     return Port.put(
       _path,
       dto.toJson(),
@@ -31,7 +39,7 @@ class QuestionRepository {
     );
   }
 
-  Future<int?> delete(EmployeeDeleteDto dto) {
+  Future<int?> delete(QuestionDeleteDto dto) {
     return Port.delete(_path, dto.toJson(), (j) => j as int);
   }
 }

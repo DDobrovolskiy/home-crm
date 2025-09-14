@@ -3,18 +3,25 @@ import 'package:home_crm_front/domain/sub/education/test/dto/request/test_delete
 import 'package:home_crm_front/domain/sub/education/test/dto/request/test_update_dto.dart';
 import 'package:home_crm_front/domain/sub/education/test/dto/request/test_update_ready_dto.dart';
 import 'package:home_crm_front/domain/sub/education/test/dto/response/test_dto.dart';
+import 'package:home_crm_front/domain/sub/education/test/dto/response/test_questions_dto.dart';
 
 import '../../../../support/port/port.dart';
-import '../dto/response/test_edit_dto.dart';
 
 class TestRepository {
   final String _path = 'education/test';
   final String _pathReady = 'education/test/ready';
 
-  Future<TestEditDto?> getTest(int id) {
+  Future<TestDto?> getTest(int id) {
     return Port.get(
       'education/test/${id}',
-      (j) => TestEditDto.fromJson(j as Map<String, dynamic>),
+      (j) => TestDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<TestQuestionsDto?> getTestQuestions(int id) {
+    return Port.get(
+      'education/test/${id}/questions',
+      (j) => TestQuestionsDto.fromJson(j as Map<String, dynamic>),
     );
   }
 

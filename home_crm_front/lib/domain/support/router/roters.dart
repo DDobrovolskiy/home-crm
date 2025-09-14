@@ -23,6 +23,8 @@ class RoutersApp {
       '/organization/tests';
   static const String test =
       '/organization/tests/:testId';
+  static const String question =
+      '/organization/tests/:testId/:questionId';
 }
 
 @AutoRouterConfig()
@@ -45,6 +47,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: RoleRoute.page, path: RoutersApp.role),
     AutoRoute(page: OrganizationTestsRoute.page, path: RoutersApp.tests),
     AutoRoute(page: TestSuitRoute.page, path: RoutersApp.test),
+    AutoRoute(page: QuestionRoute.page, path: RoutersApp.question),
   ];
 
   @override

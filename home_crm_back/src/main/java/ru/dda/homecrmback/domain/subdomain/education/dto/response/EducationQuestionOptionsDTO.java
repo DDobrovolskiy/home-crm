@@ -6,6 +6,8 @@ import java.util.List;
 
 @Builder
 public record EducationQuestionOptionsDTO(
-        List<EducationOptionDTO> options
+        boolean oneAnswer,
+        List<EducationOptionDTO> options,
+        String validMessage
 ) {
 }

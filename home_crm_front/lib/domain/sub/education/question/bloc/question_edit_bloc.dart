@@ -1,26 +1,30 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/education/test/bloc/test_edit_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/test/event/test_edit_event.dart';
+import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/test/event/test_question_event.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../../../../support/port/port.dart';
 import '../../../role/cubit/role_current_scopes.dart';
+import '../dto/request/question_create_dto.dart';
+import '../dto/request/question_delete_dto.dart';
+import '../dto/request/question_update_dto.dart';
 import '../event/question_edit_event.dart';
 import '../repository/question_repository.dart';
 import '../state/question_edit_state.dart';
 
 class QuestionEditBloc extends Bloc<QuestionEditEvent, QuestionEditState> {
-  late final QuestionRepository _questionRepository = GetIt.instance
+  late final QuestionRepository _questionRepository = GetIt.I
       .get<QuestionRepository>();
-  late final TestEditBloc _testEditBloc = GetIt.instance.get<TestEditBloc>();
+  late final TestQuestionBloc _testQuestionBloc = GetIt.I
+      .get<TestQuestionBloc>();
   late final RoleCurrentScopesCubit _roleCurrentScopesCubit = GetIt.I
       .get<RoleCurrentScopesCubit>();
 
   QuestionEditBloc()
     : super(QuestionEditPointState(isEndEdit: false, isLoading: true)) {
     on<QuestionEditRefreshEvent>((event, emit) async {
-      _testEditBloc.add(TestEditLoadEvent(id: event.testId));
+      _testQuestionBloc.add(TestQuestionRefreshEvent(testId: event.testId));
       emit.call(QuestionEditPointState(isEndEdit: true, isLoading: false));
     });
     on<QuestionEditLoadEvent>((event, emit) async {
@@ -31,26 +35,19 @@ class QuestionEditBloc extends Bloc<QuestionEditEvent, QuestionEditState> {
       if (event.id == null) {
         emit.call(QuestionEditLoadedState(data: null, isOnlyWatch: false));
       } else {
-        var employee = await _questionRepository.getEmployeeLocalStorage(
-          event.id!,
-        );
+        var employee = await _questionRepository.get(event.id!);
         emit.call(QuestionEditLoadedState(data: employee, isOnlyWatch: false));
       }
     });
     on<QuestionEditCreateEvent>((event, emit) async {
       await _questionRepository.create(
-        QuestionCreateDto(
-          name: event.name,
-          phone: event.phone,
-          password: event.password,
-          roleId: event.roleId,
-        ),
+        QuestionCreateDto(text: event.text, testId: event.testId),
       );
       add(QuestionEditRefreshEvent(testId: event.testId));
     });
     on<QuestionEditUpdateEvent>((event, emit) async {
       await _questionRepository.update(
-        QuestionUpdateDto(id: event.id, roleId: event.roleId),
+        QuestionUpdateDto(id: event.id, text: event.text),
       );
       add(QuestionEditRefreshEvent(testId: event.testId));
     });

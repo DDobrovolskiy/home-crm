@@ -16,25 +16,19 @@ class QuestionEditLoadEvent extends QuestionEditEvent {
 }
 
 class QuestionEditCreateEvent extends QuestionEditEvent {
-  final String name;
-  final String phone;
-  final String password;
-  final int roleId;
   final int testId;
+  final String text;
 
-  QuestionEditCreateEvent({
-    required this.name,
-    required this.phone,
-    required this.password,
-    required this.roleId,
-  });
+  QuestionEditCreateEvent({required this.text, required this.testId}});
 }
 
 class QuestionEditUpdateEvent extends QuestionEditEvent {
   final int id;
+  final String text;
   final int testId;
 
-  QuestionEditUpdateEvent({required this.id, required this.testId});
+  QuestionEditUpdateEvent(
+      {required this.id, required this.text, required this.testId});
 }
 
 class QuestionEditDeleteEvent extends QuestionEditEvent {

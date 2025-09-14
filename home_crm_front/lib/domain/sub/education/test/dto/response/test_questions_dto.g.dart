@@ -9,7 +9,7 @@ part of 'test_questions_dto.dart';
 TestQuestionsDto _$TestQuestionsDtoFromJson(Map<String, dynamic> json) =>
     TestQuestionsDto(
       questions: (json['questions'] as List<dynamic>)
-          .map((e) => QuestionDto.fromJson(e as Map<String, dynamic>))
+          .map((e) => QuestionViewDto.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

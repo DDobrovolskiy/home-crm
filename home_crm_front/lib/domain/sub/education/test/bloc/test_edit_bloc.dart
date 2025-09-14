@@ -16,7 +16,7 @@ import '../repository/test_repository.dart';
 import '../state/test_edit_state.dart';
 
 class TestEditBloc extends Bloc<TestEditEvent, TestEditState> {
-  late final TestRepository _TestRepository = GetIt.instance
+  late final TestRepository _testRepository = GetIt.I
       .get<TestRepository>();
   late final OrganizationTestBloc _organizationTestBloc = GetIt.instance
       .get<OrganizationTestBloc>();
@@ -38,16 +38,16 @@ class TestEditBloc extends Bloc<TestEditEvent, TestEditState> {
         add(TestEditErrorEvent(error: PortException(
             message: 'Не удалось загрузить тест', auth: false)));
       } else {
-        var test = await _TestRepository.getTest(event.id!);
+        var test = await _testRepository.getTest(event.id!);
         emit.call(TestEditLoadedState(data: test, isOnlyWatch: false));
       }
     });
     on<TestEditCreateEvent>((event, emit) async {
-      await _TestRepository.create(TestCreateDto(name: event.name));
+      await _testRepository.create(TestCreateDto(name: event.name));
       add(TestEditRefreshEvent());
     });
     on<TestEditUpdateEvent>((event, emit) async {
-      await _TestRepository.update(
+      await _testRepository.update(
         TestUpdateDto(
           id: event.id,
           name: event.name,
@@ -57,7 +57,7 @@ class TestEditBloc extends Bloc<TestEditEvent, TestEditState> {
       add(TestEditRefreshEvent());
     });
     on<TestEditUpdateReadyEvent>((event, emit) async {
-      await _TestRepository.updateReady(
+      await _testRepository.updateReady(
         TestUpdateReadyDto(
           id: event.id,
           ready: event.ready,
@@ -66,7 +66,7 @@ class TestEditBloc extends Bloc<TestEditEvent, TestEditState> {
       add(TestEditRefreshEvent());
     });
     on<TestEditDeleteEvent>((event, emit) async {
-      await _TestRepository.delete(TestDeleteDto(id: event.id));
+      await _testRepository.delete(TestDeleteDto(id: event.id));
       add(TestEditRefreshEvent());
     });
     on<TestEditErrorEvent>((event, emit) {

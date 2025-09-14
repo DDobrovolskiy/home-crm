@@ -2,8 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/dto/response/question_dto.dart';
+import 'package:home_crm_front/domain/sub/education/question/event/question_edit_event.dart';
+import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/test/event/test_question_event.dart';
 import 'package:home_crm_front/domain/sub/education/test/state/test_edit_state.dart';
+import 'package:home_crm_front/domain/sub/education/test/state/test_question_state.dart';
+import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../../support/widgets/stamp.dart';
 import 'bloc/test_edit_bloc.dart';
@@ -20,15 +26,19 @@ class TestSuitPage extends StatefulWidget {
 }
 
 class _TestSuitPageState extends State<TestSuitPage> {
+  final textController = TextEditingController(); // Контроллер для поля ввода
+  final formKey = GlobalKey<FormState>(); // Глобальный ключ формы для валидации
   final _formKey = GlobalKey<FormState>();
   String? _name;
   int? _timeLimitMinutes;
 
-  final _testEditBloc = GetIt.instance.get<TestEditBloc>();
+  final _testEditBloc = GetIt.I.get<TestEditBloc>();
+  final _testQuestionBloc = GetIt.I.get<TestQuestionBloc>();
 
   @override
   void initState() {
     _testEditBloc.add(TestEditLoadEvent(id: widget.testId));
+    _testQuestionBloc.add(TestQuestionRefreshEvent(testId: widget.testId));
     super.initState();
   }
 
@@ -75,13 +85,13 @@ class _TestSuitPageState extends State<TestSuitPage> {
                 child: Column(
                   children: [
                     SizedBox(height: 5),
-                    fieldEdit('Название теста', state.data?.test.name, (value) {
+                    fieldEdit('Название теста', state.data?.name, (value) {
                       _name = value;
                     }),
                     SizedBox(height: 5),
                     fieldNumberEdit(
                       'Время выполнениния в минутах (0 - без ограничений)',
-                      state.data?.test.timeLimitMinutes,
+                      state.data?.timeLimitMinutes,
                       (value) {
                         _timeLimitMinutes = int.tryParse(value) ?? 0;
                       },
@@ -92,11 +102,11 @@ class _TestSuitPageState extends State<TestSuitPage> {
                       onPressed: () {
                         _testEditBloc.add(
                           TestEditUpdateEvent(
-                            id: state.data!.test.id,
-                            name: _name ?? state.data!.test.name,
+                            id: state.data!.id,
+                            name: _name ?? state.data!.name,
                             timeLimitMinutes:
                                 _timeLimitMinutes ??
-                                state.data!.test.timeLimitMinutes,
+                                state.data!.timeLimitMinutes,
                           ),
                         );
                       },
@@ -106,7 +116,7 @@ class _TestSuitPageState extends State<TestSuitPage> {
                       children: [
                         Text('Тест готов: '),
                         Checkbox(
-                          value: state.data?.test.ready ?? false,
+                          value: state.data?.ready ?? false,
                           onChanged: (bool? value) {
                             _testEditBloc.add(
                               TestEditUpdateReadyEvent(
@@ -121,34 +131,7 @@ class _TestSuitPageState extends State<TestSuitPage> {
                     SizedBox(height: 5),
                     Text('Вопросы: '),
                     SizedBox(height: 5),
-                    if (state.data != null &&
-                        state.data?.testQuestions.questions != null)
-                      Column(
-                        children: [
-                          for (
-                            int i = 0;
-                            i < state.data!.testQuestions.questions.length;
-                            i++
-                          )
-                            Row(
-                              children: [
-                                Text('${i + 1}. '),
-                                Text(
-                                  state.data!.testQuestions.questions[i].text,
-                                ),
-                                ?edit(
-                                  context,
-                                  state.data!.testQuestions.questions[i],
-                                ),
-                                Spacer(),
-                                ?delete(
-                                  context,
-                                  state.data!.testQuestions.questions[i],
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
+                    getQuestions(),
                     const SizedBox(height: 32),
                     ElevatedButton(
                       child: Text('Добавить вопрос'),
@@ -163,60 +146,155 @@ class _TestSuitPageState extends State<TestSuitPage> {
       );
     }
   }
-}
 
-Widget fieldEdit(String nameVal, String? val, ValueChanged<String>? onChanged) {
-  return TextFormField(
-    decoration: InputDecoration(labelText: nameVal),
-    initialValue: val,
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    validator: (value) {
-      if (value == null || value.trim().isEmpty) {
-        return 'Поле не должно быть пустым';
-      }
-      return null;
-    },
-    onChanged: onChanged,
-  );
-}
+  void openAddDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: const Text('Добавить новый вопрос'),
+          children: [
+            Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: textController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Текст вопроса не должен быть пустым!';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Введите текст вопроса',
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: const Text('Отмена'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      TextButton(
+                        child: const Text('Добавить'),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            final enteredName = textController.text;
+                            textController.clear(); // Очистка поля ввода
+                            GetIt.I.get<QuestionEditBloc>().add(
+                              QuestionEditCreateEvent(
+                                text: enteredName,
+                                testId: widget.testId,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-Widget fieldNumberEdit(
-  String nameVal,
-  int? val,
-  ValueChanged<String>? onChanged,
-) {
-  return TextFormField(
-    decoration: InputDecoration(labelText: nameVal),
-    initialValue: val.toString(),
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    validator: (value) {
-      if (value == null || RegExp(r'\d{4}').hasMatch(value)) {
-        return 'Поле не должно быть пустым';
-      }
-      return null;
-    },
-    onChanged: onChanged,
-  );
-}
+  Widget getQuestions() {
+    return BlocConsumer<TestQuestionBloc, TestQuestionState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        if (state.loaded) {
+          return Column(
+            children: [
+              for (int i = 0; i < state.test!.questions.length; i++)
+                Row(
+                  children: [
+                    Text('${i + 1}. '),
+                    Text(state.test!.questions[i].question.text),
+                    Text(
+                      state.test!.questions[i].questionOptions.validMessage ??
+                          '',
+                    ),
+                    ?edit(context, state.test!.questions[i].question),
+                    Spacer(),
+                    ?delete(context, state.test!.questions[i].question),
+                  ],
+                ),
+            ],
+          );
+        } else {
+          return Stamp.loadWidget(context);
+        }
+      },
+    );
+  }
 
-Widget? edit(BuildContext context, QuestionDto question) {
-  return OutlinedButton.icon(
-    // Добавили кнопку с иконкой
-    icon: Icon(Icons.edit),
-    label: Text("Редактировать"),
-    onPressed: () {
-      // AutoRouter.of(context).push(RoleRoute(roleId: role.role.id));
-    },
-  );
-}
+  Widget fieldEdit(
+    String nameVal,
+    String? val,
+    ValueChanged<String>? onChanged,
+  ) {
+    return TextFormField(
+      decoration: InputDecoration(labelText: nameVal),
+      initialValue: val,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'Поле не должно быть пустым';
+        }
+        return null;
+      },
+      onChanged: onChanged,
+    );
+  }
 
-Widget? delete(BuildContext context, QuestionDto question) {
-  return IconButton(
-    icon: Icon(Icons.delete),
-    onPressed: () {
-      // BlocProvider.of<TestEditBloc>(
-      //   context,
-      // ).add(TestEditDeleteEvent(id: test.test.id));
-    },
-  );
+  Widget fieldNumberEdit(
+    String nameVal,
+    int? val,
+    ValueChanged<String>? onChanged,
+  ) {
+    return TextFormField(
+      decoration: InputDecoration(labelText: nameVal),
+      initialValue: val.toString(),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value == null || RegExp(r'\d{4}').hasMatch(value)) {
+          return 'Поле не должно быть пустым';
+        }
+        return null;
+      },
+      onChanged: onChanged,
+    );
+  }
+
+  Widget? edit(BuildContext context, QuestionDto question) {
+    return OutlinedButton.icon(
+      // Добавили кнопку с иконкой
+      icon: Icon(Icons.edit),
+      label: Text("Редактировать"),
+      onPressed: () {
+        AutoRouter.of(
+          context,
+        ).push(QuestionRoute(testId: widget.testId, questionId: question.id));
+      },
+    );
+  }
+
+  Widget? delete(BuildContext context, QuestionDto question) {
+    return IconButton(
+      icon: Icon(Icons.delete),
+      onPressed: () {
+        BlocProvider.of<QuestionEditBloc>(
+          context,
+        ).add(QuestionEditDeleteEvent(id: question.id, testId: widget.testId));
+      },
+    );
+  }
 }

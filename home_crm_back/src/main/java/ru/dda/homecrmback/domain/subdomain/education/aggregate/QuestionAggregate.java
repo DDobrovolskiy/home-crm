@@ -110,7 +110,7 @@ public class QuestionAggregate {
     @Transient
     public String getValidFail() {
         if (options.size() < 2) {
-            return "В вопросе %s меньше двух ответов";
+            return "В вопросе: %s - меньше двух ответов";
         } else {
             return null;
         }
@@ -120,18 +120,19 @@ public class QuestionAggregate {
         return EducationQuestionDTO.builder()
                 .id(id)
                 .text(text)
-                .oneAnswer(options.stream()
-                        .filter(OptionAggregate::isCorrect)
-                        .count() == 1)
                 .test(test.getEducationTestDTO())
                 .build();
     }
 
     public EducationQuestionOptionsDTO getEducationQuestionOptionsDTO() {
         return EducationQuestionOptionsDTO.builder()
+                .oneAnswer(options.stream()
+                        .filter(OptionAggregate::isCorrect)
+                        .count() == 1)
                 .options(options.stream()
                         .map(OptionAggregate::getEducationOptionDTO)
                         .toList())
+                .validMessage(getValidFail())
                 .build();
     }
 
@@ -139,7 +140,6 @@ public class QuestionAggregate {
         return EducationQuestionViewDTO.builder()
                 .question(getEducationQuestionDTO())
                 .questionOptions(getEducationQuestionOptionsDTO())
-                .validMessage(getValidFail())
                 .build();
     }
 }

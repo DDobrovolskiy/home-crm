@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
+import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
@@ -66,7 +68,9 @@ void setupLocator() {
   GetIt.I.registerSingleton(ScopeBloc());
 
   GetIt.I.registerSingleton(TestEditBloc());
+  GetIt.I.registerSingleton(TestQuestionBloc());
   GetIt.I.registerSingleton(QuestionEditBloc());
+  GetIt.I.registerSingleton(QuestionOptionBloc());
 }
 
 Future<bool> resetBlocs() async {
@@ -119,8 +123,14 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<RoleEditBloc>.value(value: GetIt.I.get<RoleEditBloc>()),
         BlocProvider<ScopeBloc>.value(value: GetIt.instance.get<ScopeBloc>()),
         BlocProvider<TestEditBloc>.value(value: GetIt.I.get<TestEditBloc>()),
+        BlocProvider<TestQuestionBloc>.value(
+          value: GetIt.I.get<TestQuestionBloc>(),
+        ),
         BlocProvider<QuestionEditBloc>.value(
           value: GetIt.I.get<QuestionEditBloc>(),
+        ),
+        BlocProvider<QuestionOptionBloc>.value(
+          value: GetIt.I.get<QuestionOptionBloc>(),
         ),
       ],
       child: MaterialApp.router(

@@ -1,7 +1,6 @@
 package ru.dda.homecrmback.domain.subdomain.education.dto.request;
 
 public record EducationOptionDeleteDTO(
-        long id,
-        long questionId
+        long id
 ) {
 }

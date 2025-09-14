@@ -5,7 +5,6 @@ import lombok.Builder;
 @Builder
 public record EducationQuestionViewDTO(
         EducationQuestionDTO question,
-        EducationQuestionOptionsDTO questionOptions,
-        String validMessage
+        EducationQuestionOptionsDTO questionOptions
 ) {
 }

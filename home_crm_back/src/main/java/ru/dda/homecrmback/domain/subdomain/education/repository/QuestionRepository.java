@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends CrudRepository<QuestionAggregate, Long> {
-    Optional<QuestionAggregate> findByIdAndTestIdAndOrganizationId(Long id, Long testId, Long organizationId);
+    Optional<QuestionAggregate> findByIdAndOrganizationId(Long id, Long organizationId);
 }

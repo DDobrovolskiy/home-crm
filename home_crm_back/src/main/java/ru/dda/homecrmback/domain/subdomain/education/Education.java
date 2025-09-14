@@ -73,13 +73,11 @@ public interface Education {
         @Builder
         record Find(
                 long id,
-                Test.Find test,
                 Organization.FindById organization
         ) implements IExecute<Find> {
 
-            public static Find of(long id, long testId) {
+            public static Find of(long id) {
                 return new Find(id,
-                        Test.Find.of(testId),
                         Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
             }
         }
@@ -107,9 +105,9 @@ public interface Education {
 
         ) implements IExecute<Update> {
 
-            public static Update of(long id, String text, long testId) {
+            public static Update of(long id, String text) {
                 return new Update(
-                        Find.of(id, testId),
+                        Find.of(id),
                         text);
             }
         }
@@ -120,8 +118,8 @@ public interface Education {
 
         ) implements IExecute<Delete> {
 
-            public static Delete of(long id, long testId) {
-                return new Delete(Find.of(id, testId));
+            public static Delete of(long id) {
+                return new Delete(Find.of(id));
             }
         }
     }
@@ -130,15 +128,13 @@ public interface Education {
         @Builder
         record Find(
                 long id,
-                Question.Find question,
                 Organization.FindById organization
 
         ) implements IExecute<Find> {
 
-            public static Find of(long id, long questionId, long testId) {
+            public static Find of(long id) {
                 return new Find(
                         id,
-                        Question.Find.of(questionId, testId),
                         Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
             }
         }
@@ -152,11 +148,11 @@ public interface Education {
 
         ) implements IExecute<Create> {
 
-            public static Create of(String text, boolean correct, long questionId, long testId) {
+            public static Create of(String text, boolean correct, long questionId) {
                 return new Create(
                         text,
                         correct,
-                        Question.Find.of(questionId, testId),
+                        Question.Find.of(questionId),
                         Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
             }
         }
@@ -169,8 +165,8 @@ public interface Education {
 
         ) implements IExecute<Update> {
 
-            public static Update of(long id, String text, boolean correct, long questionId, long testId) {
-                return new Update(Find.of(id, questionId, testId), text, correct);
+            public static Update of(long id, String text, boolean correct) {
+                return new Update(Find.of(id), text, correct);
             }
         }
 
@@ -180,8 +176,8 @@ public interface Education {
 
         ) implements IExecute<Delete> {
 
-            public static Delete of(long id, long questionId, long testId) {
-                return new Delete(Find.of(id, questionId, testId));
+            public static Delete of(long id) {
+                return new Delete(Find.of(id));
             }
         }
     }

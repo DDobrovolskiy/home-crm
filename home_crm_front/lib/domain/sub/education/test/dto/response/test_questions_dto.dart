@@ -1,11 +1,12 @@
-import 'package:home_crm_front/domain/sub/education/question/dto/response/question_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../question/dto/response/question_view_dto.dart';
 
 part 'test_questions_dto.g.dart';
 
 @JsonSerializable()
 class TestQuestionsDto {
-  final List<QuestionDto> questions;
+  final List<QuestionViewDto> questions;
 
   TestQuestionsDto({required this.questions});
 

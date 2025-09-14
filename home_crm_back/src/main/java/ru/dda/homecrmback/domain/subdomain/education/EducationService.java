@@ -83,7 +83,7 @@ public class EducationService {
 
     @Transactional(readOnly = true)
     public Result<QuestionAggregate, IFailAggregate> findQuestion(Education.Question.Find command) {
-        return questionRepository.findByIdAndTestIdAndOrganizationId(command.id(), command.test().testId(), command.organization().organizationId())
+        return questionRepository.findByIdAndOrganizationId(command.id(), command.organization().organizationId())
                 .map(Result::<QuestionAggregate, IFailAggregate>success)
                 .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.TEST_NOT_FOUND.fail())));
     }
@@ -130,7 +130,7 @@ public class EducationService {
 
     @Transactional(readOnly = true)
     public Result<OptionAggregate, IFailAggregate> findOption(Education.Option.Find command) {
-        return optionRepository.findByIdAndQuestionIdAndOrganizationId(command.id(), command.question().id(), command.organization().organizationId())
+        return optionRepository.findByIdAndOrganizationId(command.id(), command.organization().organizationId())
                 .map(Result::<OptionAggregate, IFailAggregate>success)
                 .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.TEST_NOT_FOUND.fail())));
     }

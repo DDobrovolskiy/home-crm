@@ -130,7 +130,7 @@ public class TestAggregate {
     public EducationTestQuestionsDTO getEducationTestQuestionsDTO() {
         return EducationTestQuestionsDTO.builder()
                 .questions(questions.stream()
-                        .map(QuestionAggregate::getEducationQuestionDTO)
+                        .map(QuestionAggregate::getEducationQuestionViewDTO)
                         .toList())
                 .build();
     }

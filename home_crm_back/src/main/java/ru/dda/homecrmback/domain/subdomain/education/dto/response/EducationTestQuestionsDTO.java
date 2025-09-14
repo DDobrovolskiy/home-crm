@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record EducationTestQuestionsDTO(
-        List<EducationQuestionDTO> questions
+        List<EducationQuestionViewDTO> questions
 ) {
 }

@@ -6,7 +6,6 @@ import lombok.Builder;
 public record EducationQuestionDTO(
         long id,
         String text,
-        boolean oneAnswer,
         EducationTestDTO test
 ) {
 }
