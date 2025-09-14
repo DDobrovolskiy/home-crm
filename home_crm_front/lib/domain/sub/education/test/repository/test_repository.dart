@@ -1,17 +1,20 @@
 import 'package:home_crm_front/domain/sub/education/test/dto/request/test_create_dto.dart';
 import 'package:home_crm_front/domain/sub/education/test/dto/request/test_delete_dto.dart';
 import 'package:home_crm_front/domain/sub/education/test/dto/request/test_update_dto.dart';
+import 'package:home_crm_front/domain/sub/education/test/dto/request/test_update_ready_dto.dart';
 import 'package:home_crm_front/domain/sub/education/test/dto/response/test_dto.dart';
 
 import '../../../../support/port/port.dart';
+import '../dto/response/test_edit_dto.dart';
 
 class TestRepository {
   final String _path = 'education/test';
+  final String _pathReady = 'education/test/ready';
 
-  Future<TestDto?> getTest(int id) {
+  Future<TestEditDto?> getTest(int id) {
     return Port.get(
       'education/test/${id}',
-      (j) => TestDto.fromJson(j as Map<String, dynamic>),
+      (j) => TestEditDto.fromJson(j as Map<String, dynamic>),
     );
   }
 
@@ -26,6 +29,14 @@ class TestRepository {
   Future<TestDto?> update(TestUpdateDto dto) {
     return Port.put(
       _path,
+      dto.toJson(),
+      (j) => TestDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<TestDto?> updateReady(TestUpdateReadyDto dto) {
+    return Port.put(
+      _pathReady,
       dto.toJson(),
       (j) => TestDto.fromJson(j as Map<String, dynamic>),
     );

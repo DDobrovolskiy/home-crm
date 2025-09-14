@@ -151,7 +151,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
         icon: Icon(Icons.edit),
         label: Text("Редактировать"),
         onPressed: () {
-          // AutoRouter.of(context).push(RoleRoute(roleId: role.role.id));
+          AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
         },
       );
     } else {

@@ -35,6 +35,31 @@ public interface Education {
         }
 
         @Builder
+        record Update(
+                Find test,
+                String name,
+                int timeLimitMinutes
+
+        ) implements IExecute<Update> {
+
+            public static Update of(long id, String name, int timeLimitMinutes) {
+                return new Update(Find.of(id), name, timeLimitMinutes);
+            }
+        }
+
+        @Builder
+        record UpdateReady(
+                Find test,
+                boolean ready
+
+        ) implements IExecute<UpdateReady> {
+
+            public static UpdateReady of(long id, boolean ready) {
+                return new UpdateReady(Find.of(id), ready);
+            }
+        }
+
+        @Builder
         record Delete(
                 Find test
 

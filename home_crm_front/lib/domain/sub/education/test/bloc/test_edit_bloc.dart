@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/education/test/dto/request/test_update_ready_dto.dart';
+import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../../../../support/port/port.dart';
@@ -33,10 +35,11 @@ class TestEditBloc extends Bloc<TestEditEvent, TestEditState> {
         TestEditState.scope,
       );
       if (event.id == null) {
-        emit.call(TestEditLoadedState(data: null, isOnlyWatch: false));
+        add(TestEditErrorEvent(error: PortException(
+            message: 'Не удалось загрузить тест', auth: false)));
       } else {
-        var Test = await _TestRepository.getTest(event.id!);
-        emit.call(TestEditLoadedState(data: Test, isOnlyWatch: false));
+        var test = await _TestRepository.getTest(event.id!);
+        emit.call(TestEditLoadedState(data: test, isOnlyWatch: false));
       }
     });
     on<TestEditCreateEvent>((event, emit) async {
@@ -48,8 +51,16 @@ class TestEditBloc extends Bloc<TestEditEvent, TestEditState> {
         TestUpdateDto(
           id: event.id,
           name: event.name,
-          ready: event.ready,
           timeLimitMinutes: event.timeLimitMinutes,
+        ),
+      );
+      add(TestEditRefreshEvent());
+    });
+    on<TestEditUpdateReadyEvent>((event, emit) async {
+      await _TestRepository.updateReady(
+        TestUpdateReadyDto(
+          id: event.id,
+          ready: event.ready,
         ),
       );
       add(TestEditRefreshEvent());

@@ -19,15 +19,20 @@ class TestEditCreateEvent extends TestEditEvent {
 class TestEditUpdateEvent extends TestEditEvent {
   final int id;
   final String name;
-  final bool ready;
   final int timeLimitMinutes;
 
   TestEditUpdateEvent({
     required this.id,
     required this.name,
-    required this.ready,
     required this.timeLimitMinutes,
   });
+}
+
+class TestEditUpdateReadyEvent extends TestEditEvent {
+  final int id;
+  final bool ready;
+
+  TestEditUpdateReadyEvent({required this.id, required this.ready});
 }
 
 class TestEditDeleteEvent extends TestEditEvent {

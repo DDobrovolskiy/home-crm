@@ -6,13 +6,11 @@ part 'test_update_dto.g.dart';
 class TestUpdateDto {
   final int id;
   final String name;
-  final bool ready;
   final int timeLimitMinutes;
 
   TestUpdateDto({
     required this.id,
     required this.name,
-    required this.ready,
     required this.timeLimitMinutes,
   });
 

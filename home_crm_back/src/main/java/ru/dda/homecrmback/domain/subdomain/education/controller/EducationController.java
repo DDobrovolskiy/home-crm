@@ -7,7 +7,10 @@ import ru.dda.homecrmback.domain.subdomain.education.EducationService;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestCreateDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestDeleteDTO;
+import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestUpdateDTO;
+import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestUpdateReadyDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationTestDTO;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationTestEditDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 
@@ -20,10 +23,10 @@ public class EducationController {
     private final EducationService educationService;
 
     @GetMapping(path = "/test/{id}")
-    private IResponse<EducationTestDTO> getTest(@PathVariable long id) {
+    private IResponse<EducationTestEditDTO> getTest(@PathVariable long id) {
         return Education.Test.Find.of(id)
                 .execute(educationService::find)
-                .map(TestAggregate::getEducationTestDTO)
+                .map(TestAggregate::getEducationTestEditDTO)
                 .response(ResultAggregate::getErrorData);
     }
 
@@ -35,13 +38,21 @@ public class EducationController {
                 .response(ResultAggregate::getErrorData);
     }
 
-//    @PutMapping(path = "/test")
-//    public IResponse<EducationTestDTO> updateOrganization(@RequestBody EmployeeUpdateDTO dto) {
-//        return Employee.Update.of(dto.id(), dto.roleId())
-//                .execute(employeeService::update)
-//                .map(EmployeeAggregate::getEmployeeDTO)
-//                .response(ResultAggregate::getErrorData);
-//    }
+    @PutMapping(path = "/test")
+    public IResponse<EducationTestDTO> updateOrganization(@RequestBody EducationTestUpdateDTO dto) {
+        return Education.Test.Update.of(dto.id(), dto.name(), dto.timeLimitMinutes())
+                .execute(educationService::update)
+                .map(TestAggregate::getEducationTestDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @PutMapping(path = "/test/ready")
+    public IResponse<EducationTestDTO> updateOrganization(@RequestBody EducationTestUpdateReadyDTO dto) {
+        return Education.Test.UpdateReady.of(dto.id(), dto.ready())
+                .execute(educationService::ready)
+                .map(TestAggregate::getEducationTestDTO)
+                .response(ResultAggregate::getErrorData);
+    }
 
     @DeleteMapping(path = "/test")
     public IResponse<Integer> deleteOrganization(@RequestBody EducationTestDeleteDTO dto) {

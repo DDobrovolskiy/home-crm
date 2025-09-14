@@ -48,6 +48,18 @@ public class EducationService {
     }
 
     @Transactional
+    public Result<TestAggregate, IFailAggregate> update(Education.Test.Update command) {
+        return roleService.checkScope(ScopeType.TEST_CREATE, () -> find(command.test())
+                .then(testAggregate -> testAggregate.update(command.name(), command.timeLimitMinutes())));
+    }
+
+    @Transactional
+    public Result<TestAggregate, IFailAggregate> ready(Education.Test.UpdateReady command) {
+        return roleService.checkScope(ScopeType.TEST_CREATE, () -> find(command.test())
+                .then(testAggregate -> testAggregate.ready(command.ready())));
+    }
+
+    @Transactional
     public Result<Integer, IFailAggregate> delete(Education.Test.Delete command) {
         return roleService.checkScope(ScopeType.TEST_CREATE, () -> find(command.test())
                 .then(testAggregate -> {

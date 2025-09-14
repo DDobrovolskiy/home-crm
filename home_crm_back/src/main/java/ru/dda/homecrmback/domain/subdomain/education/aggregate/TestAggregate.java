@@ -72,6 +72,32 @@ public class TestAggregate {
                 });
     }
 
+    public Result<TestAggregate, IFailAggregate> update(String name, int timeLimitMinutes) {
+        return Validator.create()
+                .is(Objects.nonNull(name),
+                        () -> log.debug("Название теста не должно быть пусто"),
+                        FailEvent.VALIDATION.fail("Название теста не должно быть пусто"))
+                .is(timeLimitMinutes >= 0,
+                        () -> log.debug("Время выполнение должно больше или равно 0"),
+                        FailEvent.VALIDATION.fail("Время выполнение должно больше 0"))
+                .getResult(() -> {
+                    this.name = name;
+                    this.timeLimitMinutes = timeLimitMinutes;
+                    return this;
+                });
+    }
+
+    public Result<TestAggregate, IFailAggregate> ready(boolean ready) {
+        return Validator.create()
+                .is(!this.questions.isEmpty(),
+                        () -> log.debug("Нету вопросов в тесте"),
+                        FailEvent.VALIDATION.fail("В тесте должен быть хотя бы один вопрос"))
+                .getResult(() -> {
+                    this.ready = ready;
+                    return this;
+                });
+    }
+
     public void assignTo(EmployeeAggregate employee) {
         this.employees.add(employee);
     }
@@ -120,6 +146,13 @@ public class TestAggregate {
                 .test(getEducationTestDTO())
                 .testEmployees(getEducationTestEmployeesDTO())
                 .testSessions(getEducationTestSessionsDTO())
+                .build();
+    }
+
+    public EducationTestEditDTO getEducationTestEditDTO() {
+        return EducationTestEditDTO.builder()
+                .test(getEducationTestDTO())
+                .testQuestions(getEducationTestQuestionsDTO())
                 .build();
     }
 }

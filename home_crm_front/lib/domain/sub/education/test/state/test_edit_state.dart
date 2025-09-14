@@ -2,14 +2,14 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../support/exceptions/exceptions.dart';
 import '../../../scope/scope.dart';
-import '../dto/response/test_dto.dart';
+import '../dto/response/test_edit_dto.dart';
 
 abstract class TestEditState extends Equatable {
   static ScopeType scope = ScopeType.TEST_CREATE;
   abstract final bool isLoading;
   abstract final bool isOnlyWatch;
   abstract final bool isEndEdit;
-  abstract final TestDto? data;
+  abstract final TestEditDto? data;
   abstract final PortException? error;
 
   @override
@@ -28,7 +28,7 @@ class TestEditPointState extends TestEditState {
   bool get isOnlyWatch => false;
 
   @override
-  TestDto? get data => null;
+  TestEditDto? get data => null;
 
   @override
   PortException? get error => null;
@@ -36,7 +36,7 @@ class TestEditPointState extends TestEditState {
 
 class TestEditLoadedState extends TestEditState {
   @override
-  final TestDto? data;
+  final TestEditDto? data;
   @override
   final bool isOnlyWatch;
 
@@ -68,5 +68,5 @@ class TestEditErrorState extends TestEditState {
   bool get isEndEdit => false;
 
   @override
-  TestDto? get data => null;
+  TestEditDto? get data => null;
 }
