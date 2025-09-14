@@ -33,9 +33,6 @@ public class QuestionAggregate {
     @NotNull
     private String text;
 
-    @NotNull
-    private boolean oneAnswer;
-
     // Связь с тестом (один ко многим)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_id")
@@ -77,9 +74,6 @@ public class QuestionAggregate {
                                         () -> log.debug("Не указан ответ"),
                                         FailEvent.VALIDATION.fail("Не указан ответ"))
                                 .getResult(() -> {
-                                    question.oneAnswer = optionList.stream()
-                                            .filter(OptionAggregate::isCorrect)
-                                            .count() == 1;
                                     question.options = optionList;
                                     return question;
                                 })));
@@ -126,7 +120,9 @@ public class QuestionAggregate {
         return EducationQuestionDTO.builder()
                 .id(id)
                 .text(text)
-                .oneAnswer(oneAnswer)
+                .oneAnswer(options.stream()
+                        .filter(OptionAggregate::isCorrect)
+                        .count() == 1)
                 .test(test.getEducationTestDTO())
                 .build();
     }
