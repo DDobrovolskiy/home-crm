@@ -100,7 +100,7 @@ class Stamp {
                   leading: Icon(Icons.insert_drive_file),
                   title: Text('Обучение'),
                   onTap: () {
-                    // AutoRouter.of(context).push(HelpRoute());
+                    AutoRouter.of(context).push(OrganizationTestsRoute());
                   },
                 ),
               ],

@@ -11,6 +11,7 @@ import ru.dda.homecrmback.domain.subdomain.organization.dto.request.Organization
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationTestsDTO;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
@@ -67,6 +68,14 @@ public class OrganizationController {
         return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
                 .execute(organizationService::findById)
                 .map(OrganizationAggregate::organizationRolesDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping("/tests")
+    public IResponse<OrganizationTestsDTO> getOrganizationTest() {
+        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
+                .execute(organizationService::findById)
+                .map(OrganizationAggregate::getOrganizationTestsDTO)
                 .response(ResultAggregate::getErrorData);
     }
 }

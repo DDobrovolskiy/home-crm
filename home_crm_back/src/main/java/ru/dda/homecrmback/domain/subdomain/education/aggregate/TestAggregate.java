@@ -5,13 +5,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.*;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
+import ru.dda.homecrmback.domain.support.result.Result;
+import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
+import ru.dda.homecrmback.domain.support.result.events.FailEvent;
+import ru.dda.homecrmback.domain.support.result.validator.Validator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Getter
@@ -27,10 +29,13 @@ public class TestAggregate {
     private String name;
 
     @NotNull
-    private int timeLimit;
+    private boolean ready;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    private int timeLimitMinutes;
+
+    @NotNull
+    @ManyToOne()
     @JoinColumn(name = "organization_id")
     private OrganizationAggregate organization;
 
@@ -49,6 +54,24 @@ public class TestAggregate {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TestSessionAggregate> sessions = new ArrayList<>();
 
+    public static Result<TestAggregate, IFailAggregate> create(String name, OrganizationAggregate organizationAggregate) {
+        return Validator.create()
+                .is(Objects.nonNull(name),
+                        () -> log.debug("Название теста не должно быть пусто"),
+                        FailEvent.VALIDATION.fail("Название теста не должно быть пусто"))
+                .is(Objects.nonNull(organizationAggregate),
+                        () -> log.debug("Command.Create#organization is null"),
+                        FailEvent.VALIDATION.fail("Не указана организация"))
+                .getResult(() -> {
+                    TestAggregate aggregate = new TestAggregate();
+                    aggregate.name = name;
+                    aggregate.organization = organizationAggregate;
+                    aggregate.ready = false;
+                    aggregate.timeLimitMinutes = 0;
+                    return aggregate;
+                });
+    }
+
     public void assignTo(EmployeeAggregate employee) {
         this.employees.add(employee);
     }
@@ -56,5 +79,47 @@ public class TestAggregate {
     public void addQuestion(QuestionAggregate question) {
         this.questions.add(question);
         question.setTest(this); // Убедимся, что связь установлена правильно
+    }
+
+    public EducationTestDTO getEducationTestDTO() {
+        return EducationTestDTO.builder()
+                .id(id)
+                .name(name)
+                .ready(ready)
+                .timeLimitMinutes(timeLimitMinutes)
+                .organization(organization.organizationDTO())
+                .build();
+    }
+
+    public EducationTestEmployeesDTO getEducationTestEmployeesDTO() {
+        return EducationTestEmployeesDTO.builder()
+                .employees(employees.stream()
+                        .map(EmployeeAggregate::getEmployeeDTO)
+                        .toList())
+                .build();
+    }
+
+    public EducationTestQuestionsDTO getEducationTestQuestionsDTO() {
+        return EducationTestQuestionsDTO.builder()
+                .questions(questions.stream()
+                        .map(QuestionAggregate::getEducationQuestionDTO)
+                        .toList())
+                .build();
+    }
+
+    public EducationTestSessionsDTO getEducationTestSessionsDTO() {
+        return EducationTestSessionsDTO.builder()
+                .sessions(sessions.stream()
+                        .map(TestSessionAggregate::getEducationTestSessionDTO)
+                        .toList())
+                .build();
+    }
+
+    public EducationTestViewDTO getEducationTestViewDTO() {
+        return EducationTestViewDTO.builder()
+                .test(getEducationTestDTO())
+                .testEmployees(getEducationTestEmployeesDTO())
+                .testSessions(getEducationTestSessionsDTO())
+                .build();
     }
 }

@@ -26,7 +26,7 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       .get<RoleCurrentScopesCubit>();
 
   EmployeeEditBloc()
-      : super(EmployeeEditPointState(isEndEdit: false, isLoading: true)) {
+    : super(EmployeeEditPointState(isEndEdit: false, isLoading: true)) {
     on<EmployeeEditRefreshEvent>((event, emit) async {
       _organizationEmployeeBloc.add(OrganizationEmployeeRefreshEvent());
       _organizationRoleBloc.add(OrganizationRoleRefreshEvent());
@@ -36,16 +36,15 @@ class EmployeeEditBloc extends Bloc<EmployeeEditEvent, EmployeeEditState> {
       emit.call(EmployeeEditPointState(isEndEdit: false, isLoading: true));
       var bool = await _roleCurrentScopesCubit.checkScopeNoSafe(
         EmployeeEditState.scope,
-      )if (event.id == null) {
-          emit.call(EmployeeEditLoadedState(data: null, isOnlyWatch: false));
-        } else {
-          var employee = await _employeeRepository.getEmployeeLocalStorage(
-            event.id!,
-          );
-          emit.call(
-            EmployeeEditLoadedState(data: employee, isOnlyWatch: false),
-          );
-        }
+      );
+      if (event.id == null) {
+        emit.call(EmployeeEditLoadedState(data: null, isOnlyWatch: false));
+      } else {
+        var employee = await _employeeRepository.getEmployeeLocalStorage(
+          event.id!,
+        );
+        emit.call(EmployeeEditLoadedState(data: employee, isOnlyWatch: false));
+      }
     });
     on<EmployeeEditCreateEvent>((event, emit) async {
       await _employeeRepository.employeeCreate(

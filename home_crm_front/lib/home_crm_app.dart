@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
@@ -17,8 +18,10 @@ import 'package:home_crm_front/domain/support/token_service.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import 'domain/sub/authentication/repository/auth_repository.dart';
+import 'domain/sub/education/test/bloc/test_edit_bloc.dart';
 import 'domain/sub/organization/bloc/organization_bloc.dart';
 import 'domain/sub/organization/bloc/organization_edit_bloc.dart';
+import 'domain/sub/organization/bloc/organization_test_bloc.dart';
 import 'domain/sub/organization/repository/organization_repository.dart';
 import 'domain/sub/role/bloc/role_current.dart';
 import 'domain/sub/user/bloc/user_bloc.dart';
@@ -36,9 +39,9 @@ void setupLocator() {
   GetIt.instance.registerSingleton(EmployeeRepository());
   GetIt.instance.registerSingleton(RoleRepository());
   GetIt.instance.registerSingleton(ScopeRepository());
+  GetIt.instance.registerSingleton(TestRepository());
   //Cubits
-  GetIt.instance.registerSingleton(
-      RoleCurrentScopesCubit(), signalsReady: true);
+  GetIt.instance.registerSingleton(RoleCurrentScopesCubit());
   //Bloc
   GetIt.instance.registerSingleton(AuthBloc());
   GetIt.instance.registerSingleton(UserBloc());
@@ -48,9 +51,9 @@ void setupLocator() {
 
   GetIt.instance.registerSingleton(OrganizationBloc());
   GetIt.instance.registerSingleton(OrganizationEditBloc());
-  GetIt.instance.registerSingleton(
-      OrganizationEmployeeBloc(), signalsReady: true);
-  GetIt.instance.registerSingleton(OrganizationRoleBloc(), signalsReady: true);
+  GetIt.instance.registerSingleton(OrganizationEmployeeBloc());
+  GetIt.instance.registerSingleton(OrganizationRoleBloc());
+  GetIt.instance.registerSingleton(OrganizationTestBloc());
 
   GetIt.instance.registerSingleton(EmployeeEditBloc());
 
@@ -58,6 +61,8 @@ void setupLocator() {
   GetIt.instance.registerSingleton(RoleEditBloc());
 
   GetIt.instance.registerSingleton(ScopeBloc());
+
+  GetIt.instance.registerSingleton(TestEditBloc());
 }
 
 Future<bool> resetBlocs() async {
@@ -98,6 +103,9 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<OrganizationRoleBloc>.value(
           value: GetIt.instance.get<OrganizationRoleBloc>(),
         ),
+        BlocProvider<OrganizationTestBloc>.value(
+          value: GetIt.instance.get<OrganizationTestBloc>(),
+        ),
         BlocProvider<EmployeeEditBloc>.value(
           value: GetIt.instance.get<EmployeeEditBloc>(),
         ),
@@ -108,6 +116,9 @@ class HomeCrmApp extends StatelessWidget {
           value: GetIt.instance.get<RoleEditBloc>(),
         ),
         BlocProvider<ScopeBloc>.value(value: GetIt.instance.get<ScopeBloc>()),
+        BlocProvider<TestEditBloc>.value(
+          value: GetIt.instance.get<TestEditBloc>(),
+        ),
       ],
       child: MaterialApp.router(
         title: 'homeCRM',

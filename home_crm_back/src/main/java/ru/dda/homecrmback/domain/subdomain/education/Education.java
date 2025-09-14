@@ -14,23 +14,34 @@ public interface Education {
                 String name,
                 Organization.FindById organization
 
-        ) implements IExecute<Education.Test.Create> {
+        ) implements IExecute<Create> {
 
-            public static Education.Test.Create of(String name) {
-                return new Education.Test.Create(
+            public static Create of(String name) {
+                return new Create(
                         name,
                         Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
             }
         }
 
         @Builder
-        record FindById(
+        record Find(
                 long testId,
-                long organizationId
-        ) implements IExecute<Education.Test.FindById> {
+                Organization.FindById organization
+        ) implements IExecute<Find> {
 
-            public static Education.Test.FindById of(long testId, long organizationId) {
-                return new Education.Test.FindById(testId, organizationId);
+            public static Find of(long testId) {
+                return new Find(testId, Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+            }
+        }
+
+        @Builder
+        record Delete(
+                Find test
+
+        ) implements IExecute<Delete> {
+
+            public static Delete of(long id) {
+                return new Delete(Find.of(id));
             }
         }
     }
@@ -39,7 +50,7 @@ public interface Education {
         @Builder
         record Create(
                 String text,
-                Education.Test.FindById test,
+                Test.Find test,
                 List<Education.Question.Create.Option> options
 
         ) implements IExecute<Education.Question.Create> {
@@ -47,7 +58,7 @@ public interface Education {
             public static Education.Question.Create of(String text, long testId, List<Education.Question.Create.Option> options) {
                 return new Education.Question.Create(
                         text,
-                        Education.Test.FindById.of(testId, UserContextHolder.getCurrentUser().getOrganizationId()),
+                        Test.Find.of(testId),
                         options);
             }
 

@@ -14,6 +14,7 @@ import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationTestsDTO;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
@@ -107,6 +108,14 @@ public class OrganizationAggregate {
         return OrganizationRolesDTO.builder()
                 .roles(roles.stream()
                         .map(RoleAggregate::getRoleFullDTO)
+                        .toList())
+                .build();
+    }
+
+    public OrganizationTestsDTO getOrganizationTestsDTO() {
+        return OrganizationTestsDTO.builder()
+                .tests(tests.stream()
+                        .map(TestAggregate::getEducationTestViewDTO)
                         .toList())
                 .build();
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationTestSessionDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 
 import java.time.LocalDateTime;
@@ -31,4 +32,14 @@ public class TestSessionAggregate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_id")
     private TestAggregate test;
+
+    public EducationTestSessionDTO getEducationTestSessionDTO() {
+        return EducationTestSessionDTO.builder()
+                .id(id)
+                .startTime(startTime)
+                .endTime(endTime)
+                .employee(employee.getEmployeeDTO())
+                .test(test.getEducationTestDTO())
+                .build();
+    }
 }

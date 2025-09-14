@@ -80,6 +80,13 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                 ),
             ],
           ),
+          Text('Права роли:', textAlign: TextAlign.left),
+          Column(
+            children: [
+              for (final scope in role.roleScopes.scopes)
+                Text(scope.description, textAlign: TextAlign.left),
+            ],
+          ),
         ],
                 ),
     trailing: edit(context, role, state),

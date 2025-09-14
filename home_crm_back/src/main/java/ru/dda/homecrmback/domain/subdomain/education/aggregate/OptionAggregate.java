@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationOptionDTO;
 
 import java.util.Objects;
 
@@ -41,5 +42,14 @@ public class OptionAggregate {
     @Override
     public int hashCode() {
         return Objects.hash(text, correct);
+    }
+
+    public EducationOptionDTO getEducationOptionDTO() {
+        return EducationOptionDTO.builder()
+                .id(id)
+                .text(text)
+                .correct(correct)
+                .question(question.getEducationQuestionDTO())
+                .build();
     }
 }

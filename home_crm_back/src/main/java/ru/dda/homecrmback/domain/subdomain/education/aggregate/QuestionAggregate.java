@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationQuestionDTO;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationQuestionOptionsDTO;
+import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationQuestionViewDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +41,29 @@ public class QuestionAggregate {
     public void addOption(OptionAggregate option) {
         this.options.add(option);
         option.setQuestion(this); // Установим обратную ссылку
+    }
+
+    public EducationQuestionDTO getEducationQuestionDTO() {
+        return EducationQuestionDTO.builder()
+                .id(id)
+                .text(text)
+                .oneAnswer(oneAnswer)
+                .test(test.getEducationTestDTO())
+                .build();
+    }
+
+    public EducationQuestionOptionsDTO getEducationQuestionOptionsDTO() {
+        return EducationQuestionOptionsDTO.builder()
+                .options(options.stream()
+                        .map(OptionAggregate::getEducationOptionDTO)
+                        .toList())
+                .build();
+    }
+
+    public EducationQuestionViewDTO getEducationQuestionViewDTO() {
+        return EducationQuestionViewDTO.builder()
+                .question(getEducationQuestionDTO())
+                .questionOptions(getEducationQuestionOptionsDTO())
+                .build();
     }
 }
