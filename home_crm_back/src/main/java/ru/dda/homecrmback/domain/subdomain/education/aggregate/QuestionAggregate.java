@@ -110,7 +110,16 @@ public class QuestionAggregate {
     @Transient
     public String getValidFail() {
         if (options.size() < 2) {
-            return "В вопросе: %s - меньше двух ответов";
+            return "В вопросе: %s - %s".formatted(text, getValidMessage());
+        } else {
+            return null;
+        }
+    }
+
+    @Transient
+    public String getValidMessage() {
+        if (options.size() < 2) {
+            return "меньше двух ответов";
         } else {
             return null;
         }
@@ -132,7 +141,7 @@ public class QuestionAggregate {
                 .options(options.stream()
                         .map(OptionAggregate::getEducationOptionDTO)
                         .toList())
-                .validMessage(getValidFail())
+                .validMessage(getValidMessage())
                 .build();
     }
 

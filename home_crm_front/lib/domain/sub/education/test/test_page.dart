@@ -135,7 +135,9 @@ class _TestSuitPageState extends State<TestSuitPage> {
                     const SizedBox(height: 32),
                     ElevatedButton(
                       child: Text('Добавить вопрос'),
-                      onPressed: () {},
+                      onPressed: () {
+                        openAddDialog();
+                      },
                     ),
                   ],
                 ),
@@ -211,23 +213,49 @@ class _TestSuitPageState extends State<TestSuitPage> {
       },
       builder: (context, state) {
         if (state.loaded) {
-          return Column(
-            children: [
-              for (int i = 0; i < state.test!.questions.length; i++)
-                Row(
-                  children: [
-                    Text('${i + 1}. '),
-                    Text(state.test!.questions[i].question.text),
-                    Text(
-                      state.test!.questions[i].questionOptions.validMessage ??
-                          '',
-                    ),
-                    ?edit(context, state.test!.questions[i].question),
-                    Spacer(),
-                    ?delete(context, state.test!.questions[i].question),
-                  ],
-                ),
-            ],
+          return Container(
+            child: Column(
+              children: [
+                for (int i = 0; i < state.test!.questions.length; i++)
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text('${i + 1}. '),
+                          Text(
+                            state.test!.questions[i].question.text,
+                            softWrap: true,
+                          ),
+                          ?edit(context, state.test!.questions[i].question),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          state
+                                      .test!
+                                      .questions[i]
+                                      .questionOptions
+                                      .validMessage ==
+                                  null
+                              ? Icon(Icons.done)
+                              : Icon(Icons.warning),
+                          Text(
+                            softWrap: true,
+                            state
+                                    .test!
+                                    .questions[i]
+                                    .questionOptions
+                                    .validMessage ??
+                                '',
+                          ),
+                          Spacer(),
+                          ?delete(context, state.test!.questions[i].question),
+                        ],
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           );
         } else {
           return Stamp.loadWidget(context);
@@ -275,10 +303,9 @@ class _TestSuitPageState extends State<TestSuitPage> {
   }
 
   Widget? edit(BuildContext context, QuestionDto question) {
-    return OutlinedButton.icon(
+    return IconButton(
       // Добавили кнопку с иконкой
       icon: Icon(Icons.edit),
-      label: Text("Редактировать"),
       onPressed: () {
         AutoRouter.of(
           context,

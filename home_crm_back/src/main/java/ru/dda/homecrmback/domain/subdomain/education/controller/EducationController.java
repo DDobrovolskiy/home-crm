@@ -68,7 +68,7 @@ public class EducationController {
     }
 
 
-    @GetMapping(path = "/qustion/{id}")
+    @GetMapping(path = "/question/{id}")
     private IResponse<EducationQuestionDTO> getTestQuestion(@PathVariable long id) {
         return Education.Question.Find.of(id)
                 .execute(educationService::findQuestion)
@@ -76,7 +76,7 @@ public class EducationController {
                 .response(ResultAggregate::getErrorData);
     }
 
-    @GetMapping(path = "/qustion/{id}/options")
+    @GetMapping(path = "/question/{id}/options")
     private IResponse<EducationQuestionOptionsDTO> getQuestionOptions(@PathVariable long id) {
         return Education.Question.Find.of(id)
                 .execute(educationService::findQuestion)

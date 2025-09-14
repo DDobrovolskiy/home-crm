@@ -30,7 +30,6 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   final _formKey = GlobalKey<FormState>();
   String? _text;
-  int? _timeLimitMinutes;
 
   final _questionEditBloc = GetIt.I.get<QuestionEditBloc>();
   final _questionOptionBloc = GetIt.I.get<QuestionOptionBloc>();

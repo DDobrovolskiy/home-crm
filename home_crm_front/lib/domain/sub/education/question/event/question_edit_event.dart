@@ -19,7 +19,7 @@ class QuestionEditCreateEvent extends QuestionEditEvent {
   final int testId;
   final String text;
 
-  QuestionEditCreateEvent({required this.text, required this.testId}});
+  QuestionEditCreateEvent({required this.text, required this.testId});
 }
 
 class QuestionEditUpdateEvent extends QuestionEditEvent {
