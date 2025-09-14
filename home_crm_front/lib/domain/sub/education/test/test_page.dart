@@ -222,10 +222,13 @@ class _TestSuitPageState extends State<TestSuitPage> {
                       Row(
                         children: [
                           Text('${i + 1}. '),
-                          Text(
-                            state.test!.questions[i].question.text,
-                            softWrap: true,
+                          Flexible(
+                            child: Text(
+                              state.test!.questions[i].question.text,
+                              softWrap: true,
+                            ),
                           ),
+
                           ?edit(context, state.test!.questions[i].question),
                         ],
                       ),
