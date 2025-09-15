@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/option/bloc/option_edit_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/option/repository/option_repository.dart';
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
@@ -45,6 +47,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(ScopeRepository());
   GetIt.I.registerSingleton(TestRepository());
   GetIt.I.registerSingleton(QuestionRepository());
+  GetIt.I.registerSingleton(OptionRepository());
   //Cubits
   GetIt.I.registerSingleton(RoleCurrentScopesCubit());
   //Bloc
@@ -71,6 +74,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(TestQuestionBloc());
   GetIt.I.registerSingleton(QuestionEditBloc());
   GetIt.I.registerSingleton(QuestionOptionBloc());
+  GetIt.I.registerSingleton(OptionEditBloc());
 }
 
 Future<bool> resetBlocs() async {
@@ -131,6 +135,9 @@ class HomeCrmApp extends StatelessWidget {
         ),
         BlocProvider<QuestionOptionBloc>.value(
           value: GetIt.I.get<QuestionOptionBloc>(),
+        ),
+        BlocProvider<OptionEditBloc>.value(
+          value: GetIt.I.get<OptionEditBloc>(),
         ),
       ],
       child: MaterialApp.router(

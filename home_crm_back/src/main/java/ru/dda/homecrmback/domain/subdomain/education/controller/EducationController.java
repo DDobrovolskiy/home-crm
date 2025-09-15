@@ -108,6 +108,14 @@ public class EducationController {
                 .response(ResultAggregate::getErrorData);
     }
 
+    @GetMapping(path = "/option/{id}")
+    private IResponse<EducationOptionDTO> getOption(@PathVariable long id) {
+        return Education.Option.Find.of(id)
+                .execute(educationService::findOption)
+                .map(OptionAggregate::getEducationOptionDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
 
     @PostMapping(path = "/option")
     private IResponse<EducationOptionDTO> createOption(@RequestBody EducationOptionCreateDTO dto) {

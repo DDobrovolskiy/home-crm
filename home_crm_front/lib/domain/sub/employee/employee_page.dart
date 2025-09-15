@@ -216,9 +216,10 @@ class _EmployeePageState extends State<EmployeePage> {
 
   Widget _roleSelect(BuildContext context, int? initRole,
       OrganizationRoleState state) {
+    _selectedRole = _selectedRole ?? initRole ??
+        state.organization?.roles.first.role.id;
     return DropdownButton<int>(
-      value: _selectedRole ?? initRole ??
-          state.organization?.roles.first.role.id,
+      value: _selectedRole,
       // The currently selected value
       hint: const Text('Выберите'),
       icon: const Icon(Icons.arrow_drop_down),
