@@ -22,6 +22,7 @@ public enum FailEvent {
     WRONG_HEADER("Неправильный значение в заголовке"),
     PERMISSION_DENIED("Нет разрешения: %s"),
     ROLE_HAS_EMPLOYEE("Для удаления роли: %s необходимо отвязать всех сотрудников"),
+    TEST_IS_READY("Для изменения теста необходимо перевести тест в \"Не готов\""),
     NOT_FOUND("Не найден: %s");
 
     private final String pattern;

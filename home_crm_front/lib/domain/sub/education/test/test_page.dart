@@ -131,14 +131,15 @@ class _TestSuitPageState extends State<TestSuitPage> {
                     SizedBox(height: 5),
                     Text('Вопросы: '),
                     SizedBox(height: 5),
-                    getQuestions(),
+                    getQuestions(state.data?.ready ?? false),
                     const SizedBox(height: 32),
-                    ElevatedButton(
-                      child: Text('Добавить вопрос'),
-                      onPressed: () {
-                        openAddDialog();
-                      },
-                    ),
+                    if (!(state.data?.ready ?? false))
+                      ElevatedButton(
+                        child: Text('Добавить вопрос'),
+                        onPressed: () {
+                          openAddDialog();
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -206,7 +207,7 @@ class _TestSuitPageState extends State<TestSuitPage> {
     );
   }
 
-  Widget getQuestions() {
+  Widget getQuestions(bool ready) {
     return BlocConsumer<TestQuestionBloc, TestQuestionState>(
       listener: (context, state) {
         // TODO: implement listener
@@ -228,33 +229,32 @@ class _TestSuitPageState extends State<TestSuitPage> {
                               softWrap: true,
                             ),
                           ),
-
-                          ?edit(context, state.test!.questions[i].question),
+                          if (!ready)
+                            ?edit(context, state.test!.questions[i].question),
+                          if (!ready)
+                            ?delete(context, state.test!.questions[i].question),
                         ],
                       ),
-                      Row(
-                        children: [
-                          state
+                      if (state
+                              .test!
+                              .questions[i]
+                              .questionOptions
+                              .validMessage !=
+                          null)
+                        Row(
+                          children: [
+                            Icon(Icons.warning),
+                            Text(
+                              softWrap: true,
+                              state
                                       .test!
                                       .questions[i]
                                       .questionOptions
-                                      .validMessage ==
-                                  null
-                              ? Icon(Icons.done)
-                              : Icon(Icons.warning),
-                          Text(
-                            softWrap: true,
-                            state
-                                    .test!
-                                    .questions[i]
-                                    .questionOptions
-                                    .validMessage ??
-                                '',
-                          ),
-                          Spacer(),
-                          ?delete(context, state.test!.questions[i].question),
-                        ],
-                      ),
+                                      .validMessage ??
+                                  '',
+                            ),
+                          ],
+                        ),
                     ],
                   ),
               ],

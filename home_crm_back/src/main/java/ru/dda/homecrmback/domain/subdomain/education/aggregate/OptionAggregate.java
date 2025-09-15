@@ -54,6 +54,9 @@ public class OptionAggregate {
                 .is(Objects.nonNull(questionAggregate),
                         () -> log.debug("Command.Create#questionAggregate is null"),
                         FailEvent.VALIDATION.fail("Не указана вопрос"))
+                .is(!questionAggregate.getTest().isReady(),
+                        () -> log.debug("Тест зафиксирован"),
+                        FailEvent.VALIDATION.fail("Изменять готовый тест нельзя"))
                 .getResult(() -> {
                     OptionAggregate aggregate = new OptionAggregate();
                     aggregate.text = text;
@@ -69,6 +72,9 @@ public class OptionAggregate {
                 .is(Objects.nonNull(text),
                         () -> log.debug("Текст вопроса не должен быть пустым"),
                         FailEvent.VALIDATION.fail("Текст вопроса не должен быть пустым"))
+                .is(!this.question.getTest().isReady(),
+                        () -> log.debug("Тест зафиксирован"),
+                        FailEvent.VALIDATION.fail("Изменять готовый тест нельзя"))
                 .getResult(() -> {
                     this.text = text;
                     this.correct = correct;

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.dda.homecrmback.domain.subdomain.education.Education;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationQuestionDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationQuestionOptionsDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationQuestionViewDTO;
@@ -47,38 +46,6 @@ public class QuestionAggregate {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OptionAggregate> options = new ArrayList<>();
 
-    public static Result<QuestionAggregate, IFailAggregate> create(String text, List<Education.Option.Create> options,
-                                                                   TestAggregate testAggregate, OrganizationAggregate organizationAggregate) {
-        return Validator.create()
-                .is(Objects.nonNull(text),
-                        () -> log.debug("Текст вопроса не должен быть пустым"),
-                        FailEvent.VALIDATION.fail("Текст вопроса не должен быть пустым"))
-                .is(Objects.nonNull(organizationAggregate),
-                        () -> log.debug("Не указана организация"),
-                        FailEvent.VALIDATION.fail("Не указана организация"))
-                .getResult(() -> {
-                    QuestionAggregate aggregate = new QuestionAggregate();
-                    aggregate.text = text;
-                    aggregate.organization = organizationAggregate;
-                    aggregate.test = testAggregate;
-                    return aggregate;
-                })
-                .then(question -> Result.extract(options.stream()
-                                .map(create -> OptionAggregate.create(create.text(), create.correct(), question, organizationAggregate))
-                                .toList())
-                        .then(optionList -> Validator.create()
-                                .is(!optionList.isEmpty(),
-                                        () -> log.debug("Количество ответов не должно быть меньше 1"),
-                                        FailEvent.VALIDATION.fail("Количество ответов не должно быть меньше 1"))
-                                .is(optionList.stream().anyMatch(OptionAggregate::isCorrect),
-                                        () -> log.debug("Не указан ответ"),
-                                        FailEvent.VALIDATION.fail("Не указан ответ"))
-                                .getResult(() -> {
-                                    question.options = optionList;
-                                    return question;
-                                })));
-    }
-
     public static Result<QuestionAggregate, IFailAggregate> create(String text, TestAggregate testAggregate, OrganizationAggregate organizationAggregate) {
         return Validator.create()
                 .is(Objects.nonNull(text),
@@ -87,6 +54,12 @@ public class QuestionAggregate {
                 .is(Objects.nonNull(organizationAggregate),
                         () -> log.debug("Не указана организация"),
                         FailEvent.VALIDATION.fail("Не указана организация"))
+                .is(Objects.nonNull(testAggregate),
+                        () -> log.debug("Не указан тест"),
+                        FailEvent.VALIDATION.fail("Не указан тест"))
+                .is(!testAggregate.isReady(),
+                        () -> log.debug("Тест зафиксирован"),
+                        FailEvent.VALIDATION.fail("Изменять готовый тест нельзя"))
                 .getResult(() -> {
                     QuestionAggregate aggregate = new QuestionAggregate();
                     aggregate.text = text;
@@ -101,6 +74,9 @@ public class QuestionAggregate {
                 .is(Objects.nonNull(text),
                         () -> log.debug("Текст вопроса не должен быть пустым"),
                         FailEvent.VALIDATION.fail("Текст вопроса не должен быть пустым"))
+                .is(!this.test.isReady(),
+                        () -> log.debug("Тест зафиксирован"),
+                        FailEvent.VALIDATION.fail("Изменять готовый тест нельзя"))
                 .getResult(() -> {
                     this.text = text;
                     return this;

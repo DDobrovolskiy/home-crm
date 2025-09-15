@@ -116,6 +116,8 @@ public class EducationService {
     @Transactional
     public Result<Integer, IFailAggregate> deleteQuestion(Education.Question.Delete command) {
         return roleService.checkScope(ScopeType.TEST_CREATE, () -> findQuestion(command.question())
+                .isTrue(question -> !question.getTest().isReady(),
+                        question -> ResultAggregate.Fails.Default.of(FailEvent.TEST_IS_READY.fail()))
                 .then(aggregate -> {
                     try {
                         questionRepository.delete(aggregate);
@@ -163,6 +165,8 @@ public class EducationService {
     @Transactional
     public Result<Integer, IFailAggregate> deleteOption(Education.Option.Delete command) {
         return roleService.checkScope(ScopeType.TEST_CREATE, () -> findOption(command.option())
+                .isTrue(option -> !option.getQuestion().getTest().isReady(),
+                        option -> ResultAggregate.Fails.Default.of(FailEvent.TEST_IS_READY.fail()))
                 .then(aggregate -> {
                     try {
                         optionRepository.delete(aggregate);
