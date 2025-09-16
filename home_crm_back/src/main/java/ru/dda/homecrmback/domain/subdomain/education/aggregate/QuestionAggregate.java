@@ -121,10 +121,29 @@ public class QuestionAggregate {
                 .build();
     }
 
+    public EducationQuestionOptionsDTO getRunEducationQuestionOptionsDTO() {
+        return EducationQuestionOptionsDTO.builder()
+                .oneAnswer(options.stream()
+                        .filter(OptionAggregate::isCorrect)
+                        .count() == 1)
+                .options(options.stream()
+                        .map(OptionAggregate::getRunEducationOptionDTO)
+                        .toList())
+                .validMessage(getValidMessage())
+                .build();
+    }
+
     public EducationQuestionViewDTO getEducationQuestionViewDTO() {
         return EducationQuestionViewDTO.builder()
                 .question(getEducationQuestionDTO())
                 .questionOptions(getEducationQuestionOptionsDTO())
+                .build();
+    }
+
+    public EducationQuestionViewDTO getRunEducationQuestionViewDTO() {
+        return EducationQuestionViewDTO.builder()
+                .question(getEducationQuestionDTO())
+                .questionOptions(getRunEducationQuestionOptionsDTO())
                 .build();
     }
 }

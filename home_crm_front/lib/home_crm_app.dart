@@ -7,6 +7,8 @@ import 'package:home_crm_front/domain/sub/education/option/repository/option_rep
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
+import 'package:home_crm_front/domain/sub/education/session/bloc/session_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/session/repository/session_repository.dart';
 import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
@@ -51,6 +53,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(TestRepository());
   GetIt.I.registerSingleton(QuestionRepository());
   GetIt.I.registerSingleton(OptionRepository());
+  GetIt.I.registerSingleton(SessionRepository());
   //Cubits
   GetIt.I.registerSingleton(RoleCurrentScopesCubit());
   GetIt.I.registerSingleton(TestAssignCubit());
@@ -81,6 +84,8 @@ void setupLocator() {
   GetIt.I.registerSingleton(QuestionEditBloc());
   GetIt.I.registerSingleton(QuestionOptionBloc());
   GetIt.I.registerSingleton(OptionEditBloc());
+
+  GetIt.I.registerSingleton(SessionBloc());
 }
 
 Future<bool> resetBlocs() async {
@@ -153,6 +158,9 @@ class HomeCrmApp extends StatelessWidget {
         ),
         BlocProvider<OptionEditBloc>.value(
           value: GetIt.I.get<OptionEditBloc>(),
+        ),
+        BlocProvider<SessionBloc>.value(
+          value: GetIt.I.get<SessionBloc>(),
         ),
       ],
       child: MaterialApp.router(

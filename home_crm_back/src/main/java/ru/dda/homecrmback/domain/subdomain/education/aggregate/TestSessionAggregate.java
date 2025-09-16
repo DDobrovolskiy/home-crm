@@ -96,7 +96,7 @@ public class TestSessionAggregate {
     public EducationTestSessionQuestionsDTO getEducationTestSessionQuestionsDTO() {
         return EducationTestSessionQuestionsDTO.builder()
                 .session(getEducationTestSessionDTO())
-                .test(test.getEducationTestQuestionsDTO())
+                .test(test.getRunEducationTestQuestionsDTO())
                 .build();
     }
 }

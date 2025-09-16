@@ -153,6 +153,14 @@ public class TestAggregate {
                 .build();
     }
 
+    public EducationTestQuestionsDTO getRunEducationTestQuestionsDTO() {
+        return EducationTestQuestionsDTO.builder()
+                .questions(questions.stream()
+                        .map(QuestionAggregate::getRunEducationQuestionViewDTO)
+                        .toList())
+                .build();
+    }
+
     public EducationTestSessionsDTO getEducationTestSessionsDTO() {
         return EducationTestSessionsDTO.builder()
                 .sessions(sessions.stream()

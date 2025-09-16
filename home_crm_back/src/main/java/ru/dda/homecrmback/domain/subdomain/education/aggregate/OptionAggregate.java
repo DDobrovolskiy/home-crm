@@ -102,4 +102,13 @@ public class OptionAggregate {
                 .question(question.getEducationQuestionDTO())
                 .build();
     }
+
+    public EducationOptionDTO getRunEducationOptionDTO() {
+        return EducationOptionDTO.builder()
+                .id(id)
+                .text(text)
+                .correct(false)
+                .question(question.getEducationQuestionDTO())
+                .build();
+    }
 }
