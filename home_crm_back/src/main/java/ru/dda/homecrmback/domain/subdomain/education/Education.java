@@ -6,6 +6,7 @@ import ru.dda.homecrmback.domain.subdomain.employee.Employee;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 public interface Education {
@@ -211,7 +212,7 @@ public interface Education {
 
             public static GetOrCreate of(long testId, long employeeId) {
                 return new GetOrCreate(
-                        LocalDateTime.now(),
+                        LocalDateTime.now(Clock.systemUTC()),
                         Test.Find.of(testId),
                         Employee.Find.of(employeeId),
                         Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));

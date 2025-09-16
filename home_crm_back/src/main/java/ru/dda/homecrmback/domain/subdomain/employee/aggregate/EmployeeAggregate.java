@@ -12,6 +12,7 @@ import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestResultAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeSessionDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestViewDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestsDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
@@ -104,10 +105,19 @@ public class EmployeeAggregate {
                 .build();
     }
 
+    public EmployeeSessionDTO getEmployeeSessionDTO() {
+        return EmployeeSessionDTO.builder()
+                .sessions(sessions.stream()
+                        .map(TestSessionAggregate::getEducationTestSessionDTO)
+                        .toList())
+                .build();
+    }
+
     public EmployeeTestViewDTO getEmployeeTestViewDTO() {
         return EmployeeTestViewDTO.builder()
                 .employee(getEmployeeDTO())
                 .employeeTests(getEmployeeTestsDTO())
+                .employeeSessions(getEmployeeSessionDTO())
                 .build();
     }
 

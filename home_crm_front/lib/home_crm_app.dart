@@ -8,6 +8,7 @@ import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
 import 'package:home_crm_front/domain/sub/education/session/bloc/session_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/session/cubit/session_result.dart';
 import 'package:home_crm_front/domain/sub/education/session/repository/session_repository.dart';
 import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
@@ -57,6 +58,7 @@ void setupLocator() {
   //Cubits
   GetIt.I.registerSingleton(RoleCurrentScopesCubit());
   GetIt.I.registerSingleton(TestAssignCubit());
+  GetIt.I.registerSingleton(SessionResultCubit());
   //Bloc
   GetIt.I.registerSingleton(AuthBloc());
   GetIt.I.registerSingleton(UserBloc());
@@ -108,6 +110,9 @@ class HomeCrmApp extends StatelessWidget {
         ),
         BlocProvider<TestAssignCubit>.value(
           value: GetIt.I.get<TestAssignCubit>(),
+        ),
+        BlocProvider<SessionResultCubit>.value(
+          value: GetIt.I.get<SessionResultCubit>(),
         ),
         BlocProvider<AuthBloc>.value(value: GetIt.I.get<AuthBloc>()),
         BlocProvider<UserBloc>.value(value: GetIt.I.get<UserBloc>()),
