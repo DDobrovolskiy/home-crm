@@ -2,14 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
+import 'package:home_crm_front/domain/sub/education/option/dto/response/option_dto.dart';
+import 'package:home_crm_front/domain/sub/education/session/bloc/session_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/session/event/session_event.dart';
 import 'package:home_crm_front/domain/sub/employee/state/employee_test_state.dart';
-import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_test_bloc.dart';
-import 'package:home_crm_front/domain/sub/organization/event/organization_employee_test_event.dart';
-import 'package:home_crm_front/domain/sub/organization/state/organization_employee_test_state.dart';
-import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../../support/widgets/stamp.dart';
+import '../education/session/dto/request/session_result_question_dto.dart';
+import '../education/session/state/session_state.dart';
 import 'bloc/employee_test_bloc.dart';
 import 'event/employee_test_event.dart';
 
@@ -76,7 +76,7 @@ class _EmployeeTestsPageState extends State<EmployeeTestsPage> {
                   trailing: IconButton(
                     icon: Icon(Icons.play_arrow),
                     onPressed: () {
-                      openAddTestDialog(test.id);
+                      openAddTestDialog(test.id, state.data!.employee.id);
                     },
                   ),
                 ),
@@ -88,11 +88,11 @@ class _EmployeeTestsPageState extends State<EmployeeTestsPage> {
     }
   }
 
-  void openAddTestDialog(int testId) {
+  void openAddTestDialog(int testId, int employeeId) {
     showDialog(
       context: context,
       builder: (context) {
-        return CustomDialogWidget(testId: testId);
+        return CustomDialogWidget(testId: testId, employeeId: employeeId);
       },
     );
   }
@@ -101,82 +101,106 @@ class _EmployeeTestsPageState extends State<EmployeeTestsPage> {
 // Виджет с внутренним состоянием для диалога
 class CustomDialogWidget extends StatefulWidget {
   final int testId;
+  final int employeeId;
 
-  const CustomDialogWidget({super.key, required this.testId});
+  const CustomDialogWidget({
+    super.key,
+    required this.testId,
+    required this.employeeId,
+  });
 
   @override
   _CustomDialogWidgetState createState() => _CustomDialogWidgetState();
 }
 
 class _CustomDialogWidgetState extends State<CustomDialogWidget> {
+  int currentIndex = 0;
+  List<SessionResultQuestionDto> answers = [];
+
   @override
   void initState() {
-    GetIt.I.get<OrganizationEmployeeTestBloc>().add(
-      OrganizationEmployeeTestRefreshEvent(),
+    GetIt.I.get<SessionBloc>().add(
+      SessionRefreshEvent(testId: widget.testId, employeeId: widget.employeeId),
     );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<
-      OrganizationEmployeeTestBloc,
-      OrganizationEmployeeTestState
-    >(
+    return BlocConsumer<SessionBloc, SessionState>(
       listener: (context, state) {},
       builder: (context, state) {
         if (!state.loaded) {
           return Stamp.loadWidget(context);
         } else {
+          int max = state.data!.test.questions.length - 1;
+          if (answers.isEmpty) {
+            for (var q in state.data!.test.questions) {
+              answers.add(SessionResultQuestionDto(
+                  questionId: q.question.id, options: {}));
+            }
+          }
           return SimpleDialog(
-            title: Text('Назначить тест'),
+            title: Row(
+              children: [
+                Text(state.data!.session.test.name),
+                if (state.data?.session.endTime != null)
+                  Text(' до: ${state.data!.session.endTime}'),
+              ],
+            ),
             children: [
               Form(
                 child: Column(
                   children: [
-                    for (final employee in state.organization!.employees)
-                      Row(
-                        children: [
-                          Stamp.giperLinkText(
-                            Text(
-                              employee.employee.user.name,
-                              textAlign: TextAlign.left,
-                            ),
-                            () {
-                              AutoRouter.of(context).push(
-                                EmployeeRoute(employeeId: employee.employee.id),
-                              );
-                            },
-                          ),
-                          Spacer(),
-                          Text('Назначен: '),
-                          Checkbox(
-                            value: employee.employeeTests.tests.any(
-                              (test) => test.id == widget.testId,
-                            ),
-                            onChanged: (bool? value) {
-                              if (employee.employeeTests.tests.any(
-                                (test) => test.id == widget.testId,
-                              )) {
-                                GetIt.I.get<TestAssignCubit>().unassignTest(
-                                  widget.testId,
-                                  employee.employee.id,
-                                );
-                              } else {
-                                GetIt.I.get<TestAssignCubit>().assignTest(
-                                  widget.testId,
-                                  employee.employee.id,
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                    Text('Вопрос: '),
+                    Text(
+                      state.data!.test.questions[currentIndex].question.text,
+                    ),
+                    Text('Варианты ответов: '),
+                    fieldMultySelected(
+                      state
+                          .data!
+                          .test
+                          .questions[currentIndex]
+                          .questionOptions
+                          .options,
+                      answers[currentIndex],
+                      state
+                          .data!
+                          .test
+                          .questions[currentIndex]
+                          .questionOptions
+                          .oneAnswer,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        if (currentIndex != 0)
+                          TextButton(
+                            child: const Text('Назад'),
+                            onPressed: () =>
+                            {
+                              setState(() {
+                                currentIndex--;
+                              }),
+                            },
+                          ),
+                        if (currentIndex != max)
+                          TextButton(
+                            child: const Text('Дальше'),
+                            onPressed: () =>
+                            {
+                              setState(() {
+                                currentIndex++;
+                              }),
+                            },
+                          ),
                         TextButton(
-                          child: const Text('Назад'),
+                          child: const Text('Закончить'),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        TextButton(
+                          child: const Text('Выйти'),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -187,6 +211,39 @@ class _CustomDialogWidgetState extends State<CustomDialogWidget> {
             ],
           );
         }
+      },
+    );
+  }
+
+  Widget fieldMultySelected(List<OptionDto> options,
+      SessionResultQuestionDto answerQuestion,
+      bool oneAnswer,) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: options.length,
+      itemBuilder: (_, index) {
+        final option = options[index];
+        return CheckboxListTile(
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Text(option.text),
+          value: answerQuestion.options.contains(option.id),
+          activeColor: Colors.green,
+          checkColor: Colors.white,
+          onChanged: (bool? checked) {
+            if (checked!) {
+              if (oneAnswer) {
+                answerQuestion.options.clear();
+                answerQuestion.options.add(option.id);
+              } else {
+                answerQuestion.options.add(option.id);
+              }
+            } else {
+              answerQuestion.options.remove(option.id);
+            }
+            setState(() {});
+          },
+        );
       },
     );
   }

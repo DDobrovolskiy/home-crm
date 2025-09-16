@@ -23,4 +23,12 @@ class OptionDto {
 
   factory OptionDto.fromJson(Map<String, dynamic> json) =>
       _$OptionDtoFromJson(json);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OptionDto && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
