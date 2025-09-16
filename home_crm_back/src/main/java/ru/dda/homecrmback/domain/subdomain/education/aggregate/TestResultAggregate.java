@@ -33,6 +33,10 @@ public class TestResultAggregate {
     @JoinColumn(name = "test_id")
     private TestAggregate originalTest;
 
+    @OneToOne
+    @JoinColumn(name = "session_id")
+    private TestSessionAggregate session;
+
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "organization_id")

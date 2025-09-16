@@ -11,6 +11,7 @@ public record EducationTestSessionDTO(
         LocalDateTime startTime,
         LocalDateTime endTime,
         EmployeeDTO employee,
-        EducationTestDTO test
+        EducationTestDTO test,
+        boolean active
 ) {
 }

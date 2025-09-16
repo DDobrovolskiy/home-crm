@@ -6,6 +6,8 @@ import ru.dda.homecrmback.domain.subdomain.employee.Employee;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 
+import java.time.LocalDateTime;
+
 public interface Education {
     interface Test {
         @Builder
@@ -193,6 +195,26 @@ public interface Education {
 
             public static Delete of(long id) {
                 return new Delete(Find.of(id));
+            }
+        }
+    }
+
+    interface Session {
+
+        @Builder
+        record GetOrCreate(
+                LocalDateTime time,
+                Test.Find test,
+                Employee.Find employee,
+                Organization.FindById organization
+        ) implements IExecute<GetOrCreate> {
+
+            public static GetOrCreate of(long testId, long employeeId) {
+                return new GetOrCreate(
+                        LocalDateTime.now(),
+                        Test.Find.of(testId),
+                        Employee.Find.of(employeeId),
+                        Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
             }
         }
     }

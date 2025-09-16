@@ -8,9 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.OptionAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.QuestionAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.repository.OptionRepository;
 import ru.dda.homecrmback.domain.subdomain.education.repository.QuestionRepository;
 import ru.dda.homecrmback.domain.subdomain.education.repository.TestRepository;
+import ru.dda.homecrmback.domain.subdomain.education.repository.TestSessionRepository;
 import ru.dda.homecrmback.domain.subdomain.employee.EmployeeService;
 import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
 import ru.dda.homecrmback.domain.subdomain.role.RoleService;
@@ -31,6 +33,7 @@ public class EducationService {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
+    private final TestSessionRepository sessionRepository;
 
     @Transactional(readOnly = true)
     public Result<TestAggregate, IFailAggregate> findTest(Education.Test.Find command) {
@@ -197,5 +200,29 @@ public class EducationService {
                                 FailEvent.ERROR_ON_SAVE.fail("Ошибка удаления теста: %s".formatted(command.option().id()))));
                     }
                 }));
+    }
+
+    @Transactional
+    public Result<TestSessionAggregate, IFailAggregate> getOrCreateSession(Education.Session.GetOrCreate command) {
+        return sessionRepository.findByOrganizationIdAndEmployeeIdAndTestIdAndEndTimeAfterAndResultIsNull(
+                        command.organization().organizationId(), command.employee().id(), command.test().testId(), command.time())
+                .or(() -> sessionRepository.findByOrganizationIdAndEmployeeIdAndTestIdAndEndTimeIsNullAndResultIsNull(
+                        command.organization().organizationId(), command.employee().id(), command.test().testId()))
+                .map(Result::<TestSessionAggregate, IFailAggregate>success)
+                .orElseGet(() -> Result.merge(
+                                command.test().execute(this::findTest),
+                                command.employee().execute(employeeService::find),
+                                command.organization().execute(organizationService::findById),
+                                TestSessionAggregate::create
+                        )
+                        .then(session -> {
+                            try {
+                                return Result.success(sessionRepository.save(session));
+                            } catch (Exception e) {
+                                log.error(e.getMessage(), e);
+                                return Result.fail(ResultAggregate.Fails.Default.of(
+                                        FailEvent.ERROR_ON_SAVE.fail("Ошибка сохранения сессии")));
+                            }
+                        }));
     }
 }

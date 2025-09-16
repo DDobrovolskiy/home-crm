@@ -60,6 +60,7 @@ CREATE TABLE test_result
     completed_at TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     employee_id  BIGINT,
     test_id      BIGINT,
+    session_id BIGINT,
     organization_id BIGINT NOT NULL,
     CONSTRAINT pk_test_result PRIMARY KEY (id)
 );
@@ -113,6 +114,7 @@ CREATE TABLE test_sessions
     end_time    TIMESTAMP WITHOUT TIME ZONE,
     employee_id BIGINT,
     test_id     BIGINT,
+    result_id BIGINT,
     organization_id BIGINT NOT NULL,
     CONSTRAINT pk_test_sessions PRIMARY KEY (id)
 );
@@ -125,6 +127,13 @@ ALTER TABLE test_sessions
     ADD CONSTRAINT FK_TEST_SESSIONS_ON_TEST FOREIGN KEY (test_id) REFERENCES test (id);
 CREATE INDEX IF NOT EXISTS test_sessions_test ON test_sessions (test_id);
 
+ALTER TABLE test_sessions
+    ADD CONSTRAINT FK_TEST_SESSIONS_ON_RESULT FOREIGN KEY (result_id) REFERENCES test_result (id);
+CREATE INDEX IF NOT EXISTS test_sessions_result ON test_sessions (result_id);
+
+ALTER TABLE test_result
+    ADD CONSTRAINT FK_TEST_RESULT_ON_TEST FOREIGN KEY (session_id) REFERENCES test_sessions (id);
+CREATE INDEX IF NOT EXISTS test_result_test ON test_result (session_id);
 
 INSERT INTO scope (type)
 VALUES ('TEST_CREATE');

@@ -11,6 +11,7 @@ class SessionDto {
   final String endTime;
   final EmployeeDto employee;
   final TestDto test;
+  final bool active;
 
   SessionDto({
     required this.id,
@@ -18,6 +19,7 @@ class SessionDto {
     required this.endTime,
     required this.employee,
     required this.test,
+    required this.active,
   });
 
   Map<String, dynamic> toJson() {

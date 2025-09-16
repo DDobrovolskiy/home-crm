@@ -7,6 +7,7 @@ import ru.dda.homecrmback.domain.subdomain.education.EducationService;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.OptionAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.QuestionAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.dto.request.*;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.*;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
@@ -153,6 +154,14 @@ public class EducationController {
     public IResponse<Integer> deleteOption(@RequestBody EducationOptionDeleteDTO dto) {
         return Education.Option.Delete.of(dto.id())
                 .execute(educationService::deleteOption)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @PostMapping(path = "/session")
+    private IResponse<EducationTestSessionQuestionsDTO> createSession(@RequestBody EducationTestSessionCreateDTO dto) {
+        return Education.Session.GetOrCreate.of(dto.testId(), dto.employeeId())
+                .execute(educationService::getOrCreateSession)
+                .map(TestSessionAggregate::getEducationTestSessionQuestionsDTO)
                 .response(ResultAggregate::getErrorData);
     }
 }
