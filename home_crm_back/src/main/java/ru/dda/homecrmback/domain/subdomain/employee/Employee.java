@@ -10,6 +10,20 @@ import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 public interface Employee {
 
     @Builder
+    record Current(
+            User.FindById user,
+            Organization.FindById organization
+    ) implements IExecute<Current> {
+
+        public static Current of() {
+            return new Current(
+                    User.FindById.of(UserContextHolder.getCurrentUser().getUserId()),
+                    Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+        }
+    }
+
+
+    @Builder
     record Find(
             long id,
             Organization.FindById organization

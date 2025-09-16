@@ -31,6 +31,13 @@ public class EmployeeService {
                 .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.EMPLOYEE_NOT_FOUND.fail())));
     }
 
+    @Transactional(readOnly = true)
+    public Result<EmployeeAggregate, IFailAggregate> current(Employee.Current command) {
+        return employeeRepository.findByUserIdAndOrganizationId(command.user().id(), command.organization().organizationId())
+                .map(Result::<EmployeeAggregate, IFailAggregate>success)
+                .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.EMPLOYEE_NOT_FOUND.fail())));
+    }
+
     @Transactional
     public Result<EmployeeAggregate, IFailAggregate> create(Employee.Create command) {
         return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () ->

@@ -89,8 +89,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                             : Text(test.test.timeLimitMinutes.toString()),
                       ],
                     ),
-                    OutlinedButton.icon(
-                      // Добавили кнопку с иконкой
+                    if (state.hasEdit)
+                      OutlinedButton.icon(
+                        // Добавили кнопку с иконкой
                       icon: Icon(Icons.add_circle),
                       label: Text("Назначить"),
                       onPressed: () {

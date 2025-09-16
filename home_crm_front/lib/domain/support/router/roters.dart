@@ -15,6 +15,8 @@ class RoutersApp {
       '/organization/employees';
   static const String employee =
       '/organization/employee/:employeeId';
+  static const String employeeTests =
+      '/organization/employee/tests';
   static const String roles =
       '/organization/roles';
   static const String role =
@@ -44,6 +46,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(
         page: OrganizationRolesRoute.page, path: RoutersApp.roles),
     AutoRoute(page: EmployeeRoute.page, path: RoutersApp.employee),
+    AutoRoute(page: EmployeeTestsRoute.page, path: RoutersApp.employeeTests),
     AutoRoute(page: RoleRoute.page, path: RoutersApp.role),
     AutoRoute(page: OrganizationTestsRoute.page, path: RoutersApp.tests),
     AutoRoute(page: TestSuitRoute.page, path: RoutersApp.test),

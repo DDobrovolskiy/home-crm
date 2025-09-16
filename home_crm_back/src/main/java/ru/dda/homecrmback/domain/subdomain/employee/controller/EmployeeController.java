@@ -10,6 +10,7 @@ import ru.dda.homecrmback.domain.subdomain.employee.dto.request.EmployeeCreateDT
 import ru.dda.homecrmback.domain.subdomain.employee.dto.request.EmployeeDeleteDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.request.EmployeeUpdateDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestViewDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 
@@ -26,6 +27,22 @@ public class EmployeeController {
         return Employee.Find.of(id)
                 .execute(employeeService::find)
                 .map(EmployeeAggregate::getEmployeeDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping()
+    private IResponse<EmployeeDTO> getCurrentEmployee() {
+        return Employee.Current.of()
+                .execute(employeeService::current)
+                .map(EmployeeAggregate::getEmployeeDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping(path = "/tests")
+    private IResponse<EmployeeTestViewDTO> getCurrentEmployeeTest() {
+        return Employee.Current.of()
+                .execute(employeeService::current)
+                .map(EmployeeAggregate::getEmployeeTestViewDTO)
                 .response(ResultAggregate::getErrorData);
     }
 

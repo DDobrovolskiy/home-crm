@@ -103,6 +103,13 @@ class Stamp {
                     AutoRouter.of(context).push(OrganizationTestsRoute());
                   },
                 ),
+                ListTile(
+                  leading: Icon(Icons.text_snippet_outlined),
+                  title: Text('Тесты'),
+                  onTap: () {
+                    AutoRouter.of(context).push(EmployeeTestsRoute());
+                  },
+                ),
               ],
             ),
             Spacer(),

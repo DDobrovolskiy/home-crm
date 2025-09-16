@@ -2,6 +2,7 @@ import 'package:home_crm_front/domain/sub/employee/dto/request/employee_create_d
 import 'package:home_crm_front/domain/sub/employee/dto/request/employee_delete_dto.dart';
 import 'package:home_crm_front/domain/sub/employee/dto/request/employee_update_dto.dart';
 import 'package:home_crm_front/domain/sub/employee/dto/response/employee_dto.dart';
+import 'package:home_crm_front/domain/sub/employee/dto/response/employee_tests_view_dto.dart';
 
 import '../../../support/port/port.dart';
 
@@ -40,5 +41,12 @@ class EmployeeRepository {
 
   Future<int?> employeeDelete(EmployeeDeleteDto dto) {
     return Port.delete(_path, dto.toJson(), (j) => j as int);
+  }
+
+  Future<EmployeeTestsViewDto?> getCurrentEmployeeTest() {
+    return Port.get(
+      'employee/tests',
+      (j) => EmployeeTestsViewDto.fromJson(j as Map<String, dynamic>),
+    );
   }
 }
