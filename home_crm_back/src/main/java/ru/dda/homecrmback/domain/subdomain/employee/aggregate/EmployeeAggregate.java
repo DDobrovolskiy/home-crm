@@ -48,7 +48,7 @@ public class EmployeeAggregate {
     @JoinColumn(name = "role_id")
     private RoleAggregate role;
     // Сотрудник может проходить несколько тестов
-    @ManyToMany(mappedBy = "employees", fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "employee_test",
             joinColumns = @JoinColumn(name = "employee_id"),

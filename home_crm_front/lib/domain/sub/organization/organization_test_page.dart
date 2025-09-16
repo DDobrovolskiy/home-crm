@@ -2,7 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
 import 'package:home_crm_front/domain/sub/education/test/dto/response/test_view_dto.dart';
+import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_test_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/event/organization_employee_test_event.dart';
+import 'package:home_crm_front/domain/sub/organization/state/organization_employee_test_state.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_test_state.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
@@ -85,6 +89,14 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                             : Text(test.test.timeLimitMinutes.toString()),
                       ],
                     ),
+                    OutlinedButton.icon(
+                      // Добавили кнопку с иконкой
+                      icon: Icon(Icons.add_circle),
+                      label: Text("Назначить"),
+                      onPressed: () {
+                        openAddTestDialog(test.test.id);
+                      },
+                    ),
                     Text(
                       'Тест назначен сотрудникам:',
                       textAlign: TextAlign.left,
@@ -120,7 +132,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                 trailing: edit(context, test, state),
               ),
             ),
-          // Кнопка добавления новой организации-владельца
           if (state.hasEdit)
             Card(
               color: Colors.blue.shade100,
@@ -146,26 +157,11 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
     OrganizationTestState state,
   ) {
     if (state.hasEdit) {
-      return Column(
-        children: [
-          OutlinedButton.icon(
-            // Добавили кнопку с иконкой
-            icon: Icon(Icons.edit),
-            label: Text("Редактировать"),
-            onPressed: () {
-              AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
-            },
-          ),
-          SizedBox(height: 5),
-          OutlinedButton.icon(
-            // Добавили кнопку с иконкой
-            icon: Icon(Icons.edit),
-            label: Text("Редактировать"),
-            onPressed: () {
-              AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
-            },
-          ),
-        ],
+      return IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
+        },
       );
     } else {
       return null;
@@ -241,6 +237,109 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
             ),
           ],
         );
+      },
+    );
+  }
+
+  void openAddTestDialog(int testId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CustomDialogWidget(testId: testId);
+      },
+    );
+  }
+}
+
+// Виджет с внутренним состоянием для диалога
+class CustomDialogWidget extends StatefulWidget {
+  final int testId;
+
+  const CustomDialogWidget({super.key, required this.testId});
+
+  @override
+  _CustomDialogWidgetState createState() => _CustomDialogWidgetState();
+}
+
+class _CustomDialogWidgetState extends State<CustomDialogWidget> {
+  @override
+  void initState() {
+    GetIt.I.get<OrganizationEmployeeTestBloc>().add(
+      OrganizationEmployeeTestRefreshEvent(),
+    );
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<
+      OrganizationEmployeeTestBloc,
+      OrganizationEmployeeTestState
+    >(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (!state.loaded) {
+          return Stamp.loadWidget(context);
+        } else {
+          return SimpleDialog(
+            title: Text('Назначить тест'),
+            children: [
+              Form(
+                child: Column(
+                  children: [
+                    for (final employee in state.organization!.employees)
+                      Row(
+                        children: [
+                          Stamp.giperLinkText(
+                            Text(
+                              employee.employee.user.name,
+                              textAlign: TextAlign.left,
+                            ),
+                            () {
+                              AutoRouter.of(context).push(
+                                EmployeeRoute(employeeId: employee.employee.id),
+                              );
+                            },
+                          ),
+                          Spacer(),
+                          Text('Назначен: '),
+                          Checkbox(
+                            value: employee.employeeTests.tests.any(
+                              (test) => test.id == widget.testId,
+                            ),
+                            onChanged: (bool? value) {
+                              if (employee.employeeTests.tests.any(
+                                (test) => test.id == widget.testId,
+                              )) {
+                                GetIt.I.get<TestAssignCubit>().unassignTest(
+                                  widget.testId,
+                                  employee.employee.id,
+                                );
+                              } else {
+                                GetIt.I.get<TestAssignCubit>().assignTest(
+                                  widget.testId,
+                                  employee.employee.id,
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          child: const Text('Назад'),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
       },
     );
   }

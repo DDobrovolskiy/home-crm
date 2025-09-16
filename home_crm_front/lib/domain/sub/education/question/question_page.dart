@@ -346,31 +346,5 @@ class _CustomDialogWidgetState extends State<CustomDialogWidget> {
         }
       },
     );
-
-    // return AlertDialog(
-    //   title: const Text('Выберите значение'),
-    //   content: Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       CheckboxListTile(
-    //         title: const Text('Корректный выбор'),
-    //         value: correctSelected,
-    //         onChanged: (value) {
-    //           setState(() {
-    //             correctSelected = value ?? false;
-    //           });
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    //   actions: [
-    //     TextButton(
-    //       child: const Text('Закрыть'),
-    //       onPressed: () {
-    //         Navigator.pop(context);
-    //       },
-    //     ),
-    //   ],
-    // );
   }
 }

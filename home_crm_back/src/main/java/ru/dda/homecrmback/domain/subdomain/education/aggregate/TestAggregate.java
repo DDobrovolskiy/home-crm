@@ -110,9 +110,6 @@ public class TestAggregate {
                 .is(Objects.nonNull(employeeAggregate),
                         () -> log.debug("Command.Create#user is null"),
                         FailEvent.VALIDATION.fail("Сотрудник не определен"))
-                .is(this.isReady(),
-                        () -> log.debug("При назначении тест не готов"),
-                        FailEvent.VALIDATION.fail("Назначить можно только готовый тест"))
                 .getResult(() -> {
                     this.getEmployees().add(employeeAggregate);
                     return this;
