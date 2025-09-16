@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/option/dto/response/option_dto.dart';
+import 'package:home_crm_front/domain/sub/education/result/dto/response/result_dto.dart';
 import 'package:home_crm_front/domain/sub/education/session/bloc/session_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/session/dto/request/session_result_dto.dart';
 import 'package:home_crm_front/domain/sub/education/session/event/session_event.dart';
@@ -119,13 +120,18 @@ class _EmployeeTestRunPageState extends State<EmployeeTestRunPage> {
               TextButton(
                 child: const Text('Закончить'),
                 onPressed: () {
-                  GetIt.I.get<SessionResultCubit>().sendResult(
-                    SessionResultDto(
-                      sessionId: state.data!.session.id,
-                      questions: answers,
-                    ),
-                  );
                   Navigator.pop(context);
+                  GetIt.I
+                      .get<SessionResultCubit>()
+                      .sendResult(
+                        SessionResultDto(
+                          sessionId: state.data!.session.id,
+                          questions: answers,
+                        ),
+                      )
+                      .then((value) {
+                        openAddDialog(value);
+                      });
                 },
               ),
               TextButton(
@@ -173,6 +179,31 @@ class _EmployeeTestRunPageState extends State<EmployeeTestRunPage> {
           );
         },
       ),
+    );
+  }
+
+  void openAddDialog(ResultDto? value) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text('Результат теста: ${value?.test.name}'),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'Правильных ответов: ${value?.details.where((d) => d.isCorrect).length} из ${value?.details.length}',
+                ),
+                TextButton(
+                  child: const Text('Назад'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

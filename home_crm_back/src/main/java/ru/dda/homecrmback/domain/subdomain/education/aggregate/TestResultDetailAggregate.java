@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestSessionResultQuestionDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationTestResultDetailDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
@@ -47,7 +46,7 @@ public class TestResultDetailAggregate {
     @JoinColumn(name = "organization_id")
     private OrganizationAggregate organization;
 
-    public static Result<TestResultDetailAggregate, IFailAggregate> create(EducationTestSessionResultQuestionDTO question,
+    public static Result<TestResultDetailAggregate, IFailAggregate> create(String questionText, boolean isCorrect,
                                                                            TestResultAggregate result, OrganizationAggregate organization) {
         return Validator.create()
                 .is(Objects.nonNull(result),
@@ -60,16 +59,8 @@ public class TestResultDetailAggregate {
                     TestResultDetailAggregate aggregate = new TestResultDetailAggregate();
                     aggregate.organization = organization;
                     aggregate.result = result;
-                    result.getOriginalTest().getQuestions().stream()
-                            .filter(q -> q.getId() == question.questionId())
-                            .findFirst()
-                            .ifPresent(q -> {
-                                aggregate.questionText = q.getText();
-                                aggregate.isCorrect = question.options().containsAll(q.getOptions().stream()
-                                        .filter(OptionAggregate::isCorrect)
-                                        .map(OptionAggregate::getId)
-                                        .toList());
-                            });
+                    aggregate.questionText = questionText;
+                    aggregate.isCorrect = isCorrect;
                     return aggregate;
                 });
     }

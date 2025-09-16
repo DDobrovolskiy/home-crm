@@ -44,7 +44,7 @@ public class TestSessionAggregate {
     @JoinColumn(name = "test_id")
     private TestAggregate test;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "result_id")
     private TestResultAggregate result;
 
@@ -89,7 +89,8 @@ public class TestSessionAggregate {
                 .is(endTime == null || endTime.isAfter(LocalDateTime.now(Clock.systemUTC())),
                         () -> log.debug("Время закончилось"),
                         FailEvent.VALIDATION.fail("Время закончилось"))
-                .then(() -> TestResultAggregate.create(questions, this, test, employee, organization));
+                .then(() -> TestResultAggregate.create(questions, this, test, employee, organization))
+                .peek(result -> this.result = result);
     }
 
     public EducationTestSessionDTO getEducationTestSessionDTO() {
@@ -99,7 +100,7 @@ public class TestSessionAggregate {
                 .endTime(endTime)
                 .employee(employee.getEmployeeDTO())
                 .test(test.getEducationTestDTO())
-                .active(endTime == null || LocalDateTime.now().isBefore(endTime))
+                .active(result == null && (endTime == null || LocalDateTime.now().isBefore(endTime)))
                 .build();
     }
 

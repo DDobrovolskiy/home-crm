@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.*;
-import ru.dda.homecrmback.domain.subdomain.education.repository.OptionRepository;
-import ru.dda.homecrmback.domain.subdomain.education.repository.QuestionRepository;
-import ru.dda.homecrmback.domain.subdomain.education.repository.TestRepository;
-import ru.dda.homecrmback.domain.subdomain.education.repository.TestSessionRepository;
+import ru.dda.homecrmback.domain.subdomain.education.repository.*;
 import ru.dda.homecrmback.domain.subdomain.employee.EmployeeService;
 import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
 import ru.dda.homecrmback.domain.subdomain.role.RoleService;
@@ -31,6 +28,8 @@ public class EducationService {
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
     private final TestSessionRepository sessionRepository;
+    private final TestResultRepository testResultRepository;
+    private final TestResultDetailRepository testResultDetailRepository;
 
     @Transactional(readOnly = true)
     public Result<TestAggregate, IFailAggregate> findTest(Education.Test.Find command) {
@@ -223,7 +222,7 @@ public class EducationService {
                         }));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Result<TestSessionAggregate, IFailAggregate> findSession(Education.Session.Find command) {
         return sessionRepository.findByIdAndOrganizationId(command.id(), command.organization().organizationId())
                 .map(Result::<TestSessionAggregate, IFailAggregate>success)
@@ -233,6 +232,17 @@ public class EducationService {
     @Transactional
     public Result<TestResultAggregate, IFailAggregate> createResult(Education.Session.Result command) {
         return command.session().execute(this::findSession)
-                .then(session -> session.createResult(command.questions()));
+                .then(session -> session.createResult(command.questions()))
+                .then(result -> {
+                    try {
+                        testResultRepository.save(result);
+                        testResultDetailRepository.saveAll(result.getDetails());
+                        return Result.success(result);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        return Result.fail(ResultAggregate.Fails.Default.of(
+                                FailEvent.ERROR_ON_SAVE.fail("Ошибка сохранения result")));
+                    }
+                });
     }
 }

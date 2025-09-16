@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -41,7 +43,7 @@ public class TestResultAggregate {
     @JoinColumn(name = "test_id")
     private TestAggregate originalTest;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "session_id")
     private TestSessionAggregate session;
 
@@ -79,10 +81,25 @@ public class TestResultAggregate {
                     aggregate.session = session;
                     return aggregate;
                 })
-                .then(result -> Result.extract(questions.stream().map(
-                                q -> TestResultDetailAggregate.create(q, result, organization)
-                        ).toList())
-                        .map(list -> result));
+                .then(result -> {
+                    var map = questions.stream().collect(Collectors.toMap(
+                            EducationTestSessionResultQuestionDTO::questionId,
+                            EducationTestSessionResultQuestionDTO::options));
+                    return Result.extract(result.originalTest.getQuestions().stream().map(q -> {
+                                Set<Long> answers = map.get(q.getId());
+                                boolean correct = answers != null && answers.containsAll(q.getOptions().stream()
+                                        .filter(OptionAggregate::isCorrect)
+                                        .map(OptionAggregate::getId)
+                                        .toList());
+                                return TestResultDetailAggregate.create(q.getText(), correct, result, organization);
+                            }).toList())
+                            .map(result::setDetails);
+                });
+    }
+
+    private TestResultAggregate setDetails(List<TestResultDetailAggregate> details) {
+        this.details = details;
+        return this;
     }
 
     public EducationTestResultDTO getEducationTestResultDTO() {

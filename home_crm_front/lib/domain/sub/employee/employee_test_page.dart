@@ -83,7 +83,8 @@ class _EmployeeTestsPageState extends State<EmployeeTestsPage> {
               ),
           Text('Незаконченные тесты:', textAlign: TextAlign.left),
           for (final session in state.data!.employeeSessions.sessions)
-            Card(
+            if (session.active)
+              Card(
               margin: const EdgeInsets.all(8),
               child: ListTile(
                 leading: Icon(Icons.text_snippet_outlined),

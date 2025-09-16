@@ -122,8 +122,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                     Column(
                       children: [
                         for (final session in test.testSessions.sessions)
-                          Text(
-                            session.employee.user.name,
+                          if (session.active)
+                            Text(
+                              session.employee.user.name,
                             textAlign: TextAlign.left,
                           ),
                       ],
