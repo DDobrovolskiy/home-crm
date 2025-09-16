@@ -121,8 +121,7 @@ class _EmployeeTestRunPageState extends State<EmployeeTestRunPage> {
                 onPressed: () {
                   GetIt.I.get<SessionResultCubit>().sendResult(
                     SessionResultDto(
-                      testId: widget.testId,
-                      employeeId: widget.employeeId,
+                      sessionId: state.data!.session.id,
                       questions: answers,
                     ),
                   );

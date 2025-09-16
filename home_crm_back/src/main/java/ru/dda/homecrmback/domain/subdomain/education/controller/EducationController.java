@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.dda.homecrmback.domain.subdomain.education.Education;
 import ru.dda.homecrmback.domain.subdomain.education.EducationService;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.OptionAggregate;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.QuestionAggregate;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.*;
 import ru.dda.homecrmback.domain.subdomain.education.dto.request.*;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.*;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
@@ -162,6 +159,14 @@ public class EducationController {
         return Education.Session.GetOrCreate.of(dto.testId(), dto.employeeId())
                 .execute(educationService::getOrCreateSession)
                 .map(TestSessionAggregate::getEducationTestSessionQuestionsDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @PostMapping(path = "/session/result")
+    private IResponse<EducationTestResultDTO> createResult(@RequestBody EducationTestSessionResultDTO dto) {
+        return Education.Session.Result.of(dto.sessionId(), dto.questions())
+                .execute(educationService::createResult)
+                .map(TestResultAggregate::getEducationTestResultDTO)
                 .response(ResultAggregate::getErrorData);
     }
 }

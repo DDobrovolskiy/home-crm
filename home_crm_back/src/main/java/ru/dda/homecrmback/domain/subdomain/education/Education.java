@@ -2,12 +2,14 @@ package ru.dda.homecrmback.domain.subdomain.education;
 
 import lombok.Builder;
 import ru.dda.homecrmback.domain.IExecute;
+import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestSessionResultQuestionDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.Employee;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface Education {
     interface Test {
@@ -201,6 +203,18 @@ public interface Education {
     }
 
     interface Session {
+        @Builder
+        record Find(
+                long id,
+                Organization.FindById organization
+        ) implements IExecute<Find> {
+
+            public static Find of(long id) {
+                return new Find(
+                        id,
+                        Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+            }
+        }
 
         @Builder
         record GetOrCreate(
@@ -216,6 +230,19 @@ public interface Education {
                         Test.Find.of(testId),
                         Employee.Find.of(employeeId),
                         Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId()));
+            }
+        }
+
+        @Builder
+        record Result(
+                Find session,
+                List<EducationTestSessionResultQuestionDTO> questions
+        ) implements IExecute<Result> {
+
+            public static Result of(long id, List<EducationTestSessionResultQuestionDTO> questions) {
+                return new Result(
+                        Find.of(id),
+                        questions);
             }
         }
     }

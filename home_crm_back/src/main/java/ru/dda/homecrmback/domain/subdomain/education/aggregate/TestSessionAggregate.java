@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.dda.homecrmback.domain.subdomain.education.dto.request.EducationTestSessionResultQuestionDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationTestSessionDTO;
 import ru.dda.homecrmback.domain.subdomain.education.dto.response.EducationTestSessionQuestionsDTO;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
@@ -17,6 +18,7 @@ import ru.dda.homecrmback.domain.support.result.validator.Validator;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -80,6 +82,14 @@ public class TestSessionAggregate {
                     test.getEmployees().remove(employee);
                     return aggregate;
                 });
+    }
+
+    public Result<TestResultAggregate, IFailAggregate> createResult(List<EducationTestSessionResultQuestionDTO> questions) {
+        return Validator.create()
+                .is(endTime == null || endTime.isAfter(LocalDateTime.now(Clock.systemUTC())),
+                        () -> log.debug("Время закончилось"),
+                        FailEvent.VALIDATION.fail("Время закончилось"))
+                .then(() -> TestResultAggregate.create(questions, this, test, employee, organization));
     }
 
     public EducationTestSessionDTO getEducationTestSessionDTO() {

@@ -44,6 +44,10 @@ public class Validator {
         return Result.fail(ResultAggregate.Fails.Default.of(fails));
     }
 
+    public <T> Result<T, IFailAggregate> then(Supplier<Result<T, IFailAggregate>> factory) {
+        return factory.get();
+    }
+
     @FunctionalInterface
     public interface Do {
         void run();

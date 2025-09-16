@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface TestSessionRepository extends CrudRepository<TestSessionAggregate, Long> {
-    Optional<TestSessionAggregate> findByOrganizationIdAndEmployeeIdAndTestId(Long organizationId, Long employeeId, Long testId);
+    Optional<TestSessionAggregate> findByIdAndOrganizationId(Long id, Long organizationId);
 
     Optional<TestSessionAggregate> findByOrganizationIdAndEmployeeIdAndTestIdAndEndTimeAfterAndResultIsNull(Long organizationId, Long employeeId, Long testId, LocalDateTime endTime);
 

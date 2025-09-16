@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.OptionAggregate;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.QuestionAggregate;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
-import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
+import ru.dda.homecrmback.domain.subdomain.education.aggregate.*;
 import ru.dda.homecrmback.domain.subdomain.education.repository.OptionRepository;
 import ru.dda.homecrmback.domain.subdomain.education.repository.QuestionRepository;
 import ru.dda.homecrmback.domain.subdomain.education.repository.TestRepository;
@@ -224,5 +221,18 @@ public class EducationService {
                                         FailEvent.ERROR_ON_SAVE.fail("Ошибка сохранения сессии")));
                             }
                         }));
+    }
+
+    @Transactional(readOnly = true)
+    public Result<TestSessionAggregate, IFailAggregate> findSession(Education.Session.Find command) {
+        return sessionRepository.findByIdAndOrganizationId(command.id(), command.organization().organizationId())
+                .map(Result::<TestSessionAggregate, IFailAggregate>success)
+                .orElseGet(() -> Result.fail(ResultAggregate.Fails.Default.of(FailEvent.TEST_NOT_FOUND.fail())));
+    }
+
+    @Transactional
+    public Result<TestResultAggregate, IFailAggregate> createResult(Education.Session.Result command) {
+        return command.session().execute(this::findSession)
+                .then(session -> session.createResult(command.questions()));
     }
 }

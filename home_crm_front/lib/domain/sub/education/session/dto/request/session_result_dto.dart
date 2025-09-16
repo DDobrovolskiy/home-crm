@@ -5,13 +5,11 @@ part 'session_result_dto.g.dart';
 
 @JsonSerializable()
 class SessionResultDto {
-  final int testId;
-  final int employeeId;
+  final int sessionId;
   final List<SessionResultQuestionDto> questions;
 
   SessionResultDto({
-    required this.testId,
-    required this.employeeId,
+    required this.sessionId,
     required this.questions,
   });
 
