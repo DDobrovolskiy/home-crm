@@ -6,6 +6,7 @@ import 'package:home_crm_front/domain/sub/education/test/dto/response/test_dto.d
 import 'package:home_crm_front/domain/sub/education/test/dto/response/test_questions_dto.dart';
 
 import '../../../../support/port/port.dart';
+import '../dto/request/test_assign_dto.dart';
 
 class TestRepository {
   final String _path = 'education/test';
@@ -44,6 +45,22 @@ class TestRepository {
   Future<TestDto?> updateReady(TestUpdateReadyDto dto) {
     return Port.put(
       _pathReady,
+      dto.toJson(),
+      (j) => TestDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<TestDto?> assign(TestAssignDto dto) {
+    return Port.put(
+      'education/test/assign',
+      dto.toJson(),
+      (j) => TestDto.fromJson(j as Map<String, dynamic>),
+    );
+  }
+
+  Future<TestDto?> unassign(TestAssignDto dto) {
+    return Port.put(
+      'education/test/unassign',
       dto.toJson(),
       (j) => TestDto.fromJson(j as Map<String, dynamic>),
     );

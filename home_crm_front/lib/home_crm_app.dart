@@ -8,6 +8,7 @@ import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
 import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
@@ -27,6 +28,7 @@ import 'domain/sub/authentication/repository/auth_repository.dart';
 import 'domain/sub/education/test/bloc/test_edit_bloc.dart';
 import 'domain/sub/organization/bloc/organization_bloc.dart';
 import 'domain/sub/organization/bloc/organization_edit_bloc.dart';
+import 'domain/sub/organization/bloc/organization_employee_test_bloc.dart';
 import 'domain/sub/organization/bloc/organization_test_bloc.dart';
 import 'domain/sub/organization/repository/organization_repository.dart';
 import 'domain/sub/role/bloc/role_current.dart';
@@ -50,6 +52,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(OptionRepository());
   //Cubits
   GetIt.I.registerSingleton(RoleCurrentScopesCubit());
+  GetIt.I.registerSingleton(TestAssignCubit());
   //Bloc
   GetIt.I.registerSingleton(AuthBloc());
   GetIt.I.registerSingleton(UserBloc());
@@ -62,6 +65,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(OrganizationEmployeeBloc());
   GetIt.I.registerSingleton(OrganizationRoleBloc());
   GetIt.I.registerSingleton(OrganizationTestBloc());
+  GetIt.I.registerSingleton(OrganizationEmployeeTestBloc());
 
   GetIt.I.registerSingleton(EmployeeEditBloc());
 
@@ -95,6 +99,9 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<RoleCurrentScopesCubit>.value(
           value: GetIt.I.get<RoleCurrentScopesCubit>(),
         ),
+        BlocProvider<TestAssignCubit>.value(
+          value: GetIt.I.get<TestAssignCubit>(),
+        ),
         BlocProvider<AuthBloc>.value(value: GetIt.I.get<AuthBloc>()),
         BlocProvider<UserBloc>.value(value: GetIt.I.get<UserBloc>()),
         BlocProvider<UserOrganizationBloc>.value(
@@ -117,6 +124,9 @@ class HomeCrmApp extends StatelessWidget {
         ),
         BlocProvider<OrganizationTestBloc>.value(
           value: GetIt.I.get<OrganizationTestBloc>(),
+        ),
+        BlocProvider<OrganizationEmployeeTestBloc>.value(
+          value: GetIt.I.get<OrganizationEmployeeTestBloc>(),
         ),
         BlocProvider<EmployeeEditBloc>.value(
           value: GetIt.I.get<EmployeeEditBloc>(),
