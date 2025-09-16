@@ -92,12 +92,12 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                     if (state.hasEdit)
                       OutlinedButton.icon(
                         // Добавили кнопку с иконкой
-                      icon: Icon(Icons.add_circle),
-                      label: Text("Назначить"),
-                      onPressed: () {
-                        openAddTestDialog(test.test.id);
-                      },
-                    ),
+                        icon: Icon(Icons.add_circle),
+                        label: Text("Назначить"),
+                        onPressed: () {
+                          openAddTestDialog(test.test.id);
+                        },
+                      ),
                     Text(
                       'Тест назначен сотрудникам:',
                       textAlign: TextAlign.left,
@@ -125,7 +125,24 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                           if (session.active)
                             Text(
                               session.employee.user.name,
-                            textAlign: TextAlign.left,
+                              textAlign: TextAlign.left,
+                            ),
+                      ],
+                    ),
+                    Text('Результаты тестирования:', textAlign: TextAlign.left),
+                    Column(
+                      children: [
+                        for (final result in test.testResults)
+                          Row(
+                            children: [
+                              Text(
+                                result.session.employee.user.name,
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                ' Правильных ответов: ${result.details.where((d) => d.isCorrect).length} из ${result.details.length}',
+                              ),
+                            ],
                           ),
                       ],
                     ),

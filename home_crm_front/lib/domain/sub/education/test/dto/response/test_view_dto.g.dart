@@ -14,6 +14,9 @@ TestViewDto _$TestViewDtoFromJson(Map<String, dynamic> json) => TestViewDto(
   testSessions: TestSessionsDto.fromJson(
     json['testSessions'] as Map<String, dynamic>,
   ),
+  testResults: (json['testResults'] as List<dynamic>)
+      .map((e) => ResultDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$TestViewDtoToJson(TestViewDto instance) =>
@@ -21,4 +24,5 @@ Map<String, dynamic> _$TestViewDtoToJson(TestViewDto instance) =>
       'test': instance.test,
       'testEmployees': instance.testEmployees,
       'testSessions': instance.testSessions,
+      'testResults': instance.testResults,
     };

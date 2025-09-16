@@ -174,6 +174,10 @@ public class TestAggregate {
                 .test(getEducationTestDTO())
                 .testEmployees(getEducationTestEmployeesDTO())
                 .testSessions(getEducationTestSessionsDTO())
+                .testResults(sessions.stream()
+                        .filter(s -> Objects.nonNull(s.getResult()))
+                        .map(s -> s.getResult().getEducationTestResultDTO())
+                        .toList())
                 .build();
     }
 
