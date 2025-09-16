@@ -60,6 +60,22 @@ public class EducationController {
                 .response(ResultAggregate::getErrorData);
     }
 
+    @PutMapping(path = "/test/assign")
+    public IResponse<EducationTestDTO> updateTestAssign(@RequestBody EducationTestAssignUpdateDTO dto) {
+        return Education.Test.AssignCommand.of(dto.testId(), dto.employeeId())
+                .execute(educationService::assign)
+                .map(TestAggregate::getEducationTestDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @PutMapping(path = "/test/unassign")
+    public IResponse<EducationTestDTO> updateTestUnassign(@RequestBody EducationTestAssignUpdateDTO dto) {
+        return Education.Test.AssignCommand.of(dto.testId(), dto.employeeId())
+                .execute(educationService::unassign)
+                .map(TestAggregate::getEducationTestDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
     @DeleteMapping(path = "/test")
     public IResponse<Integer> deleteTest(@RequestBody EducationTestDeleteDTO dto) {
         return Education.Test.Delete.of(dto.id())

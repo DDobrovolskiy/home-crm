@@ -146,13 +146,26 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
     OrganizationTestState state,
   ) {
     if (state.hasEdit) {
-      return OutlinedButton.icon(
-        // Добавили кнопку с иконкой
-        icon: Icon(Icons.edit),
-        label: Text("Редактировать"),
-        onPressed: () {
-          AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
-        },
+      return Column(
+        children: [
+          OutlinedButton.icon(
+            // Добавили кнопку с иконкой
+            icon: Icon(Icons.edit),
+            label: Text("Редактировать"),
+            onPressed: () {
+              AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
+            },
+          ),
+          SizedBox(height: 5),
+          OutlinedButton.icon(
+            // Добавили кнопку с иконкой
+            icon: Icon(Icons.edit),
+            label: Text("Редактировать"),
+            onPressed: () {
+              AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
+            },
+          ),
+        ],
       );
     } else {
       return null;

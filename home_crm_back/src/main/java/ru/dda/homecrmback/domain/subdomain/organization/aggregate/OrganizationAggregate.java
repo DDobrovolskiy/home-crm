@@ -11,10 +11,7 @@ import org.springframework.util.StringUtils;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationTestsDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.*;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
@@ -83,11 +80,6 @@ public class OrganizationAggregate {
         return this;
     }
 
-    public void addTest(TestAggregate test) {
-        this.tests.add(test);
-        test.setOrganization(this);
-    }
-
     public OrganizationDTO organizationDTO() {
         return OrganizationDTO.builder()
                 .id(id)
@@ -116,6 +108,14 @@ public class OrganizationAggregate {
         return OrganizationTestsDTO.builder()
                 .tests(tests.stream()
                         .map(TestAggregate::getEducationTestViewDTO)
+                        .toList())
+                .build();
+    }
+
+    public OrganizationEmployeesTestsDTO getOrganizationEmployeesTestsDTO() {
+        return OrganizationEmployeesTestsDTO.builder()
+                .employees(employees.stream()
+                        .map(EmployeeAggregate::getEmployeeTestViewDTO)
                         .toList())
                 .build();
     }

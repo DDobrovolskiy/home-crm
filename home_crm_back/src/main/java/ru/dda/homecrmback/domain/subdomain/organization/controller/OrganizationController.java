@@ -8,10 +8,7 @@ import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAg
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationCreateDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationDeleteDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationUpdateDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationEmployeesDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationRolesDTO;
-import ru.dda.homecrmback.domain.subdomain.organization.dto.response.OrganizationTestsDTO;
+import ru.dda.homecrmback.domain.subdomain.organization.dto.response.*;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
@@ -60,6 +57,14 @@ public class OrganizationController {
         return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
                 .execute(organizationService::findById)
                 .map(OrganizationAggregate::organizationEmployeesDTO)
+                .response(ResultAggregate::getErrorData);
+    }
+
+    @GetMapping("/employee/test")
+    public IResponse<OrganizationEmployeesTestsDTO> getOrganizationEmployeeTest() {
+        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
+                .execute(organizationService::findById)
+                .map(OrganizationAggregate::getOrganizationEmployeesTestsDTO)
                 .response(ResultAggregate::getErrorData);
     }
 

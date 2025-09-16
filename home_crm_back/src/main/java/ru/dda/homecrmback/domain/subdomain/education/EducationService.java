@@ -11,6 +11,7 @@ import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.repository.OptionRepository;
 import ru.dda.homecrmback.domain.subdomain.education.repository.QuestionRepository;
 import ru.dda.homecrmback.domain.subdomain.education.repository.TestRepository;
+import ru.dda.homecrmback.domain.subdomain.employee.EmployeeService;
 import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
 import ru.dda.homecrmback.domain.subdomain.role.RoleService;
 import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
@@ -26,6 +27,7 @@ public class EducationService {
 
     private final OrganizationService organizationService;
     private final RoleService roleService;
+    private final EmployeeService employeeService;
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
@@ -78,6 +80,24 @@ public class EducationService {
                                 FailEvent.ERROR_ON_SAVE.fail("Ошибка удаления теста: %s".formatted(command.test().testId()))));
                     }
                 }));
+    }
+
+    @Transactional
+    public Result<TestAggregate, IFailAggregate> assign(Education.Test.AssignCommand command) {
+        return roleService.checkScope(ScopeType.TEST_CREATE, () ->
+                Result.merge(
+                        command.test().execute(this::findTest),
+                        command.employee().execute(employeeService::find),
+                        TestAggregate::assignTest));
+    }
+
+    @Transactional
+    public Result<TestAggregate, IFailAggregate> unassign(Education.Test.AssignCommand command) {
+        return roleService.checkScope(ScopeType.TEST_CREATE, () ->
+                Result.merge(
+                        command.test().execute(this::findTest),
+                        command.employee().execute(employeeService::find),
+                        TestAggregate::unassignTest));
     }
 
 

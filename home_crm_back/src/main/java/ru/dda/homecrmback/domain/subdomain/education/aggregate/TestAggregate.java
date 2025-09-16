@@ -105,8 +105,29 @@ public class TestAggregate {
                 });
     }
 
-    public void assignTo(EmployeeAggregate employee) {
-        this.employees.add(employee);
+    public Result<TestAggregate, IFailAggregate> assignTest(EmployeeAggregate employeeAggregate) {
+        return Validator.create()
+                .is(Objects.nonNull(employeeAggregate),
+                        () -> log.debug("Command.Create#user is null"),
+                        FailEvent.VALIDATION.fail("Сотрудник не определен"))
+                .is(this.isReady(),
+                        () -> log.debug("При назначении тест не готов"),
+                        FailEvent.VALIDATION.fail("Назначить можно только готовый тест"))
+                .getResult(() -> {
+                    this.getEmployees().add(employeeAggregate);
+                    return this;
+                });
+    }
+
+    public Result<TestAggregate, IFailAggregate> unassignTest(EmployeeAggregate employeeAggregate) {
+        return Validator.create()
+                .is(Objects.nonNull(employeeAggregate),
+                        () -> log.debug("Command.Create#user is null"),
+                        FailEvent.VALIDATION.fail("Сотрудник не определен"))
+                .getResult(() -> {
+                    this.getEmployees().remove(employeeAggregate);
+                    return this;
+                });
     }
 
     public EducationTestDTO getEducationTestDTO() {
@@ -156,5 +177,17 @@ public class TestAggregate {
                 .test(getEducationTestDTO())
                 .testQuestions(getEducationTestQuestionsDTO())
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        TestAggregate that = (TestAggregate) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

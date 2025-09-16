@@ -12,6 +12,8 @@ import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestResultAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
 import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestViewDTO;
+import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestsDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
@@ -47,6 +49,10 @@ public class EmployeeAggregate {
     private RoleAggregate role;
     // Сотрудник может проходить несколько тестов
     @ManyToMany(mappedBy = "employees", fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "employee_test",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "test_id"))
     private Set<TestAggregate> assignedTests = new HashSet<>();
     // Много результатов принадлежит одному сотруднику
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -81,18 +87,6 @@ public class EmployeeAggregate {
         return Result.success(this);
     }
 
-    // Методы для назначения тестов
-    public void assignTest(TestAggregate test) {
-        this.assignedTests.add(test);
-        test.assignTo(this);
-    }
-
-    public void completeTest(TestAggregate test) {
-        if (this.assignedTests.contains(test)) {
-            this.assignedTests.remove(test);
-        }
-    }
-
     public EmployeeDTO getEmployeeDTO() {
         return EmployeeDTO.builder()
                 .id(id)
@@ -100,5 +94,32 @@ public class EmployeeAggregate {
                 .organization(organization.organizationDTO())
                 .role(role.getRoleDTO())
                 .build();
+    }
+
+    public EmployeeTestsDTO getEmployeeTestsDTO() {
+        return EmployeeTestsDTO.builder()
+                .tests(assignedTests.stream()
+                        .map(TestAggregate::getEducationTestDTO)
+                        .toList())
+                .build();
+    }
+
+    public EmployeeTestViewDTO getEmployeeTestViewDTO() {
+        return EmployeeTestViewDTO.builder()
+                .employee(getEmployeeDTO())
+                .employeeTests(getEmployeeTestsDTO())
+                .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeAggregate that = (EmployeeAggregate) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

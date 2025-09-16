@@ -2,6 +2,7 @@ package ru.dda.homecrmback.domain.subdomain.education;
 
 import lombok.Builder;
 import ru.dda.homecrmback.domain.IExecute;
+import ru.dda.homecrmback.domain.subdomain.employee.Employee;
 import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 
@@ -54,6 +55,20 @@ public interface Education {
 
             public static UpdateReady of(long id, boolean ready) {
                 return new UpdateReady(Find.of(id), ready);
+            }
+        }
+
+        @Builder
+        record AssignCommand(
+                Find test,
+                Employee.Find employee
+
+        ) implements IExecute<AssignCommand> {
+
+            public static AssignCommand of(long testId, long employeeId) {
+                return new AssignCommand(
+                        Find.of(testId),
+                        Employee.Find.of(employeeId));
             }
         }
 
