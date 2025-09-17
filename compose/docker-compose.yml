@@ -27,10 +27,8 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update   # Автоматическое обновление схемы
       SPRING_JPA_SHOW_SQL: true                # Отображение SQL запросов
   home-crm-front:
-    image: ddobrovolskiy/home-crm-front:0.0.11
+    image: ddobrovolskiy/home-crm-front:0.0.13
     container_name: home-crm-front
-    environment:
-      - BASE_URL="http://localhost:8081/"
     restart: unless-stopped
     ports:
       - "80:80"
