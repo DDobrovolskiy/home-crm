@@ -10,7 +10,7 @@ import '../token_service.dart';
 
 class Port {
   static String path(String path) {
-    var baseUrl = dotenv.env['BASE_URL'];
+    var baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8080/';
     return "$baseUrl$path";
   }
 

@@ -13,7 +13,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data # Хранение данных PostgreSQL вне контейнера
   home-crm-back:
-    image: ddobrovolskiy/home-crm-back:0.0.2
+    image: ddobrovolskiy/home-crm-back:0.0.10
     container_name: home-crm-back
     restart: unless-stopped
     depends_on: # Зависимость от сервиса базы данных
@@ -27,8 +27,10 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update   # Автоматическое обновление схемы
       SPRING_JPA_SHOW_SQL: true                # Отображение SQL запросов
   home-crm-front:
-    image: ddobrovolskiy/home-crm-front:0.0.4
+    image: ddobrovolskiy/home-crm-front:0.0.10
     container_name: home-crm-front
+    environment:
+      BASE_URL: http://localhost:8080/
     restart: unless-stopped
     ports:
       - "80:80"
