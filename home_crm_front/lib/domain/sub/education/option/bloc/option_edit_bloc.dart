@@ -2,10 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/question/event/question_option_event.dart';
+import 'package:home_crm_front/domain/sub/education/test/event/test_question_event.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../../../../support/port/port.dart';
 import '../../../role/cubit/role_current_scopes.dart';
+import '../../test/bloc/test_question_bloc.dart';
 import '../dto/request/option_create_dto.dart';
 import '../dto/request/option_delete_dto.dart';
 import '../dto/request/option_update_dto.dart';
@@ -18,6 +20,9 @@ class OptionEditBloc extends Bloc<OptionEditEvent, OptionEditState> {
       .get<OptionRepository>();
   late final QuestionOptionBloc _questionOptionBloc = GetIt.I
       .get<QuestionOptionBloc>();
+  late final TestQuestionBloc _testQuestionBloc = GetIt.I
+      .get<TestQuestionBloc>();
+
   late final RoleCurrentScopesCubit _roleCurrentScopesCubit = GetIt.I
       .get<RoleCurrentScopesCubit>();
 
@@ -27,6 +32,7 @@ class OptionEditBloc extends Bloc<OptionEditEvent, OptionEditState> {
       _questionOptionBloc.add(
         QuestionOptionRefreshEvent(questionId: event.questionId),
       );
+      _testQuestionBloc.add(TestQuestionRefreshEvent(testId: event.testId));
       emit.call(OptionEditPointState(isEndEdit: true, isLoading: false));
     });
     on<OptionEditLoadEvent>((event, emit) async {
@@ -49,17 +55,20 @@ class OptionEditBloc extends Bloc<OptionEditEvent, OptionEditState> {
           questionId: event.questionId,
         ),
       );
-      add(OptionEditRefreshEvent(questionId: event.questionId));
+      add(OptionEditRefreshEvent(
+          questionId: event.questionId, testId: event.testId));
     });
     on<OptionEditUpdateEvent>((event, emit) async {
       await _optionRepository.update(
         OptionUpdateDto(id: event.id, correct: event.correct, text: event.text),
       );
-      add(OptionEditRefreshEvent(questionId: event.questionId));
+      add(OptionEditRefreshEvent(
+          questionId: event.questionId, testId: event.testId));
     });
     on<OptionEditDeleteEvent>((event, emit) async {
       await _optionRepository.delete(OptionDeleteDto(id: event.id));
-      add(OptionEditRefreshEvent(questionId: event.questionId));
+      add(OptionEditRefreshEvent(
+          questionId: event.questionId, testId: event.testId));
     });
     on<OptionEditErrorEvent>((event, emit) {
       Stamp.showTemporarySnackbar(null, event.error.message);

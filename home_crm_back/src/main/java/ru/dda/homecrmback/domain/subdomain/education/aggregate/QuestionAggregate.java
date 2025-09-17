@@ -94,8 +94,12 @@ public class QuestionAggregate {
 
     @Transient
     public String getValidMessage() {
-        if (options.size() < 2) {
-            return "меньше двух ответов";
+        StringBuilder stringBuilder = new StringBuilder();
+        if (options.size() < 2) stringBuilder.append("меньше двух ответов ");
+        if (options.stream().noneMatch(OptionAggregate::isCorrect)) stringBuilder.append("нету правильного ответа ");
+        String message = stringBuilder.toString();
+        if (!message.isEmpty()) {
+            return message;
         } else {
             return null;
         }

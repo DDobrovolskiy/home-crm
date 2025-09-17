@@ -202,7 +202,9 @@ class _QuestionPageState extends State<QuestionPage> {
       icon: Icon(Icons.delete),
       onPressed: () {
         BlocProvider.of<OptionEditBloc>(context).add(
-          OptionEditDeleteEvent(id: question.id, questionId: widget.questionId),
+          OptionEditDeleteEvent(id: question.id,
+              questionId: widget.questionId,
+              testId: widget.testId),
         );
       },
     );
@@ -213,7 +215,8 @@ class _QuestionPageState extends State<QuestionPage> {
       context: context,
       builder: (context) {
         GetIt.I.get<OptionEditBloc>().add(
-          OptionEditLoadEvent(id: id, questionId: widget.questionId),
+          OptionEditLoadEvent(
+              id: id, questionId: widget.questionId, testId: widget.testId),
         );
         return Container();
       },
@@ -224,7 +227,8 @@ class _QuestionPageState extends State<QuestionPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return CustomDialogWidget(id: id, questionId: widget.questionId);
+        return CustomDialogWidget(
+            id: id, questionId: widget.questionId, testId: widget.testId);
       },
     );
   }
@@ -232,10 +236,12 @@ class _QuestionPageState extends State<QuestionPage> {
 
 // Виджет с внутренним состоянием для диалога
 class CustomDialogWidget extends StatefulWidget {
+  final int testId;
   final int questionId;
   final int? id;
 
-  const CustomDialogWidget({super.key, required this.questionId, this.id});
+  const CustomDialogWidget(
+      {super.key, required this.questionId, this.id, required this.testId,});
 
   @override
   _CustomDialogWidgetState createState() => _CustomDialogWidgetState();
@@ -249,7 +255,8 @@ class _CustomDialogWidgetState extends State<CustomDialogWidget> {
   @override
   void initState() {
     GetIt.I.get<OptionEditBloc>().add(
-      OptionEditLoadEvent(id: widget.id, questionId: widget.questionId),
+      OptionEditLoadEvent(
+          id: widget.id, questionId: widget.questionId, testId: widget.testId),
     );
     super.initState();
   }
@@ -321,6 +328,7 @@ class _CustomDialogWidgetState extends State<CustomDialogWidget> {
                                   text: _text!,
                                   correct: _correctSelected ?? false,
                                   questionId: widget.questionId,
+                                    testId: widget.testId
                                 ),
                               );
                             } else {
@@ -331,6 +339,7 @@ class _CustomDialogWidgetState extends State<CustomDialogWidget> {
                                   correct:
                                       _correctSelected ?? state.data!.correct,
                                   questionId: widget.questionId,
+                                    testId: widget.testId
                                 ),
                               );
                             }
