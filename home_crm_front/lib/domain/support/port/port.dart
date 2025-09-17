@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 import 'package:home_crm_front/domain/support/port/response_dto.dart';
 
@@ -10,7 +9,8 @@ import '../token_service.dart';
 
 class Port {
   static String path(String path) {
-    var baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8080/';
+    var baseUrl = String.fromEnvironment(
+        'BASE_URL', defaultValue: 'http://localhost:8080/');
     return "$baseUrl$path";
   }
 
