@@ -1,7 +1,9 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../support/router/roters.gr.dart';
 import '../../support/widgets/stamp.dart';
 import '../organization/bloc/organization_bloc.dart';
 import '../organization/event/organization_event.dart';
@@ -28,29 +30,33 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth >= 600) {
-      return Row(
-        children: [
-          Stamp.menuMain(context), // Открытое меню
-          VerticalDivider(thickness: 1), // Отделитель между панелями
-          Expanded(
-            child: Scaffold(
-              endDrawer: Stamp.menuSupplier(context),
-              appBar: AppBar(
-                title: BlocBuilder<OrganizationBloc, OrganizationState>(
-                  builder: (context, state) {
-                    if (state is OrganizationSelectedState) {
-                      return Text(state.organization.name);
-                    }
-                    return Stamp.loadWidget(context);
-                  },
+    if (screenWidth >= 800) {
+      return Scaffold(
+        body: Row(
+          children: [
+            Stamp.menuMain(context), // Открытое меню
+            Expanded(
+              child: Scaffold(
+                endDrawer: Stamp.menuSupplier(context),
+                appBar: AppBar(
+                  title: BlocBuilder<OrganizationBloc, OrganizationState>(
+                    builder: (context, state) {
+                      if (state is OrganizationSelectedState) {
+                        return Text(
+                          state.organization.name,
+                          // style: Theme.of(context).textTheme.titleLarge,
+                        );
+                      }
+                      return Stamp.loadWidget(context);
+                    },
+                  ),
+                  actions: [Stamp.buttonMenuSupplier(context)],
                 ),
-                actions: [Stamp.buttonMenuSupplier(context)],
+                body: AutoRouter(),
               ),
-              body: ContentPage(),
-            ),
-          ), // Основная область
-        ],
+            ), // Основная область
+          ],
+        ),
       );
     } else {
       return Scaffold(
@@ -68,7 +74,7 @@ class _HomePageState extends State<HomePage> {
           actions: [Stamp.buttonMenuSupplier(context)],
           leading: Stamp.buttonMenuMain(context),
         ),
-        body: ContentPage(),
+        body: AutoRouter(),
       );
     }
   }

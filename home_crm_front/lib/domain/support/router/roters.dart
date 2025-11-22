@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/news/news_page.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../token_service.dart';
@@ -12,7 +13,7 @@ class RoutersApp {
   static const String organization = '/organization';
   static const String home = '/home';
   static const String employees =
-      '/organization/employees';
+      'employees';
   static const String employee =
       '/organization/employee/:employeeId';
   static const String employeeTests =
@@ -20,11 +21,11 @@ class RoutersApp {
   static const String employeeTestRun =
       '/organization/employee/:employeeId/test/:testId/run';
   static const String roles =
-      '/organization/roles';
+      'roles';
   static const String role =
       '/organization/role/:roleId';
   static const String tests =
-      '/organization/tests';
+      'tests';
   static const String test =
       '/organization/tests/:testId';
   static const String question =
@@ -42,15 +43,19 @@ class AppRouter extends RootStackRouter {
 
     AutoRoute(page: UserRoute.page, path: RoutersApp.user),
     AutoRoute(page: OrganizationRoute.page, path: RoutersApp.organization),
-    AutoRoute(page: HomeRoute.page, path: RoutersApp.home),
-    AutoRoute(
-        page: OrganizationEmployeesRoute.page, path: RoutersApp.employees),
-    AutoRoute(
-        page: OrganizationRolesRoute.page, path: RoutersApp.roles),
+    AutoRoute(page: HomeRoute.page, path: RoutersApp.home, children: [
+      AutoRoute(
+          page: NewsRoute.page, path: ''),
+      AutoRoute(
+          page: OrganizationEmployeesRoute.page, path: RoutersApp.employees),
+      AutoRoute(
+          page: OrganizationRolesRoute.page, path: RoutersApp.roles),
+      AutoRoute(page: OrganizationTestsRoute.page, path: RoutersApp.tests),
+    ]),
+
     AutoRoute(page: EmployeeRoute.page, path: RoutersApp.employee),
     AutoRoute(page: EmployeeTestsRoute.page, path: RoutersApp.employeeTests),
     AutoRoute(page: RoleRoute.page, path: RoutersApp.role),
-    AutoRoute(page: OrganizationTestsRoute.page, path: RoutersApp.tests),
     AutoRoute(page: TestSuitRoute.page, path: RoutersApp.test),
     AutoRoute(page: QuestionRoute.page, path: RoutersApp.question),
     AutoRoute(

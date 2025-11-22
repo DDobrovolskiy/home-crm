@@ -3,9 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Определим наши фирменные цвета
 extension CustomColors on BuildContext {
-  static const Color primaryColor = Color(0xFF3F51B5); // Основной синий
-  static const Color accentColor = Color(0xFFFFAD00); // Акцентный желтый
-  static const Color backgroundLight = Color(0xFFFFFFFF); // Светлый фон
+  //light
+  static const Color accentAlterColor = Color(0xFFEE2F53);
+  static const Color accentColor = Color(0xFF006AB3);
+  static const Color accentColor1 = Color(0xFF3960BE);
+  static const Color accentColor2 = Color(0xFF325ECE);
+
+  static const Color gray = Color(0xFFF4F4F4);
+
+  static const Color blackColor = Color(0xFF0B1F33);
+  static const Color primaryColor = Color(0xFFEDF2FE);
+  static const Color whiteColor = Color(0xFFFFFFFF);
+
   static const Color backgroundDark = Color(0xFF121212); // Темный фон
 }
 
@@ -15,11 +24,36 @@ ThemeData getApplicationTheme() {
     brightness: Brightness.light,
     primaryColor: CustomColors.primaryColor,
     hintColor: CustomColors.accentColor,
-    canvasColor: CustomColors.backgroundLight,
-    scaffoldBackgroundColor: CustomColors.backgroundLight,
-    cardColor: CustomColors.backgroundLight,
+    appBarTheme: AppBarTheme(
+      backgroundColor: CustomColors.primaryColor,
+      titleTextStyle: GoogleFonts.openSans(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        color: CustomColors.blackColor,
+      ),
+    ),
+    cardTheme: CardThemeData(color: CustomColors.gray),
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((
+            Set<WidgetState> states,) {
+          return CustomColors.accentColor2; // голубой цвет для активных кнопок
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((
+            Set<WidgetState> states,) {
+          return CustomColors.whiteColor; // голубой цвет для активных кнопок
+        }),
+      ),
+    ),
+    buttonTheme: ButtonThemeData(buttonColor: CustomColors.accentColor),
+    canvasColor: CustomColors.whiteColor,
+    scaffoldBackgroundColor: CustomColors.whiteColor,
+    cardColor: CustomColors.whiteColor,
     dividerColor: Colors.grey.shade300,
-    textSelectionTheme: TextSelectionThemeData(selectionColor: CustomColors.accentColor),
+    iconTheme: IconThemeData(),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: CustomColors.accentColor,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: EdgeInsets.all(16.0),
       border: OutlineInputBorder(),
@@ -40,7 +74,7 @@ ThemeData getApplicationTheme() {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStateProperty.all(CustomColors.backgroundLight),
+        foregroundColor: WidgetStateProperty.all(CustomColors.whiteColor),
         backgroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.pressed)) {
             return CustomColors.primaryColor.withOpacity(0.1);
@@ -49,9 +83,9 @@ ThemeData getApplicationTheme() {
         }),
         overlayColor: WidgetStateProperty.all(Colors.transparent),
         shadowColor: WidgetStateProperty.all(Colors.transparent),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
-        )),
+        // shape: WidgetStateProperty.all(
+        //   RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+        // ),
         minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
       ),
     ),
@@ -59,27 +93,37 @@ ThemeData getApplicationTheme() {
       headlineLarge: GoogleFonts.openSans(
         fontSize: 24,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: CustomColors.blackColor,
       ),
       headlineMedium: GoogleFonts.openSans(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: Colors.black,
+        color: CustomColors.blackColor,
       ),
       headlineSmall: GoogleFonts.openSans(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: Colors.black,
+        color: CustomColors.blackColor,
+      ),
+      labelLarge: GoogleFonts.openSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: CustomColors.blackColor,
+      ),
+      labelMedium: GoogleFonts.openSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: CustomColors.blackColor,
       ),
       bodyLarge: GoogleFonts.openSans(
         fontSize: 16,
         fontWeight: FontWeight.normal,
-        color: Colors.black,
+        color: CustomColors.blackColor,
       ),
       bodySmall: GoogleFonts.openSans(
         fontSize: 14,
         fontWeight: FontWeight.normal,
-        color: Colors.black,
+        color: CustomColors.blackColor,
       ),
     ),
   );
@@ -95,7 +139,9 @@ ThemeData getDarkApplicationTheme() {
     scaffoldBackgroundColor: CustomColors.backgroundDark,
     cardColor: Colors.grey.shade800,
     dividerColor: Colors.grey.shade700,
-    textSelectionTheme: TextSelectionThemeData(selectionColor: CustomColors.accentColor),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: CustomColors.accentColor,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: EdgeInsets.all(16.0),
       border: OutlineInputBorder(),
@@ -125,9 +171,9 @@ ThemeData getDarkApplicationTheme() {
         }),
         overlayColor: WidgetStateProperty.all(Colors.transparent),
         shadowColor: WidgetStateProperty.all(Colors.transparent),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
-        )),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+        ),
         minimumSize: WidgetStateProperty.all(Size(double.maxFinite, 56)),
       ),
     ),
@@ -135,27 +181,37 @@ ThemeData getDarkApplicationTheme() {
       headlineLarge: GoogleFonts.openSans(
         fontSize: 24,
         fontWeight: FontWeight.w700,
-        color: Colors.white,
+        color: CustomColors.whiteColor,
       ),
       headlineMedium: GoogleFonts.openSans(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: Colors.white,
+        color: CustomColors.whiteColor,
       ),
       headlineSmall: GoogleFonts.openSans(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        color: Colors.black,
+        color: CustomColors.whiteColor,
+      ),
+      labelLarge: GoogleFonts.openSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: CustomColors.whiteColor,
+      ),
+      labelMedium: GoogleFonts.openSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: CustomColors.whiteColor,
       ),
       bodyLarge: GoogleFonts.openSans(
         fontSize: 16,
         fontWeight: FontWeight.normal,
-        color: Colors.white,
+        color: CustomColors.whiteColor,
       ),
       bodySmall: GoogleFonts.openSans(
         fontSize: 14,
         fontWeight: FontWeight.normal,
-        color: Colors.white,
+        color: CustomColors.whiteColor,
       ),
     ),
   );

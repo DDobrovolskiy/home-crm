@@ -9,40 +9,41 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i15;
-import 'package:flutter/material.dart' as _i16;
+import 'package:auto_route/auto_route.dart' as _i16;
+import 'package:flutter/material.dart' as _i17;
 import 'package:home_crm_front/domain/sub/authentication/login_page.dart'
     as _i5;
 import 'package:home_crm_front/domain/sub/authentication/registration_page.dart'
-    as _i11;
+as _i12;
 import 'package:home_crm_front/domain/sub/education/question/question_page.dart'
-    as _i10;
+    as _i11;
 import 'package:home_crm_front/domain/sub/education/test/test_page.dart'
-    as _i13;
+as _i14;
 import 'package:home_crm_front/domain/sub/employee/employee_page.dart' as _i1;
 import 'package:home_crm_front/domain/sub/employee/employee_test_page.dart'
     as _i3;
 import 'package:home_crm_front/domain/sub/employee/employee_test_run_page.dart'
     as _i2;
 import 'package:home_crm_front/domain/sub/home/home_page.dart' as _i4;
+import 'package:home_crm_front/domain/sub/news/news_page.dart' as _i6;
 import 'package:home_crm_front/domain/sub/organization/organization_employees_page.dart'
-    as _i6;
+as _i7;
 import 'package:home_crm_front/domain/sub/organization/organization_role_page.dart'
-    as _i8;
-import 'package:home_crm_front/domain/sub/organization/organization_test_page.dart'
     as _i9;
+import 'package:home_crm_front/domain/sub/organization/organization_test_page.dart'
+as _i10;
 import 'package:home_crm_front/domain/sub/organization/organizations_page.dart'
-    as _i7;
-import 'package:home_crm_front/domain/sub/role/role_page.dart' as _i12;
-import 'package:home_crm_front/domain/sub/user/user_page.dart' as _i14;
+as _i8;
+import 'package:home_crm_front/domain/sub/role/role_page.dart' as _i13;
+import 'package:home_crm_front/domain/sub/user/user_page.dart' as _i15;
 
 /// generated route for
 /// [_i1.EmployeePage]
-class EmployeeRoute extends _i15.PageRouteInfo<EmployeeRouteArgs> {
+class EmployeeRoute extends _i16.PageRouteInfo<EmployeeRouteArgs> {
   EmployeeRoute({
-    _i16.Key? key,
+    _i17.Key? key,
     required int? employeeId,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          EmployeeRoute.name,
          args: EmployeeRouteArgs(key: key, employeeId: employeeId),
@@ -52,7 +53,7 @@ class EmployeeRoute extends _i15.PageRouteInfo<EmployeeRouteArgs> {
 
   static const String name = 'EmployeeRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -68,7 +69,7 @@ class EmployeeRoute extends _i15.PageRouteInfo<EmployeeRouteArgs> {
 class EmployeeRouteArgs {
   const EmployeeRouteArgs({this.key, required this.employeeId});
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   final int? employeeId;
 
@@ -81,12 +82,12 @@ class EmployeeRouteArgs {
 /// generated route for
 /// [_i2.EmployeeTestRunPage]
 class EmployeeTestRunRoute
-    extends _i15.PageRouteInfo<EmployeeTestRunRouteArgs> {
+    extends _i16.PageRouteInfo<EmployeeTestRunRouteArgs> {
   EmployeeTestRunRoute({
-    _i16.Key? key,
+    _i17.Key? key,
     required int testId,
     required int employeeId,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          EmployeeTestRunRoute.name,
          args: EmployeeTestRunRouteArgs(
@@ -99,7 +100,7 @@ class EmployeeTestRunRoute
 
   static const String name = 'EmployeeTestRunRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<EmployeeTestRunRouteArgs>();
@@ -119,7 +120,7 @@ class EmployeeTestRunRouteArgs {
     required this.employeeId,
   });
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   final int testId;
 
@@ -133,13 +134,13 @@ class EmployeeTestRunRouteArgs {
 
 /// generated route for
 /// [_i3.EmployeeTestsPage]
-class EmployeeTestsRoute extends _i15.PageRouteInfo<void> {
-  const EmployeeTestsRoute({List<_i15.PageRouteInfo>? children})
+class EmployeeTestsRoute extends _i16.PageRouteInfo<void> {
+  const EmployeeTestsRoute({List<_i16.PageRouteInfo>? children})
     : super(EmployeeTestsRoute.name, initialChildren: children);
 
   static const String name = 'EmployeeTestsRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       return const _i3.EmployeeTestsPage();
@@ -149,13 +150,13 @@ class EmployeeTestsRoute extends _i15.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.HomePage]
-class HomeRoute extends _i15.PageRouteInfo<void> {
-  const HomeRoute({List<_i15.PageRouteInfo>? children})
+class HomeRoute extends _i16.PageRouteInfo<void> {
+  const HomeRoute({List<_i16.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       return const _i4.HomePage();
@@ -165,13 +166,13 @@ class HomeRoute extends _i15.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.LoginPage]
-class LoginRoute extends _i15.PageRouteInfo<void> {
-  const LoginRoute({List<_i15.PageRouteInfo>? children})
+class LoginRoute extends _i16.PageRouteInfo<void> {
+  const LoginRoute({List<_i16.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       return const _i5.LoginPage();
@@ -180,77 +181,93 @@ class LoginRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.OrganizationEmployeesPage]
-class OrganizationEmployeesRoute extends _i15.PageRouteInfo<void> {
-  const OrganizationEmployeesRoute({List<_i15.PageRouteInfo>? children})
+/// [_i6.NewsPage]
+class NewsRoute extends _i16.PageRouteInfo<void> {
+  const NewsRoute({List<_i16.PageRouteInfo>? children})
+      : super(NewsRoute.name, initialChildren: children);
+
+  static const String name = 'NewsRoute';
+
+  static _i16.PageInfo page = _i16.PageInfo(
+    name,
+    builder: (data) {
+      return const _i6.NewsPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i7.OrganizationEmployeesPage]
+class OrganizationEmployeesRoute extends _i16.PageRouteInfo<void> {
+  const OrganizationEmployeesRoute({List<_i16.PageRouteInfo>? children})
     : super(OrganizationEmployeesRoute.name, initialChildren: children);
 
   static const String name = 'OrganizationEmployeesRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i6.OrganizationEmployeesPage();
+      return const _i7.OrganizationEmployeesPage();
     },
   );
 }
 
 /// generated route for
-/// [_i7.OrganizationPage]
-class OrganizationRoute extends _i15.PageRouteInfo<void> {
-  const OrganizationRoute({List<_i15.PageRouteInfo>? children})
+/// [_i8.OrganizationPage]
+class OrganizationRoute extends _i16.PageRouteInfo<void> {
+  const OrganizationRoute({List<_i16.PageRouteInfo>? children})
     : super(OrganizationRoute.name, initialChildren: children);
 
   static const String name = 'OrganizationRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i7.OrganizationPage();
+      return const _i8.OrganizationPage();
     },
   );
 }
 
 /// generated route for
-/// [_i8.OrganizationRolesPage]
-class OrganizationRolesRoute extends _i15.PageRouteInfo<void> {
-  const OrganizationRolesRoute({List<_i15.PageRouteInfo>? children})
+/// [_i9.OrganizationRolesPage]
+class OrganizationRolesRoute extends _i16.PageRouteInfo<void> {
+  const OrganizationRolesRoute({List<_i16.PageRouteInfo>? children})
     : super(OrganizationRolesRoute.name, initialChildren: children);
 
   static const String name = 'OrganizationRolesRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i8.OrganizationRolesPage();
+      return const _i9.OrganizationRolesPage();
     },
   );
 }
 
 /// generated route for
-/// [_i9.OrganizationTestsPage]
-class OrganizationTestsRoute extends _i15.PageRouteInfo<void> {
-  const OrganizationTestsRoute({List<_i15.PageRouteInfo>? children})
+/// [_i10.OrganizationTestsPage]
+class OrganizationTestsRoute extends _i16.PageRouteInfo<void> {
+  const OrganizationTestsRoute({List<_i16.PageRouteInfo>? children})
     : super(OrganizationTestsRoute.name, initialChildren: children);
 
   static const String name = 'OrganizationTestsRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i9.OrganizationTestsPage();
+      return const _i10.OrganizationTestsPage();
     },
   );
 }
 
 /// generated route for
-/// [_i10.QuestionPage]
-class QuestionRoute extends _i15.PageRouteInfo<QuestionRouteArgs> {
+/// [_i11.QuestionPage]
+class QuestionRoute extends _i16.PageRouteInfo<QuestionRouteArgs> {
   QuestionRoute({
-    _i16.Key? key,
+    _i17.Key? key,
     required int testId,
     required int questionId,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          QuestionRoute.name,
          args: QuestionRouteArgs(
@@ -264,7 +281,7 @@ class QuestionRoute extends _i15.PageRouteInfo<QuestionRouteArgs> {
 
   static const String name = 'QuestionRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -274,7 +291,7 @@ class QuestionRoute extends _i15.PageRouteInfo<QuestionRouteArgs> {
           questionId: pathParams.getInt('questionId'),
         ),
       );
-      return _i10.QuestionPage(
+      return _i11.QuestionPage(
         key: args.key,
         testId: args.testId,
         questionId: args.questionId,
@@ -290,7 +307,7 @@ class QuestionRouteArgs {
     required this.questionId,
   });
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   final int testId;
 
@@ -303,28 +320,28 @@ class QuestionRouteArgs {
 }
 
 /// generated route for
-/// [_i11.RegistrationPage]
-class RegistrationRoute extends _i15.PageRouteInfo<void> {
-  const RegistrationRoute({List<_i15.PageRouteInfo>? children})
+/// [_i12.RegistrationPage]
+class RegistrationRoute extends _i16.PageRouteInfo<void> {
+  const RegistrationRoute({List<_i16.PageRouteInfo>? children})
     : super(RegistrationRoute.name, initialChildren: children);
 
   static const String name = 'RegistrationRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i11.RegistrationPage();
+      return const _i12.RegistrationPage();
     },
   );
 }
 
 /// generated route for
-/// [_i12.RolePage]
-class RoleRoute extends _i15.PageRouteInfo<RoleRouteArgs> {
+/// [_i13.RolePage]
+class RoleRoute extends _i16.PageRouteInfo<RoleRouteArgs> {
   RoleRoute({
-    _i16.Key? key,
+    _i17.Key? key,
     required int? roleId,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          RoleRoute.name,
          args: RoleRouteArgs(key: key, roleId: roleId),
@@ -334,14 +351,14 @@ class RoleRoute extends _i15.PageRouteInfo<RoleRouteArgs> {
 
   static const String name = 'RoleRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<RoleRouteArgs>(
         orElse: () => RoleRouteArgs(roleId: pathParams.optInt('roleId')),
       );
-      return _i12.RolePage(key: args.key, roleId: args.roleId);
+      return _i13.RolePage(key: args.key, roleId: args.roleId);
     },
   );
 }
@@ -349,7 +366,7 @@ class RoleRoute extends _i15.PageRouteInfo<RoleRouteArgs> {
 class RoleRouteArgs {
   const RoleRouteArgs({this.key, required this.roleId});
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   final int? roleId;
 
@@ -360,12 +377,12 @@ class RoleRouteArgs {
 }
 
 /// generated route for
-/// [_i13.TestSuitPage]
-class TestSuitRoute extends _i15.PageRouteInfo<TestSuitRouteArgs> {
+/// [_i14.TestSuitPage]
+class TestSuitRoute extends _i16.PageRouteInfo<TestSuitRouteArgs> {
   TestSuitRoute({
-    _i16.Key? key,
+    _i17.Key? key,
     required int testId,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          TestSuitRoute.name,
          args: TestSuitRouteArgs(key: key, testId: testId),
@@ -375,14 +392,14 @@ class TestSuitRoute extends _i15.PageRouteInfo<TestSuitRouteArgs> {
 
   static const String name = 'TestSuitRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<TestSuitRouteArgs>(
         orElse: () => TestSuitRouteArgs(testId: pathParams.getInt('testId')),
       );
-      return _i13.TestSuitPage(key: args.key, testId: args.testId);
+      return _i14.TestSuitPage(key: args.key, testId: args.testId);
     },
   );
 }
@@ -390,7 +407,7 @@ class TestSuitRoute extends _i15.PageRouteInfo<TestSuitRouteArgs> {
 class TestSuitRouteArgs {
   const TestSuitRouteArgs({this.key, required this.testId});
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   final int testId;
 
@@ -401,17 +418,17 @@ class TestSuitRouteArgs {
 }
 
 /// generated route for
-/// [_i14.UserPage]
-class UserRoute extends _i15.PageRouteInfo<void> {
-  const UserRoute({List<_i15.PageRouteInfo>? children})
+/// [_i15.UserPage]
+class UserRoute extends _i16.PageRouteInfo<void> {
+  const UserRoute({List<_i16.PageRouteInfo>? children})
     : super(UserRoute.name, initialChildren: children);
 
   static const String name = 'UserRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i14.UserPage();
+      return const _i15.UserPage();
     },
   );
 }

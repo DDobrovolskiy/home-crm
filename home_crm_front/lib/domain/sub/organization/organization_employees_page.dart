@@ -40,7 +40,15 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
       builder: (context, state) {
         return SafeArea(
           child: Scaffold(
-            appBar: AppBar(title: Text('Работники в организации')),
+            appBar: Tab(
+              child: Text(
+                'Работники в организации',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .labelLarge,
+              ),
+            ),
             body: getContent(context, state),
           ),
         );
@@ -53,47 +61,54 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
       return Stamp.loadWidget(context);
     } else if (state.organization != null) {
       return Column(
-        children: [
-          for (final empOrg in state.organization!.employees)
-            Card(
-              margin: const EdgeInsets.all(8),
-              child: ListTile(
-                leading: Icon(Icons.face),
-                title: Text(empOrg.user.name),
-                subtitle: Row(
-                  children: [
-                    Text('Роль: '),
-                    TextButton(
-                      style: Stamp.giperLink(),
-                      child: Text('${empOrg.role.name}'),
-                      onPressed: () {
-                        AutoRouter.of(context).push(RoleRoute(roleId: empOrg
-                            .role.id));
-                      },
-                    ),
-                    Text('Описание: ${empOrg.role.description}'),
-                  ?delete(context, empOrg, state),
-                  ],
-                ),
-    trailing: edit(context, empOrg, state),
-              ),
-            ),
-          // Кнопка добавления новой организации-владельца
-    if(state.hasEdit) Card(
-            color: Colors.blue.shade100,
-            margin: const EdgeInsets.all(8),
-            child: ListTile(
-              leading: Icon(Icons.add_circle_outline),
-              title: Text("Добавить сотрудника"),
-              onTap: () {
-                AutoRouter.of(context).push(EmployeeRoute(employeeId: null));
+          children: [
+      for (final empOrg in state.organization!.employees)
+      Card(
+        margin: const EdgeInsets.all(8),
+        child: ListTile(
+            leading: Icon(Icons.face),
+            title: Text(empOrg.user.name),
+            subtitle: Wrap(
+                spacing: 8,
+                children: [
+                Text('Роль: '),
+            TextButton(
+              style: Stamp.giperLink(),
+              child: Text('${empOrg.role.name}'),
+              onPressed: () {
+                AutoRouter.of(
+                  context,
+                ).push(RoleRoute(roleId: empOrg.role.id));
               },
             ),
-          ),
+            Text('Описание: ${empOrg.role.description}'),
+            ?delete(context, empOrg, state),
         ],
-      );
+      ),
+    trailing: edit(context, empOrg, state),
+    ),
+    ),
+    if (state.hasEdit)
+    Container(
+    margin: const EdgeInsets.all(8),
+    child: Align(
+    alignment: Alignment
+        .centerLeft, // выравниваем по центру вертикально и слева
+    child: IconButton(
+    icon: Icon(Icons.add),
+    // child: Text('Добавить сотрудника'),
+    onPressed: () {
+    AutoRouter.of(
+    context,
+    ).push(EmployeeRoute(employeeId: null));
+    },
+    ),
+    ),
+    ),
+    ],
+    );
     } else {
-      return Stamp.errorWidget(context);
+    return Stamp.errorWidget(context);
     }
   }
 
@@ -106,8 +121,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
         icon: Icon(Icons.edit),
         label: Text("Редактировать"),
         onPressed: () {
-          AutoRouter.of(context).push(
-              EmployeeRoute(employeeId: empOrg.id));
+          AutoRouter.of(context).push(EmployeeRoute(employeeId: empOrg.id));
         },
       );
     } else {

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/event/auth_event.dart';
 import 'package:home_crm_front/domain/support/router/roters.dart';
+import 'package:home_crm_front/theme/theme.dart';
 
 import '../../../home_crm_app.dart';
 import '../../sub/authentication/bloc/auth_bloc.dart';
@@ -63,72 +64,122 @@ class Stamp {
 
   static Widget menuMain(BuildContext context) {
     return Drawer(
-      child: SafeArea(
-        child: Column(
-          children: [
-            ListTile(
-              leading: Icon(Icons.home), // Иконка выхода
-              title: Text('Домашняя страница'),
-              onTap: () {
-                AutoRouter.of(context).push(HomeRoute());
-              },
-            ),
-            ExpansionTile(
-              leading: Icon(Icons.business),
-              // Иконка домашней страницы
-              title: Text('Организация'),
-              initiallyExpanded: false,
-              // Начальное состояние свернуто
-              childrenPadding: EdgeInsets.all(16),
-              // Внутренние отступы для развернутого меню
-              children: [
-                ListTile(
-                  leading: Icon(Icons.people),
-                  title: Text('Сотрудники'),
-                  onTap: () {
-                    AutoRouter.of(context).push(OrganizationEmployeesRoute());
-                  },
+      shape: Border(),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme
+              .of(context)
+              .primaryColor,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.home), // Иконка выхода
+                title: Text(
+                  'Домашняя страница',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .labelMedium,
                 ),
-                ListTile(
-                  leading: Icon(Icons.account_box),
-                  title: Text('Роли'),
-                  onTap: () {
-                    AutoRouter.of(context).push(OrganizationRolesRoute());
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.insert_drive_file),
-                  title: Text('Обучение'),
-                  onTap: () {
-                    AutoRouter.of(context).push(OrganizationTestsRoute());
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.text_snippet_outlined),
-                  title: Text('Тесты'),
-                  onTap: () {
-                    AutoRouter.of(context).push(EmployeeTestsRoute());
-                  },
-                ),
-              ],
-            ),
-            Spacer(),
-            ListTile(
-              leading: Icon(Icons.face),
-              title: BlocBuilder<UserBloc, UserState>(
-                builder: (context, state) {
-                  if (state is UserLoadedState) {
-                    return Text(state.user!.name);
-                  } else {
-                    return Stamp.loadWidget(context);
-                  }
+                onTap: () {
+                  AutoRouter.of(context).push(HomeRoute());
                 },
               ),
-              onTap: () {
-                AutoRouter.of(context).push(UserRoute());
-              },
-            ),
-          ],
+              ExpansionTile(
+                leading: Icon(Icons.business),
+                // Иконка домашней страницы
+                title: Text(
+                  'Организация',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .labelMedium,
+                ),
+                initiallyExpanded: false,
+                // Начальное состояние свернуто
+                childrenPadding: EdgeInsets.all(8),
+                // Внутренние отступы для развернутого меню
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.people),
+                    title: Text(
+                      'Сотрудники',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .labelMedium,
+                    ),
+                    onTap: () {
+                      AutoRouter.of(context).push(OrganizationEmployeesRoute());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.account_box),
+                    title: Text(
+                      'Роли',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .labelMedium,
+                    ),
+                    onTap: () {
+                      AutoRouter.of(context).push(OrganizationRolesRoute());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.insert_drive_file),
+                    title: Text(
+                      'Обучение',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .labelMedium,
+                    ),
+                    onTap: () {
+                      AutoRouter.of(context).push(OrganizationTestsRoute());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.text_snippet_outlined),
+                    title: Text(
+                      'Тесты',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .labelMedium,
+                    ),
+                    onTap: () {
+                      AutoRouter.of(context).push(EmployeeTestsRoute());
+                    },
+                  ),
+                ],
+              ),
+              Spacer(),
+              ListTile(
+                leading: Icon(Icons.face),
+                title: BlocBuilder<UserBloc, UserState>(
+                  builder: (context, state) {
+                    if (state is UserLoadedState) {
+                      return Text(
+                        state.user!.name,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .labelMedium,
+                      );
+                    } else {
+                      return Stamp.loadWidget(context);
+                    }
+                  },
+                ),
+                onTap: () {
+                  AutoRouter.of(context).push(UserRoute());
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -186,11 +237,11 @@ class Stamp {
   static ButtonStyle giperLink() {
     return ButtonStyle(
       foregroundColor: WidgetStateProperty.resolveWith((states) {
-        return Colors.blue; // Устанавливаем синий цвет текста
+        return CustomColors.accentColor; // Устанавливаем синий цвет текста
       }),
       overlayColor: WidgetStateProperty.resolveWith((states) {
         return states.contains(WidgetState.pressed)
-            ? Colors.blue.withOpacity(0.1) // Цвет фона при нажатии
+            ? CustomColors.accentColor.withOpacity(0.1) // Цвет фона при нажатии
             : Colors.transparent;
       }),
       textStyle: WidgetStateProperty.resolveWith((states) {
