@@ -5,9 +5,16 @@ import '../../../../theme/theme.dart';
 class NavElement extends StatefulWidget {
   final String label;
   final IconData icon;
+  final bool isSelected; // Индекс элемента в списке
+  final VoidCallback onTap; // Коллбэк, вызываемый при нажатии
 
-  const NavElement({Key? key, required this.label, required this.icon})
-    : super(key: key);
+  const NavElement({
+    Key? key,
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   _NavElementState createState() => _NavElementState();
@@ -15,13 +22,12 @@ class NavElement extends StatefulWidget {
 
 class _NavElementState extends State<NavElement> {
   bool isHovered = false;
-  bool isChoose = false;
 
   Color getColorIcon() {
     if (isHovered) {
       return CustomColors.getPrimaryText(context);
     } else {
-      if (isChoose) {
+      if (widget.isSelected) {
         return CustomColors.getPrimary(context);
       }
       return CustomColors.getSecondaryText(context);
@@ -45,15 +51,13 @@ class _NavElementState extends State<NavElement> {
           // Цвет фокусировки
           hoverColor: Colors.transparent,
           // Подсветка при наведении
-          onTap: () {
-            setState(() => isChoose = !isChoose);
-          },
+          onTap: widget.onTap,
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: isChoose || isHovered
+                color: widget.isSelected || isHovered
                     ? CustomColors.getPrimaryBackground(context)
                     : CustomColors.getSecondaryBackground(context),
                 borderRadius: BorderRadius.circular(8),

@@ -8,11 +8,11 @@ import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dar
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
+import 'package:home_crm_front/domain/support/components/navbar/NavElementList.dart';
 import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
-import '../../support/components/navbar/NavElement.dart';
 import '../../support/widgets/stamp.dart';
 import '../employee/dto/response/employee_dto.dart';
 
@@ -168,72 +168,15 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                 ),
               ),
               //ELEMENTS
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: CustomColors.getPrimaryBackground(context),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.dashboard_rounded,
-                          color: CustomColors.getPrimary(context),
-                          size: 28,
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                          child: Text(
-                            'Dashboard',
-                            style: CustomColors.getBodyLarge(context, null),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: CustomColors.getSecondaryBackground(context),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.business_rounded,
-                          color: CustomColors.getSecondaryText(context),
-                          size: 28,
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                          child: Text(
-                            'Customers',
-                            style: CustomColors.getBodyLarge(context, null),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              NavElement(
-                label: ' Test',
-                icon: Icons.accessibility_rounded,
-              ),
+              NavElementList()
+                  .add(Item(
+                  label: 'Dashboard', icon: Icons.dashboard_rounded, onTap: () {
+                print('Dashboard');
+              }))
+                  .add(Item(
+                  label: 'Customers', icon: Icons.business_rounded, onTap: () {
+                print('Customers');
+              })),
               //MY PROFILE
               Expanded(
                 child: Padding(
