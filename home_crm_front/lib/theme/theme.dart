@@ -32,7 +32,7 @@ extension CustomColors on BuildContext {
   }
 
   static const Color alternate = Color(0xFFE5E7EB);
-  static const Color alternateDark = Color(0xFFE5E7EB);
+  static const Color alternateDark = Color(0xFF313442);
 
   static Color getAlternate(BuildContext context) {
     return isDarkMode(context) ? alternateDark : alternate;

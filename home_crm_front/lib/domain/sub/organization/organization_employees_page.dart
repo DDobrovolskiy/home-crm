@@ -12,6 +12,7 @@ import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
+import '../../support/components/navbar/NavElement.dart';
 import '../../support/widgets/stamp.dart';
 import '../employee/dto/response/employee_dto.dart';
 
@@ -229,6 +230,10 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                   ),
                 ),
               ),
+              NavElement(
+                label: ' Test',
+                icon: Icons.accessibility_rounded,
+              ),
               //MY PROFILE
               Expanded(
                 child: Padding(
@@ -344,6 +349,51 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavElementWithHover(BuildContext context, {
+    required String label,
+    required IconData icon,
+    required Color backgroundColor,
+    required Color foregroundColor,
+  }) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Material(
+        color: backgroundColor,
+        child: InkWell(
+          onHover: (hovering) {
+            // Здесь можно запустить анимацию или какое-то другое действие при наведении
+            print('object');
+          },
+          onTap: () {}, // Сюда можно поставить действие при тапе
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(icon, color: foregroundColor, size: 28),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+                    child: Text(
+                      label,
+                      style: CustomColors.getBodyLarge(context, null),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

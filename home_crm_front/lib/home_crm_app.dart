@@ -174,7 +174,7 @@ class HomeCrmApp extends StatelessWidget {
         // Светлая тема
         darkTheme: getDarkApplicationTheme(),
         // Темная тема
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         routerConfig: GetIt.instance.get<AppRouter>().config(
           // navigatorObservers:
         ),
