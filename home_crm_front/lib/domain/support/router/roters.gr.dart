@@ -14,11 +14,11 @@ import 'package:flutter/material.dart' as _i17;
 import 'package:home_crm_front/domain/sub/authentication/login_page.dart'
     as _i5;
 import 'package:home_crm_front/domain/sub/authentication/registration_page.dart'
-as _i12;
+    as _i12;
 import 'package:home_crm_front/domain/sub/education/question/question_page.dart'
     as _i11;
 import 'package:home_crm_front/domain/sub/education/test/test_page.dart'
-as _i14;
+    as _i14;
 import 'package:home_crm_front/domain/sub/employee/employee_page.dart' as _i1;
 import 'package:home_crm_front/domain/sub/employee/employee_test_page.dart'
     as _i3;
@@ -27,13 +27,13 @@ import 'package:home_crm_front/domain/sub/employee/employee_test_run_page.dart'
 import 'package:home_crm_front/domain/sub/home/home_page.dart' as _i4;
 import 'package:home_crm_front/domain/sub/news/news_page.dart' as _i6;
 import 'package:home_crm_front/domain/sub/organization/organization_employees_page.dart'
-as _i7;
+    as _i7;
 import 'package:home_crm_front/domain/sub/organization/organization_role_page.dart'
     as _i9;
 import 'package:home_crm_front/domain/sub/organization/organization_test_page.dart'
-as _i10;
+    as _i10;
 import 'package:home_crm_front/domain/sub/organization/organizations_page.dart'
-as _i8;
+    as _i8;
 import 'package:home_crm_front/domain/sub/role/role_page.dart' as _i13;
 import 'package:home_crm_front/domain/sub/user/user_page.dart' as _i15;
 
@@ -184,7 +184,7 @@ class LoginRoute extends _i16.PageRouteInfo<void> {
 /// [_i6.NewsPage]
 class NewsRoute extends _i16.PageRouteInfo<void> {
   const NewsRoute({List<_i16.PageRouteInfo>? children})
-      : super(NewsRoute.name, initialChildren: children);
+    : super(NewsRoute.name, initialChildren: children);
 
   static const String name = 'NewsRoute';
 

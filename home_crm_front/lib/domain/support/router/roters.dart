@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/news/news_page.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 
 import '../token_service.dart';
@@ -12,8 +11,7 @@ class RoutersApp {
   static const String user = '/user';
   static const String organization = '/organization';
   static const String home = '/home';
-  static const String employees =
-      'employees';
+  static const String employees = '/employees';
   static const String employee =
       '/organization/employee/:employeeId';
   static const String employeeTests =
@@ -47,12 +45,11 @@ class AppRouter extends RootStackRouter {
       AutoRoute(
           page: NewsRoute.page, path: ''),
       AutoRoute(
-          page: OrganizationEmployeesRoute.page, path: RoutersApp.employees),
-      AutoRoute(
           page: OrganizationRolesRoute.page, path: RoutersApp.roles),
       AutoRoute(page: OrganizationTestsRoute.page, path: RoutersApp.tests),
     ]),
-
+    AutoRoute(
+        page: OrganizationEmployeesRoute.page, path: RoutersApp.employees),
     AutoRoute(page: EmployeeRoute.page, path: RoutersApp.employee),
     AutoRoute(page: EmployeeTestsRoute.page, path: RoutersApp.employeeTests),
     AutoRoute(page: RoleRoute.page, path: RoutersApp.role),

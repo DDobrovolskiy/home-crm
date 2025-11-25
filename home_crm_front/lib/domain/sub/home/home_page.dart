@@ -3,7 +3,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../support/router/roters.gr.dart';
 import '../../support/widgets/stamp.dart';
 import '../organization/bloc/organization_bloc.dart';
 import '../organization/event/organization_event.dart';
@@ -52,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   actions: [Stamp.buttonMenuSupplier(context)],
                 ),
-                body: AutoRouter(),
+                body: Text('AutoRouter()'),
               ),
             ), // Основная область
           ],
@@ -74,7 +73,7 @@ class _HomePageState extends State<HomePage> {
           actions: [Stamp.buttonMenuSupplier(context)],
           leading: Stamp.buttonMenuMain(context),
         ),
-        body: AutoRouter(),
+        body: Text('AutoRouter()'),
       );
     }
   }
