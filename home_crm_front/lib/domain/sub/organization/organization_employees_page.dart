@@ -8,11 +8,11 @@ import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dar
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
-import 'package:home_crm_front/domain/support/components/navbar/NavElementList.dart';
 import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
+import '../../support/components/navbar/NavBar.dart';
 import '../../support/widgets/stamp.dart';
 import '../employee/dto/response/employee_dto.dart';
 
@@ -50,6 +50,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             FocusManager.instance.primaryFocus?.unfocus();
           },
           child: Scaffold(
+            drawer: !Screen.isWeb(context) ? NavBar() : null,
             backgroundColor: CustomColors.getPrimaryBackground(context),
             appBar: !Screen.isWeb(context) ? getAppBar(context) : null,
             body: getContentBody(context),
@@ -70,6 +71,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
           CustomColors.getPrimaryBtnText(context),
         ),
       ),
+      leading: !Screen.isWeb(context) ? Stamp.buttonMenuMain(context) : null,
     );
     //+add animation
   }
@@ -84,217 +86,12 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (Screen.isWeb(context)) getNavBar(context),
+              if (Screen.isWeb(context)) NavBar(),
               Expanded(flex: 10, child: getTable(context)),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget getNavBar(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 1, 0),
-      child: Container(
-        width: 270,
-        height: double.infinity,
-        constraints: BoxConstraints(maxWidth: 300),
-        decoration: BoxDecoration(
-          color: CustomColors.getSecondaryBackground(context),
-          boxShadow: [
-            BoxShadow(
-              color: CustomColors.getAlternate(context),
-              offset: Offset(1, 0),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //LOGO
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      Theme
-                          .of(context)
-                          .brightness == Brightness.dark
-                          ? 'assets/common/logo.png'
-                          : 'assets/common/logo.png',
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ],
-                ),
-              ),
-              //SEARCH
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 24),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: CustomColors.getPrimaryBackground(context),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_rounded,
-                          color: CustomColors.getSecondaryText(context),
-                          size: 28,
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                          child: Text(
-                            'Search',
-                            style: CustomColors.getLabelLarge(context, null),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              //ELEMENTS
-              NavElementList()
-                  .add(Item(
-                  label: 'Dashboard', icon: Icons.dashboard_rounded, onTap: () {
-                print('Dashboard');
-              }))
-                  .add(Item(
-                  label: 'Customers', icon: Icons.business_rounded, onTap: () {
-                print('Customers');
-              })),
-              //MY PROFILE
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(
-                    0,
-                    0,
-                    0,
-                    16,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Divider(
-                        height: 12,
-                        thickness: 2,
-                        color: CustomColors.getAlternate(context),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                          0,
-                          12,
-                          0,
-                          0,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: CustomColors.getAccent1(
-                                  context,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  12,
-                                ),
-                                border: Border.all(
-                                  color: CustomColors.getPrimary(
-                                    context,
-                                  ),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(2),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                    10,
-                                  ),
-                                  child: Icon(Icons.face, size: 44),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                EdgeInsetsDirectional.fromSTEB(
-                                  12,
-                                  0,
-                                  0,
-                                  0,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Andrew D.',
-                                      style:
-                                      CustomColors.getBodyLarge(
-                                        context,
-                                        null,
-                                      ),
-                                    ),
-                                    Text(
-                                      'admin@gmail.com',
-                                      style:
-                                      CustomColors.getLabelMedium(
-                                        context,
-                                        null,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.fromSTEB(
-                                        0,
-                                        4,
-                                        0,
-                                        0,
-                                      ),
-                                      child: Text(
-                                        'View Profile',
-                                        style:
-                                        CustomColors.getBodySmall(
-                                          context,
-                                          CustomColors.getPrimary(
-                                            context,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
