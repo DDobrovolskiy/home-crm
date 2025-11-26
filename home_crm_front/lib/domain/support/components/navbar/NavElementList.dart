@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 import 'NavElement.dart';
+import 'NavSubElement.dart';
 
 class NavElementList extends StatefulWidget {
   final List<Item> items = []; // Список элементов навигации
@@ -32,6 +33,7 @@ class _NavElementListState extends State<NavElementList> {
             select(i.label); // выбор текущего элемента
             i.onTap.call(); // выполняем связанный коллбэк
           },
+          subElements: i.subElements,
         );
       }).toList(),
     );
@@ -43,6 +45,10 @@ class _NavElementListState extends State<NavElementList> {
       setState(() {
         selected = label; // обновляем активное состояние
       });
+    } else {
+      setState(() {
+        selected = ''; // обновляем активное состояние
+      });
     }
   }
 }
@@ -51,6 +57,8 @@ class Item {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
+  final List<NavSubElement>? subElements;
 
-  Item({required this.label, required this.icon, required this.onTap});
+  Item(
+      {required this.label, required this.icon, required this.onTap, required this.subElements});
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../../../theme/theme.dart';
+import 'NavSubElement.dart';
 
 class NavElement extends StatefulWidget {
   final String label;
   final IconData icon;
   final bool isSelected; // Индекс элемента в списке
   final VoidCallback onTap; // Коллбэк, вызываемый при нажатии
+  final List<NavSubElement>? subElements;
 
   const NavElement({
     Key? key,
@@ -14,6 +16,7 @@ class NavElement extends StatefulWidget {
     required this.icon,
     required this.isSelected,
     required this.onTap,
+    required this.subElements,
   }) : super(key: key);
 
   @override
@@ -36,57 +39,71 @@ class _NavElementState extends State<NavElement> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: Material(
-        color: CustomColors.getSecondaryBackground(context),
-        child: InkWell(
-          highlightColor: Colors.transparent,
-          // Подсветка при нажатии
-          splashColor: Colors.transparent,
-          // Splash-эффект при касании
-          focusColor: Colors.transparent,
-          // Цвет фокусировки
-          hoverColor: Colors.transparent,
-          // Подсветка при наведении
-          onTap: widget.onTap,
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: widget.isSelected || isHovered
-                    ? CustomColors.getPrimaryBackground(context)
-                    : CustomColors.getSecondaryBackground(context),
-                borderRadius: BorderRadius.circular(8),
-              ),
+    return Column(
+      children: [
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => isHovered = true),
+          onExit: (_) => setState(() => isHovered = false),
+          child: Material(
+            color: CustomColors.getSecondaryBackground(context),
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              // Подсветка при нажатии
+              splashColor: Colors.transparent,
+              // Splash-эффект при касании
+              focusColor: Colors.transparent,
+              // Цвет фокусировки
+              hoverColor: Colors.transparent,
+              // Подсветка при наведении
+              onTap: widget.onTap,
               child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.business_rounded,
-                      color: getColorIcon(),
-                      size: 28,
+                padding: EdgeInsetsDirectional.fromSTEB(0, 6, 0, 6),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: widget.isSelected || isHovered
+                        ? CustomColors.getPrimaryBackground(context)
+                        : CustomColors.getSecondaryBackground(context),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child:
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          widget.icon,
+                          color: getColorIcon(),
+                          size: 28,
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            12,
+                            0,
+                            0,
+                            0,
+                          ),
+                          child: Text(
+                            widget.label,
+                            style: CustomColors.getBodyLarge(context, null),
+                          ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                      child: Text(
-                        widget.label,
-                        style: CustomColors.getBodyLarge(context, null),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+        if (widget.isSelected && widget.subElements != null)
+          Column(
+            children: widget.subElements!,
+          )
+      ],
     );
   }
 }

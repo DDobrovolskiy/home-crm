@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_crm_front/domain/support/components/logo/Logo.dart';
 import 'package:home_crm_front/domain/support/components/navbar/NavProfile.dart';
+import 'package:home_crm_front/domain/support/components/navbar/NavSubElement.dart';
 import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
@@ -60,6 +61,9 @@ class _NavBarState extends State<NavBar> {
                               onTap: () {
                                 print('Dashboard');
                               },
+                              subElements: [
+                                NavSubElement(label: 'Point', onTap: () {}),
+                              ],
                             ),
                           )
                           .add(
@@ -69,6 +73,10 @@ class _NavBarState extends State<NavBar> {
                               onTap: () {
                                 print('Customers');
                               },
+                              subElements: [
+                                NavSubElement(label: 'My team', onTap: () {}),
+                                NavSubElement(label: 'Employee', onTap: () {}),
+                              ],
                             ),
                           ),
                       //MY PROFILE
