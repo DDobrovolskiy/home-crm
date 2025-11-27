@@ -13,6 +13,7 @@ import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import '../../support/components/navbar/NavBar.dart';
+import '../../support/components/sheetbar/SheetBar.dart';
 import '../../support/widgets/stamp.dart';
 import '../employee/dto/response/employee_dto.dart';
 
@@ -87,7 +88,10 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (Screen.isWeb(context)) NavBar(),
-              Expanded(flex: 10, child: getTable(context)),
+              Flexible(
+                // flex: 10,
+                child: SheetBar(),
+              ),
             ],
           ),
         ),
@@ -95,7 +99,8 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
     );
   }
 
-  Widget _buildNavElementWithHover(BuildContext context, {
+  Widget _buildNavElementWithHover(
+    BuildContext context, {
     required String label,
     required IconData icon,
     required Color backgroundColor,
@@ -266,9 +271,11 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
     }
   }
 
-  Widget? edit(BuildContext context,
-      EmployeeDto empOrg,
-      OrganizationEmployeeState state,) {
+  Widget? edit(
+    BuildContext context,
+    EmployeeDto empOrg,
+    OrganizationEmployeeState state,
+  ) {
     if (state.hasEdit) {
       return OutlinedButton.icon(
         // Добавили кнопку с иконкой
@@ -283,9 +290,11 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
     }
   }
 
-  Widget? delete(BuildContext context,
-      EmployeeDto empOrg,
-      OrganizationEmployeeState state,) {
+  Widget? delete(
+    BuildContext context,
+    EmployeeDto empOrg,
+    OrganizationEmployeeState state,
+  ) {
     if (state.hasEdit) {
       return IconButton(
         icon: Icon(Icons.close),
@@ -334,10 +343,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                       child: Text(
                         'My Team',
                         textAlign: TextAlign.start,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .displaySmall,
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                     ),
                   ),
@@ -361,9 +367,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(16, 12, 16, 44),
             child: Container(
-              width: MediaQuery
-                  .sizeOf(context)
-                  .width,
+              width: MediaQuery.sizeOf(context).width,
               decoration: BoxDecoration(
                 color: CustomColors.getSecondaryBackground(context),
                 boxShadow: [
@@ -394,10 +398,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                             flex: 2,
                             child: Text(
                               'Member Name',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .labelMedium,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
                           ),
                           if (flag)
@@ -405,40 +406,28 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                               flex: 2,
                               child: Text(
                                 'Email',
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .labelMedium,
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ),
                           if (flag)
                             Expanded(
                               child: Text(
                                 'Last Active',
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .labelMedium,
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ),
                           if (flag)
                             Expanded(
                               child: Text(
                                 'Date Created',
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .labelMedium,
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ),
                           Expanded(
                             child: Text(
                               'Status',
                               textAlign: TextAlign.end,
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .labelMedium,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
                           ),
                         ],
@@ -479,15 +468,15 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                                         children: [
                                           Padding(
                                             padding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                              0,
-                                              0,
-                                              12,
-                                              0,
-                                            ),
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                  0,
+                                                  0,
+                                                  12,
+                                                  0,
+                                                ),
                                             child: ClipRRect(
                                               borderRadius:
-                                              BorderRadius.circular(12),
+                                                  BorderRadius.circular(12),
                                               child: Icon(Icons.account_box),
                                             ),
                                           ),
@@ -495,27 +484,32 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                                             child: Column(
                                               mainAxisSize: MainAxisSize.max,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text('Alex Smith',
-                                                    style: CustomColors
-                                                        .getBodyLarge(
-                                                        context, null)),
+                                                Text(
+                                                  'Alex Smith',
+                                                  style:
+                                                      CustomColors.getBodyLarge(
+                                                        context,
+                                                        null,
+                                                      ),
+                                                ),
                                                 if (!flag)
                                                   Padding(
                                                     padding:
-                                                    EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                      0,
-                                                      2,
-                                                      0,
-                                                      0,
-                                                    ),
+                                                        EdgeInsetsDirectional.fromSTEB(
+                                                          0,
+                                                          2,
+                                                          0,
+                                                          0,
+                                                        ),
                                                     child: Text(
-                                                        'user@domainname.com',
-                                                        style: CustomColors
-                                                            .getLabelMedium(
-                                                            context, null)
+                                                      'user@domainname.com',
+                                                      style:
+                                                          CustomColors.getLabelMedium(
+                                                            context,
+                                                            null,
+                                                          ),
                                                     ),
                                                   ),
                                               ],
@@ -529,70 +523,55 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
                                         flex: 2,
                                         child: Text(
                                           'user@domain.com',
-                                          style: Theme
-                                              .of(
+                                          style: Theme.of(
                                             context,
-                                          )
-                                              .textTheme
-                                              .bodyMedium,
+                                          ).textTheme.bodyMedium,
                                         ),
                                       ),
                                     if (flag)
                                       Expanded(
                                         child: Text(
                                           '12-07-1990',
-                                          style: Theme
-                                              .of(
+                                          style: Theme.of(
                                             context,
-                                          )
-                                              .textTheme
-                                              .bodyMedium,
+                                          ).textTheme.bodyMedium,
                                         ),
                                       ),
                                     if (flag)
                                       Expanded(
                                         child: Text(
                                           '12-07-1990',
-                                          style: Theme
-                                              .of(
+                                          style: Theme.of(
                                             context,
-                                          )
-                                              .textTheme
-                                              .bodyMedium,
+                                          ).textTheme.bodyMedium,
                                         ),
                                       ),
                                     Expanded(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.end,
+                                            CrossAxisAlignment.end,
                                         children: [
                                           Text(
                                             'Contacted',
-                                            style: Theme
-                                                .of(
+                                            style: Theme.of(
                                               context,
-                                            )
-                                                .textTheme
-                                                .bodyMedium,
+                                            ).textTheme.bodyMedium,
                                           ),
                                           if (!flag)
                                             Padding(
                                               padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                0,
-                                                2,
-                                                0,
-                                                0,
-                                              ),
+                                                  EdgeInsetsDirectional.fromSTEB(
+                                                    0,
+                                                    2,
+                                                    0,
+                                                    0,
+                                                  ),
                                               child: Text(
                                                 '12-07-1990',
-                                                style: Theme
-                                                    .of(
+                                                style: Theme.of(
                                                   context,
-                                                )
-                                                    .textTheme
-                                                    .labelSmall,
+                                                ).textTheme.labelSmall,
                                               ),
                                             ),
                                         ],

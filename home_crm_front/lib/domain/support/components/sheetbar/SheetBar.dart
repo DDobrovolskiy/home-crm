@@ -1,0 +1,122 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:home_crm_front/theme/theme.dart';
+
+import '../screen/Screen.dart';
+import 'SheetElement.dart';
+
+class SheetBar extends StatefulWidget {
+  @override
+  _SheetBarState createState() => _SheetBarState();
+}
+
+class _SheetBarState extends State<SheetBar> {
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Уничтожаем контроллер при завершении
+    super.dispose();
+  }
+
+  // Функция для прокрутки вперед
+  void scrollForward() {
+    _controller.animateTo(
+      _controller.offset + 230, // Прокручиваемся на 100 пикселей вперёд
+      duration: Duration(milliseconds: 500),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
+  // Функция для прокрутки назад
+  void scrollBackward() {
+    _controller.animateTo(
+      _controller.offset - 230, // Прокручиваемся на 100 пикселей назад
+      duration: Duration(milliseconds: 500),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
+  // Обработчик прокрутки колесиком мыши
+  void handleScroll(PointerSignalEvent event) {
+    if (event is PointerScrollEvent) {
+      _controller.animateTo(
+        _controller.offset - event.scrollDelta.dy * 2,
+        // Прокручиваемся на 100 пикселей назад
+        duration: Duration(milliseconds: 200),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (Screen.isHeight(context, 200))
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16, 12, 0, 0),
+            child: Row(
+              children: [
+                Text(
+                  'SheetBar',
+                  style: CustomColors.getLabelLarge(context, null),
+                ),
+              ],
+            ),
+          ),
+        if (Screen.isHeight(context, 200))
+          Container(
+            height: 42,
+            decoration: BoxDecoration(
+              color: CustomColors.getPrimaryBackground(context),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                IconButton(
+                  onPressed: scrollBackward,
+                  icon: Icon(Icons.arrow_back_ios),
+                ),
+                Expanded(
+                  child: Listener(
+                    onPointerSignal: handleScroll,
+                    child: ListView(
+                      controller: _controller,
+                      padding: EdgeInsets.zero,
+                      primary: false,
+                      shrinkWrap: false,
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        SheetElement(isSelected: true),
+                        SheetElement(isSelected: false),
+                        SheetElement(isSelected: false),
+                      ],
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: scrollForward,
+                  icon: Icon(Icons.arrow_forward_ios),
+                ),
+              ],
+            ),
+          ),
+        if (Screen.isHeight(context, 250))
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
+              child: Divider(
+                height: 12,
+                thickness: 2,
+                color: CustomColors.getAlternate(context),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
