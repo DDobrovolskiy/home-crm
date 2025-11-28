@@ -25,6 +25,7 @@ import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
 import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
+import 'package:home_crm_front/domain/support/components/content/ContentList.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/SheetBar.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
 import 'package:home_crm_front/theme/theme.dart';
@@ -98,7 +99,7 @@ void setupLocator() {
 
   //pages
   GetIt.I.registerLazySingleton(() => SheetBar());
-
+  GetIt.I.registerLazySingleton(() => ContentList());
 }
 
 Future<bool> resetBlocs() async {

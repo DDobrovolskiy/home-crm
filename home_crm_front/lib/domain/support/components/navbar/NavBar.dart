@@ -7,6 +7,7 @@ import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
 import '../../../../theme/theme.dart';
+import '../animate/Test.dart';
 import '../callback/NavBarCallBack.dart';
 import 'NavElementList.dart';
 
@@ -66,11 +67,12 @@ class _NavBarState extends State<NavBar> {
                               subElements: [
                                 NavSubElement(label: 'Point', onTap: () {
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Point');
+                                      'Point', () =>
+                                      CounterWrap().build(context));
                                 }),
                                 NavSubElement(label: 'Sellers', onTap: () {
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Sellers');
+                                      'Sellers', () => Text('TEST'));
                                 }),
                               ],
                             ),
@@ -85,15 +87,18 @@ class _NavBarState extends State<NavBar> {
                               subElements: [
                                 NavSubElement(label: 'My team', onTap: () {
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                      'My team');
+                                      'My team', () =>
+                                      CounterWrap().build(context));
                                 }),
                                 NavSubElement(label: 'Employee', onTap: () {
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Employee');
+                                      'Employee', () =>
+                                      CounterWrap().build(context));
                                 }),
                                 NavSubElement(label: 'Contracts', onTap: () {
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Contracts');
+                                      'Contracts', () =>
+                                      CounterWrap().build(context));
                                 }),
                               ],
                             ),

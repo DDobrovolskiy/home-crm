@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/support/components/content/ContentList.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import '../callback/NavBarCallBack.dart';
@@ -20,7 +21,7 @@ class _SheetBarState extends State<SheetBar> {
   String selected = '';
 
   _SheetBarState() {
-    GetIt.I.get<SheetElementAddCallback>().subscribe((element) {
+    GetIt.I.get<SheetElementAddCallback>().subscribe((element, widget) {
       setState(() {
         selected = element;
         if (!elements.contains(element)) {
@@ -37,7 +38,6 @@ class _SheetBarState extends State<SheetBar> {
     });
     GetIt.I.get<SheetElementDeleteCallback>().subscribe((element) {
       setState(() {
-        selected = '';
         elements.remove(element);
       });
     });
@@ -157,6 +157,7 @@ class _SheetBarState extends State<SheetBar> {
               ),
             ),
           ),
+        ContentList(),
       ],
     );
   }
