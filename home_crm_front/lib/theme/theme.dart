@@ -268,18 +268,6 @@ ThemeData getApplicationTheme() {
       ),
     ),
     cardTheme: CardThemeData(color: CustomColors.gray),
-    iconButtonTheme: IconButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((
-            Set<WidgetState> states,) {
-          return CustomColors.accentColor2; // голубой цвет для активных кнопок
-        }),
-        foregroundColor: WidgetStateProperty.resolveWith((
-            Set<WidgetState> states,) {
-          return CustomColors.whiteColor; // голубой цвет для активных кнопок
-        }),
-      ),
-    ),
     buttonTheme: ButtonThemeData(buttonColor: CustomColors.accentColor),
     canvasColor: CustomColors.whiteColor,
     scaffoldBackgroundColor: CustomColors.whiteColor,

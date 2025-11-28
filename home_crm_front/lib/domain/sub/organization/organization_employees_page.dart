@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
@@ -90,7 +91,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
               if (Screen.isWeb(context)) NavBar(),
               Flexible(
                 // flex: 10,
-                child: SheetBar(),
+                child: GetIt.I.get<SheetBar>(),
               ),
             ],
           ),

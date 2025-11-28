@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/support/components/logo/Logo.dart';
 import 'package:home_crm_front/domain/support/components/navbar/NavProfile.dart';
 import 'package:home_crm_front/domain/support/components/navbar/NavSubElement.dart';
@@ -6,6 +7,7 @@ import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
 import '../../../../theme/theme.dart';
+import '../callback/NavBarCallBack.dart';
 import 'NavElementList.dart';
 
 class NavBar extends StatefulWidget {
@@ -62,7 +64,14 @@ class _NavBarState extends State<NavBar> {
                                 print('Dashboard');
                               },
                               subElements: [
-                                NavSubElement(label: 'Point', onTap: () {}),
+                                NavSubElement(label: 'Point', onTap: () {
+                                  GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Point');
+                                }),
+                                NavSubElement(label: 'Sellers', onTap: () {
+                                  GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Sellers');
+                                }),
                               ],
                             ),
                           )
@@ -74,8 +83,18 @@ class _NavBarState extends State<NavBar> {
                                 print('Customers');
                               },
                               subElements: [
-                                NavSubElement(label: 'My team', onTap: () {}),
-                                NavSubElement(label: 'Employee', onTap: () {}),
+                                NavSubElement(label: 'My team', onTap: () {
+                                  GetIt.I.get<SheetElementAddCallback>().call(
+                                      'My team');
+                                }),
+                                NavSubElement(label: 'Employee', onTap: () {
+                                  GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Employee');
+                                }),
+                                NavSubElement(label: 'Contracts', onTap: () {
+                                  GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Contracts');
+                                }),
                               ],
                             ),
                           ),

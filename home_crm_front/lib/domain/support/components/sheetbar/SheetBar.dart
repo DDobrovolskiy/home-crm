@@ -1,22 +1,60 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
+import '../callback/NavBarCallBack.dart';
 import '../screen/Screen.dart';
 import 'SheetElement.dart';
 
 class SheetBar extends StatefulWidget {
+  const SheetBar({super.key});
+
   @override
   _SheetBarState createState() => _SheetBarState();
 }
 
 class _SheetBarState extends State<SheetBar> {
   final ScrollController _controller = ScrollController();
+  final List<String> elements = [];
+  String selected = '';
+
+  _SheetBarState() {
+    GetIt.I.get<SheetElementAddCallback>().subscribe((element) {
+      setState(() {
+        selected = element;
+        if (!elements.contains(element)) {
+          elements.add(element);
+        }
+        var indexOf = elements.indexOf(element);
+        scroll(indexOf * 250);
+      });
+    });
+    GetIt.I.get<SheetElementSelectCallback>().subscribe((element) {
+      setState(() {
+        selected = element;
+      });
+    });
+    GetIt.I.get<SheetElementDeleteCallback>().subscribe((element) {
+      setState(() {
+        selected = '';
+        elements.remove(element);
+      });
+    });
+  }
 
   @override
   void dispose() {
     _controller.dispose(); // Уничтожаем контроллер при завершении
     super.dispose();
+  }
+
+  void scroll(double offset) {
+    _controller.animateTo(
+      offset, // Прокручиваемся на 100 пикселей вперёд
+      duration: Duration(milliseconds: 500),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   // Функция для прокрутки вперед
@@ -77,6 +115,7 @@ class _SheetBarState extends State<SheetBar> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 IconButton(
+                  color: CustomColors.getSecondaryText(context),
                   onPressed: scrollBackward,
                   icon: Icon(Icons.arrow_back_ios),
                 ),
@@ -89,15 +128,17 @@ class _SheetBarState extends State<SheetBar> {
                       primary: false,
                       shrinkWrap: false,
                       scrollDirection: Axis.horizontal,
-                      children: [
-                        SheetElement(isSelected: true),
-                        SheetElement(isSelected: false),
-                        SheetElement(isSelected: false),
-                      ],
+                      children: elements.map((e) {
+                        return SheetElement(
+                          label: e,
+                          isSelected: e == selected,
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
                 IconButton(
+                  color: CustomColors.getSecondaryText(context),
                   onPressed: scrollForward,
                   icon: Icon(Icons.arrow_forward_ios),
                 ),

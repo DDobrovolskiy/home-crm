@@ -25,6 +25,7 @@ import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
 import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
+import 'package:home_crm_front/domain/support/components/sheetbar/SheetBar.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
@@ -38,6 +39,7 @@ import 'domain/sub/organization/repository/organization_repository.dart';
 import 'domain/sub/role/bloc/role_current.dart';
 import 'domain/sub/user/bloc/user_bloc.dart';
 import 'domain/sub/user/repository/user_repository.dart';
+import 'domain/support/components/callback/NavBarCallBack.dart';
 import 'domain/support/router/roters.dart';
 import 'main.dart';
 
@@ -88,6 +90,15 @@ void setupLocator() {
   GetIt.I.registerSingleton(OptionEditBloc());
 
   GetIt.I.registerSingleton(SessionBloc());
+
+  //callback
+  GetIt.I.registerLazySingleton(() => SheetElementAddCallback());
+  GetIt.I.registerLazySingleton(() => SheetElementSelectCallback());
+  GetIt.I.registerLazySingleton(() => SheetElementDeleteCallback());
+
+  //pages
+  GetIt.I.registerLazySingleton(() => SheetBar());
+
 }
 
 Future<bool> resetBlocs() async {
