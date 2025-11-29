@@ -85,7 +85,7 @@ extension CustomColors on BuildContext {
   }
 
   static const Color accent4 = Color(0x99FFFFFF);
-  static const Color accent4Dark = Color(0x99FFFFFF);
+  static const Color accent4Dark = Color(0x991D2428);
 
   static Color getAccent4(BuildContext context) {
     return isDarkMode(context) ? accent4Dark : accent4;

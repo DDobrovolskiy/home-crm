@@ -175,19 +175,23 @@ class VisibilityEffect extends Effect {
 }
 
 class MoveEffect extends Effect {
-  final Curve curve;
-  final int delayMilliseconds;
+  Curve? curve;
+  int? delayMilliseconds;
   final int durationMilliseconds;
   final Offset begin;
-  final Offset end;
+  Offset? end;
 
   MoveEffect({
-    required this.curve,
-    required this.delayMilliseconds,
+    this.curve,
+    this.delayMilliseconds,
     required this.durationMilliseconds,
     required this.begin,
-    required this.end,
-  });
+    this.end,
+  }) {
+    curve ??= Curves.easeInOut;
+    delayMilliseconds ??= 0;
+    end ??= Offset.zero;
+  }
 
   @override
   Widget getAnimation(Widget children) {
@@ -198,7 +202,7 @@ class MoveEffect extends Effect {
           offset: Tween<Offset>(
             begin: begin,
             end: end,
-          ).animate(CurvedAnimation(parent: _controller, curve: curve)).value,
+          ).animate(CurvedAnimation(parent: _controller, curve: curve!)).value,
           child: child,
         );
       },
@@ -216,7 +220,59 @@ class MoveEffect extends Effect {
 
   @override
   void forward() {
-    Future.delayed(Duration(milliseconds: delayMilliseconds)).then((_) {
+    Future.delayed(Duration(milliseconds: delayMilliseconds!)).then((_) {
+      _controller.forward(); // Начинаем анимацию
+    });
+  }
+}
+
+class ScaleEffect extends Effect {
+  Curve? curve;
+  int? delayMilliseconds;
+  final int durationMilliseconds;
+  final double begin;
+  double? end;
+
+  ScaleEffect({
+    this.curve,
+    this.delayMilliseconds,
+    required this.durationMilliseconds,
+    required this.begin,
+    this.end,
+  }) {
+    curve ??= Curves.easeInOut;
+    delayMilliseconds ??= 0;
+    end ??= 1;
+  }
+
+  @override
+  Widget getAnimation(Widget children) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: Tween<double>(
+            begin: begin,
+            end: end,
+          ).animate(CurvedAnimation(parent: _controller, curve: curve!)).value,
+          child: child,
+        );
+      },
+      child: children, // Виджет, к которому применяются анимации
+    );
+  }
+
+  @override
+  void initState(TickerProviderStateMixin provider, AnimationTrigger trigger) {
+    _controller = AnimationController(
+      vsync: provider,
+      duration: Duration(milliseconds: durationMilliseconds),
+    );
+  }
+
+  @override
+  void forward() {
+    Future.delayed(Duration(milliseconds: delayMilliseconds!)).then((_) {
       _controller.forward(); // Начинаем анимацию
     });
   }
