@@ -36,7 +36,7 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: LoginRoute.page, path: RoutersApp.login, initial: true),
+    AutoRoute(page: AuthLoginRoute.page, path: RoutersApp.login, initial: true),
     AutoRoute(page: RegistrationRoute.page, path: RoutersApp.registration),
 
     AutoRoute(page: UserRoute.page, path: RoutersApp.user),
@@ -68,13 +68,13 @@ class AppRouter extends RootStackRouter {
         TokenService.organizationToken,
       );
       if ((authToken == null || userToken == null) &&
-          (resolver.routeName != LoginRoute.name &&
+          (resolver.routeName != AuthLoginRoute.name &&
               resolver.routeName != RegistrationRoute.name)) {
-        resolver.redirect(LoginRoute());
+        resolver.redirect(AuthLoginRoute());
       } else if (organizationToken == null &&
           (resolver.routeName != UserRoute.name &&
               resolver.routeName != OrganizationRoute.name &&
-              resolver.routeName != LoginRoute.name &&
+              resolver.routeName != AuthLoginRoute.name &&
               resolver.routeName != RegistrationRoute.name)) {
         resolver.redirect(UserRoute());
       } else {
