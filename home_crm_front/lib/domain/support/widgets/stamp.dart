@@ -30,7 +30,7 @@ class Stamp {
   }
 
   static Widget authErrorWidget(BuildContext context) {
-    AutoRouter.of(context).push(LoginRoute());
+    AutoRouter.of(context).push(AuthLoginRoute());
     return Text('Пользователь не авторизован');
   }
 
@@ -216,7 +216,7 @@ class Stamp {
               onTap: () async {
                 BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
                 var bool = await resetBlocs();
-                AutoRouter.of(context).replace(LoginRoute());
+                AutoRouter.of(context).replace(AuthLoginRoute());
               },
             ),
             ListTile(
@@ -225,7 +225,7 @@ class Stamp {
               onTap: () async {
                 BlocProvider.of<AuthBloc>(context).add(AuthLogoutAllEvent());
                 var bool = await resetBlocs();
-                AutoRouter.of(context).replace(LoginRoute());
+                AutoRouter.of(context).replace(AuthLoginRoute());
               },
             ),
           ],
