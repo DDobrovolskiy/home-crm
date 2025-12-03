@@ -31,6 +31,12 @@ extension CustomColors on BuildContext {
     return tertiary;
   }
 
+  static const Color gold = Color(0xFFEECD60);
+
+  static Color getGold(BuildContext context) {
+    return gold;
+  }
+
   static const Color alternate = Color(0xFFE5E7EB);
   static const Color alternateDark = Color(0xFF313442);
 
@@ -120,6 +126,18 @@ extension CustomColors on BuildContext {
 
   static Color getPrimaryBtnText(BuildContext context) {
     return primaryBtnText;
+  }
+
+  static const Color testingTextTariff = Color(0xFF15161E);
+
+  static Color getTextTestingTariff(BuildContext context) {
+    return testingTextTariff;
+  }
+
+  static const Color testingTariff = Color(0xFF15161E);
+
+  static Color getTestingTariff(BuildContext context) {
+    return testingTariff;
   }
 
   static const Color lineColor = Color(0xffdbe2e7);
@@ -250,6 +268,46 @@ extension CustomColors on BuildContext {
   static const Color whiteColor = Color(0xFFFFFFFF);
 
   static const Color backgroundDark = Color(0xFF121212); // Темный фон
+
+  static InputDecoration getTextFormInputDecoration(String label,
+      BuildContext context) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: CustomColors.getLabelMedium(context, null),
+      hintStyle: CustomColors.getBodySmall(context, null),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: CustomColors.getPrimaryBackground(context),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0x00000000),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: CustomColors.getError(context),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: CustomColors.getError(context),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      filled: true,
+      fillColor: CustomColors.getSecondaryBackground(context),
+      contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
+    );
+  }
 }
 
 // Основная тема приложения

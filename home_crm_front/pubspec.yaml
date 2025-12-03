@@ -74,15 +74,11 @@ flutter:
   uses-material-design: true
   assets:
     - .env
-    - assets/common/background.png
-    - assets/common/background1.jpg
-    - assets/common/background2.jpg
-    - assets/common/background3.jpg
-    - assets/common/background4.jpg
-    - assets/common/background5.jpg
     - assets/common/house.svg
     - assets/common/logo.png
     - assets/common/spinner.gif
+    - assets/common/blank-profile.jpg
+    - assets/common/blank-profile-2.png
 
 flutter_native_splash:
   color: "#ffffff"

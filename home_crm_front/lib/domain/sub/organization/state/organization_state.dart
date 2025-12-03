@@ -1,15 +1,14 @@
-import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
-
 import '../../../support/exceptions/exceptions.dart';
+import '../dto/response/organization_selected_dto.dart';
 
 abstract class OrganizationState {}
 
 class OrganizationUnSelectedState extends OrganizationState {}
 
 class OrganizationSelectedState extends OrganizationState {
-  final OrganizationDto organization;
+  final OrganizationSelectedDto selected;
 
-  OrganizationSelectedState({required this.organization});
+  OrganizationSelectedState({required this.selected});
 }
 
 class OrganizationErrorState extends OrganizationState {

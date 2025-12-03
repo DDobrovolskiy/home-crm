@@ -40,7 +40,7 @@ class _AuthCreatePage extends AuthPageBase<AuthCreatePage> {
           if (state.organizationId != null) {
             AutoRouter.of(context).push(HomeRoute());
           } else {
-            AutoRouter.of(context).push(UserRoute());
+            AutoRouter.of(context).push(UserProfileRoute());
           }
         }
       },
@@ -308,7 +308,7 @@ class _AuthCreatePage extends AuthPageBase<AuthCreatePage> {
               backgroundColor: WidgetStateProperty.all(
                 CustomColors.getPrimary(context),
               ),
-              fixedSize: WidgetStateProperty.all(Size(200, 50)),
+              fixedSize: WidgetStateProperty.all(Size(220, 50)),
               elevation: WidgetStateProperty.all(2),
             ),
             child: state.loaded

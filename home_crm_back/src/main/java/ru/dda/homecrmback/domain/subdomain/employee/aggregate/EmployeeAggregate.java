@@ -79,6 +79,7 @@ public class EmployeeAggregate {
                     aggregate.user = userAggregate;
                     aggregate.organization = organizationAggregate;
                     aggregate.role = roleAggregate;
+                    roleAggregate.addEmployee(aggregate);
                     return aggregate;
                 });
     }

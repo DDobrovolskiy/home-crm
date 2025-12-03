@@ -7,8 +7,10 @@ import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
 import '../../../../theme/theme.dart';
+import '../../../sub/organization/widgets/organization_select.dart';
 import '../animate/Test.dart';
 import '../callback/NavBarCallBack.dart';
+import '../divided/divider.dart';
 import 'NavElementList.dart';
 
 class NavBar extends StatefulWidget {
@@ -22,7 +24,7 @@ class _NavBarState extends State<NavBar> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0, 0, 1, 0),
       child: Container(
-        width: 270,
+        width: Screen.getNavBarWidth(),
         height: double.infinity,
         constraints: BoxConstraints(maxWidth: 300),
         decoration: BoxDecoration(
@@ -65,15 +67,24 @@ class _NavBarState extends State<NavBar> {
                                 print('Dashboard');
                               },
                               subElements: [
-                                NavSubElement(label: 'Point', onTap: () {
-                                  GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Point', () =>
-                                      CounterWrap().build(context));
-                                }),
-                                NavSubElement(label: 'Sellers', onTap: () {
-                                  GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Sellers', () => Text('TEST'));
-                                }),
+                                NavSubElement(
+                                  label: 'Point',
+                                  onTap: () {
+                                    GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Point',
+                                      () => CounterWrap().build(context),
+                                    );
+                                  },
+                                ),
+                                NavSubElement(
+                                  label: 'Sellers',
+                                  onTap: () {
+                                    GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Sellers',
+                                      () => Text('TEST'),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           )
@@ -85,21 +96,33 @@ class _NavBarState extends State<NavBar> {
                                 print('Customers');
                               },
                               subElements: [
-                                NavSubElement(label: 'My team', onTap: () {
-                                  GetIt.I.get<SheetElementAddCallback>().call(
-                                      'My team', () =>
-                                      CounterWrap().build(context));
-                                }),
-                                NavSubElement(label: 'Employee', onTap: () {
-                                  GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Employee', () =>
-                                      CounterWrap().build(context));
-                                }),
-                                NavSubElement(label: 'Contracts', onTap: () {
-                                  GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Contracts', () =>
-                                      CounterWrap().build(context));
-                                }),
+                                NavSubElement(
+                                  label: 'My team',
+                                  onTap: () {
+                                    GetIt.I.get<SheetElementAddCallback>().call(
+                                      'My team',
+                                      () => CounterWrap().build(context),
+                                    );
+                                  },
+                                ),
+                                NavSubElement(
+                                  label: 'Employee',
+                                  onTap: () {
+                                    GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Employee',
+                                      () => CounterWrap().build(context),
+                                    );
+                                  },
+                                ),
+                                NavSubElement(
+                                  label: 'Contracts',
+                                  onTap: () {
+                                    GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Contracts',
+                                      () => CounterWrap().build(context),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -114,7 +137,21 @@ class _NavBarState extends State<NavBar> {
                 padding: EdgeInsets.all(16),
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-                  child: NavProfile(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      getHorizontalDivider(context),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+                        child: OrganizationSelect(),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+                        child: NavProfile(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],

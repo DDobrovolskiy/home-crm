@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                     builder: (context, state) {
                       if (state is OrganizationSelectedState) {
                         return Text(
-                          state.organization.name,
+                          state.selected.organization.name,
                           // style: Theme.of(context).textTheme.titleLarge,
                         );
                       }
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
           title: BlocBuilder<OrganizationBloc, OrganizationState>(
             builder: (context, state) {
               if (state is OrganizationSelectedState) {
-                return Text(state.organization.name);
+                return Text(state.selected.organization.name);
               }
               return Stamp.loadWidget(context);
             },

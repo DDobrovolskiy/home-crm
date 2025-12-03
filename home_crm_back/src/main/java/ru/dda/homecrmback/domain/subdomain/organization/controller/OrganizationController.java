@@ -9,7 +9,11 @@ import ru.dda.homecrmback.domain.subdomain.organization.dto.request.Organization
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationDeleteDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.request.OrganizationUpdateDTO;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.*;
+import ru.dda.homecrmback.domain.subdomain.role.Role;
+import ru.dda.homecrmback.domain.subdomain.role.RoleService;
+import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
+import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 
@@ -20,14 +24,33 @@ public class OrganizationController {
     public static final String PATH = "/organization";
 
     private final OrganizationService organizationService;
+    private final RoleService roleService;
 
     @GetMapping
-    public IResponse<OrganizationDTO> getOrganization() {
-        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
-                .execute(organizationService::findById)
-                .map(OrganizationAggregate::organizationDTO)
-                .response(ResultAggregate::getErrorData);
+    public IResponse<OrganizationSelectedDTO> getOrganization() {
+        return Result.merge(
+                Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
+                        .execute(organizationService::findById)
+                        .map(OrganizationAggregate::organizationDTO),
+                Role.Current.of()
+                        .execute(roleService::getCurrent)
+                        .map(RoleAggregate::getRoleDTO),
+                (organization, role) -> {
+                    return Result.success(OrganizationSelectedDTO.builder()
+                            .organization(organization)
+                            .role(role)
+                            .build());
+                }
+        ).response(ResultAggregate::getErrorData);
     }
+
+//    @GetMapping
+//    public IResponse<OrganizationDTO> getOrganization() {
+//        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
+//                .execute(organizationService::findById)
+//                .map(OrganizationAggregate::organizationDTO)
+//                .response(ResultAggregate::getErrorData);
+//    }
 
     @PostMapping
     public IResponse<OrganizationDTO> createOrganization(@RequestBody OrganizationCreateDTO dto) {

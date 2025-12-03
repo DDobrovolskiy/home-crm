@@ -38,13 +38,13 @@ public class OrganizationAggregate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private UserAggregate owner;
-    @OneToMany(mappedBy = "organization", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "organization", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @BatchSize(size = 20)
     private List<EmployeeAggregate> employees = new ArrayList<>();
-    @OneToMany(mappedBy = "organization", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "organization", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @BatchSize(size = 20)
     private List<RoleAggregate> roles = new ArrayList<>();
-    @OneToMany(mappedBy = "organization", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "organization", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @BatchSize(size = 20)
     private List<TestAggregate> tests = new ArrayList<>();
 
@@ -56,11 +56,19 @@ public class OrganizationAggregate {
                 .is(Objects.nonNull(owner),
                         () -> log.debug("Command.Create#owner is null"),
                         FailEvent.VALIDATION.fail("Владелец организации не заполнен"))
-                .getResult(() -> {
+                .then(() -> {
                     OrganizationAggregate aggregate = new OrganizationAggregate();
                     aggregate.name = name;
                     aggregate.owner = owner;
-                    return aggregate;
+                    return RoleAggregate.createOwner(aggregate)
+                            .then(role -> {
+                                aggregate.addRole(role);
+                                return EmployeeAggregate.create(owner, aggregate, role);
+                            })
+                            .map(boss -> {
+                                aggregate.employees.add(boss);
+                                return aggregate;
+                            });
                 });
     }
 

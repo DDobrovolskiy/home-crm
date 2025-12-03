@@ -38,7 +38,7 @@ class _AuthLoginPage extends AuthPageBase<AuthLoginPage> {
           if (state.organizationId != null) {
             AutoRouter.of(context).push(HomeRoute());
           } else {
-            AutoRouter.of(context).push(UserRoute());
+            AutoRouter.of(context).push(UserProfileRoute());
           }
         }
       },
@@ -145,7 +145,7 @@ class _AuthLoginPage extends AuthPageBase<AuthLoginPage> {
         children: [
           TextButton(
             onPressed: () async {
-              print('fogot_password');
+              Stamp.showTemporarySnackbar(context, 'Функционал не реализован');
             },
             child: Text(
               'Забыли пароль?',

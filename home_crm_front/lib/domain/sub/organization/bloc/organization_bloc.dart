@@ -22,7 +22,7 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
       } else {
         var organization = await _repository.organization();
         if (organization != null) {
-          emit.call(OrganizationSelectedState(organization: organization));
+          emit.call(OrganizationSelectedState(selected: organization));
         } else {
           emit.call(OrganizationUnSelectedState());
         }

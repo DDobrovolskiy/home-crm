@@ -112,7 +112,8 @@ class _UserPageState extends State<UserPage> {
             child: ListTile(
               leading: Icon(Icons.workspace_premium),
               title: Text('Выбранная организация'),
-              subtitle: Text('Организация: ${state.organization.name}'),
+              subtitle: Text(
+                  'Организация: ${state.selected.organization.name}'),
               trailing: OutlinedButton.icon(
                 // Добавили кнопку с иконкой
                 icon: Icon(Icons.keyboard_arrow_right),

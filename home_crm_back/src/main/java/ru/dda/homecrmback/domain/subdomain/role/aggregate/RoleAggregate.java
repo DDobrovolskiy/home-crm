@@ -46,6 +46,8 @@ public class RoleAggregate {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "scopes_id"))
     private Set<ScopeAggregate> scopes = new HashSet<>();
+    @NotNull
+    private boolean owner;
 
     public static Result<RoleAggregate, IFailAggregate> create(String name, String description, OrganizationAggregate organization, Set<ScopeAggregate> scopes) {
         return Validator.create()
@@ -61,6 +63,22 @@ public class RoleAggregate {
                     aggregate.description = description;
                     aggregate.organization = organization;
                     aggregate.scopes = scopes;
+                    aggregate.owner = false;
+                    return aggregate;
+                });
+    }
+
+    public static Result<RoleAggregate, IFailAggregate> createOwner(OrganizationAggregate organization) {
+        return Validator.create()
+                .is(Objects.nonNull(organization),
+                        () -> log.debug("RoleDto#organization is null"),
+                        FailEvent.VALIDATION.fail("Организация у роли не заполнено"))
+                .getResult(() -> {
+                    RoleAggregate aggregate = new RoleAggregate();
+                    aggregate.name = "Владелец";
+                    aggregate.description = "Владелец организации";
+                    aggregate.organization = organization;
+                    aggregate.owner = true;
                     return aggregate;
                 });
     }
@@ -83,11 +101,16 @@ public class RoleAggregate {
                 .anyMatch(scopeAggregate -> scopeAggregate.getType().equals(scopeType));
     }
 
+    public void addEmployee(EmployeeAggregate employee) {
+        this.employees.add(employee);
+    }
+
     public RoleDTO getRoleDTO() {
         return RoleDTO.builder()
                 .id(id)
                 .name(name)
                 .description(description)
+                .owner(owner)
                 .build();
     }
 

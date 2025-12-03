@@ -8,6 +8,7 @@ import 'package:home_crm_front/domain/sub/organization/dto/response/organization
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_test_dto.dart';
 
 import '../../../support/port/port.dart';
+import '../dto/response/organization_selected_dto.dart';
 
 class OrganizationRepository {
   final String _path = 'organization';
@@ -23,10 +24,10 @@ class OrganizationRepository {
     );
   }
 
-  Future<OrganizationDto?> organization() {
+  Future<OrganizationSelectedDto?> organization() {
     return Port.get(
       _path,
-      (j) => OrganizationDto.fromJson(j as Map<String, dynamic>),
+      (j) => OrganizationSelectedDto.fromJson(j as Map<String, dynamic>),
     );
   }
 

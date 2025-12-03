@@ -6,6 +6,7 @@ import lombok.Builder;
 public record RoleDTO(
         long id,
         String name,
-        String description
+        String description,
+        boolean owner
 ) {
 }
