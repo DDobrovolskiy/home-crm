@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../theme/theme.dart';
 import '../../../support/widgets/stamp.dart';
 import '../bloc/organization_bloc.dart';
+import '../event/organization_event.dart';
 import '../state/organization_state.dart';
 
 class OrganizationSelect extends StatefulWidget {
@@ -15,11 +16,13 @@ class OrganizationSelect extends StatefulWidget {
 
 class _OrganizationSelectState extends State<OrganizationSelect> {
   @override
-  Widget build(BuildContext context) {
-    return Container(child: content());
+  void initState() {
+    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
+    super.initState();
   }
 
-  Widget content() {
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<OrganizationBloc, OrganizationState>(
       listener: (context, state) {
         if (state is OrganizationErrorState) {
@@ -69,16 +72,16 @@ class _OrganizationSelectState extends State<OrganizationSelect> {
                         state.selected.role.name,
                         style: CustomColors.getLabelMedium(context, null),
                       ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
-                        child: Text(
-                          'Информация',
-                          style: CustomColors.getBodySmall(
-                            context,
-                            CustomColors.getPrimary(context),
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
+                      //   child: Text(
+                      //     'Информация',
+                      //     style: CustomColors.getBodySmall(
+                      //       context,
+                      //       CustomColors.getPrimary(context),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
