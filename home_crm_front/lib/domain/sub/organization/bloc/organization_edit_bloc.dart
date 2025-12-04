@@ -11,6 +11,8 @@ import 'package:home_crm_front/domain/sub/user/repository/user_repository.dart';
 
 import '../../../support/port/port.dart';
 import '../../../support/token_service.dart';
+import '../../user/bloc/user_employee_bloc.dart';
+import '../../user/event/user_employee_event.dart';
 import '../event/organization_edit_event.dart';
 import '../state/organization_edit_state.dart';
 import 'organization_bloc.dart';
@@ -25,12 +27,14 @@ class OrganizationEditBloc
       .get<OrganizationBloc>();
   late final UserOrganizationBloc _userOrganizationBloc = GetIt.instance
       .get<UserOrganizationBloc>();
-  late final TokenService _tokenService = GetIt.instance
-      .get<TokenService>();
+  late final UserEmployeeBloc _userEmployeeBloc = GetIt.instance
+      .get<UserEmployeeBloc>();
+  late final TokenService _tokenService = GetIt.instance.get<TokenService>();
 
-  OrganizationEditBloc() : super(OrganizationEditInitState(success: false)) {
+  OrganizationEditBloc()
+    : super(OrganizationEditInitState(success: false, organization: null)) {
     on<OrganizationEditLoadEvent>((event, emit) async {
-      emit.call(OrganizationEditInitState(success: false));
+      emit.call(OrganizationEditInitState(success: false, organization: null));
       var token = await _tokenService.getToken(TokenService.organizationToken);
       if (token != null) {
         var organization = await _organizationRepository
@@ -54,25 +58,39 @@ class OrganizationEditBloc
         OrganizationCreateDto(name: event.name),
       );
       await _tokenService.saveToken(
-          TokenService.organizationToken, organization!.id.toString());
+        TokenService.organizationToken,
+        organization!.id.toString(),
+      );
       _organizationBloc.add(OrganizationRefreshEvent());
       _userOrganizationBloc.add(UserOrganizationRefreshEvent());
-      emit.call(OrganizationEditInitState(success: true));
+      _userEmployeeBloc.add(UserEmployeeLoadEvent());
+      emit.call(
+        OrganizationEditInitState(success: true, organization: organization),
+      );
     });
     on<OrganizationEditUpdateEvent>((event, emit) async {
-      await _organizationRepository.organizationUpdate(
+      var organization = await _organizationRepository.organizationUpdate(
         OrganizationUpdateDto(name: event.name, id: event.id),
       );
       _organizationBloc.add(OrganizationRefreshEvent());
       _userOrganizationBloc.add(UserOrganizationRefreshEvent());
-      emit.call(OrganizationEditInitState(success: true));
+      _userEmployeeBloc.add(UserEmployeeLoadEvent());
+      emit.call(
+        OrganizationEditInitState(success: true, organization: organization),
+      );
     });
     on<OrganizationEditDeleteEvent>((event, emit) async {
+      var token = await _tokenService.getToken(TokenService.organizationToken);
+      if (token != null && event.id == int.parse(token)) {
+        await _tokenService.clearToken(TokenService.organizationToken);
+      }
       await _organizationRepository.organizationDelete(
-          OrganizationDeleteDto(id: event.id));
+        OrganizationDeleteDto(id: event.id),
+      );
       _organizationBloc.add(OrganizationRefreshEvent());
       _userOrganizationBloc.add(UserOrganizationRefreshEvent());
-      emit.call(OrganizationEditInitState(success: true));
+      _userEmployeeBloc.add(UserEmployeeLoadEvent());
+      emit.call(OrganizationEditInitState(success: true, organization: null));
     });
     on<OrganizationEditErrorEvent>((event, emit) {
       emit.call(OrganizationEditErrorState(error: event.error));

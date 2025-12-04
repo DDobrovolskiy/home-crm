@@ -18,4 +18,11 @@ class Screen {
   static double getNavBarWidth() {
     return 270;
   }
+
+  static double getWidthWithMaxWidth(BuildContext context) {
+    if (MediaQuery.of(context).size.width > getMaxWidth()) {
+      return getMaxWidth();
+    }
+    return MediaQuery.of(context).size.width;
+  }
 }

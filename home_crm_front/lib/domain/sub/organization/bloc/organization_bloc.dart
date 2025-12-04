@@ -15,7 +15,7 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
 
   OrganizationBloc() : super(OrganizationUnSelectedState()) {
     on<OrganizationRefreshEvent>((event, emit) async {
-      emit.call(OrganizationUnSelectedState());
+      // emit.call(OrganizationUnSelectedState());
       var token = await _tokenService.getToken(TokenService.organizationToken);
       if (token == null) {
         emit.call(OrganizationUnSelectedState());

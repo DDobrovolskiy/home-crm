@@ -304,7 +304,7 @@ extension CustomColors on BuildContext {
         borderRadius: BorderRadius.circular(8),
       ),
       filled: true,
-      fillColor: CustomColors.getSecondaryBackground(context),
+      fillColor: CustomColors.getPrimaryBackground(context),
       contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
     );
   }

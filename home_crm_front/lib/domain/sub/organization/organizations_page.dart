@@ -5,7 +5,9 @@ import 'package:home_crm_front/domain/sub/organization/event/organization_edit_e
 import 'package:home_crm_front/domain/sub/organization/state/organization_edit_state.dart';
 
 import '../../support/widgets/stamp.dart';
+import 'bloc/organization_bloc.dart';
 import 'bloc/organization_edit_bloc.dart';
+import 'event/organization_event.dart';
 
 @RoutePage()
 class OrganizationPage extends StatefulWidget {
@@ -33,6 +35,9 @@ class _OrganizationPageState extends State<OrganizationPage> {
     return BlocConsumer<OrganizationEditBloc, OrganizationEditState>(
       listener: (context, state) {
         if (state.success) {
+          BlocProvider.of<OrganizationBloc>(
+            context,
+          ).add(OrganizationSelectedEvent(id: state.organization!.id));
           context.router.back();
         } else if (state.error != null) {
           Stamp.showTemporarySnackbar(context, state.error!.message);

@@ -31,7 +31,31 @@ class _OrganizationSelectState extends State<OrganizationSelect> {
       },
       builder: (context, state) {
         if (state is OrganizationUnSelectedState) {
-          return Text('Выбирете организацию, с которой будете работать');
+          return Column(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: CustomColors.getAccent1(context),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: CustomColors.getWarning(context)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Icon(
+                      color: CustomColors.getWarning(context),
+                      Icons.warning,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+              Text('Выбирете организацию, с которой будете работать'),
+            ],
+          );
         } else if (state is OrganizationSelectedState) {
           return Row(
             mainAxisSize: MainAxisSize.max,

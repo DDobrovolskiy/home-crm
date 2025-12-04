@@ -4,26 +4,20 @@ import '../../../../theme/theme.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final double height;
-  final double width;
   final Function() onPressed;
 
   const CustomButton({
     super.key,
     required this.text,
-    required this.height,
-    required this.width,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      width: width,
-      child: TextButton(
+    return TextButton(
         onPressed: onPressed,
         style: ButtonStyle(
+          padding: WidgetStateProperty.all(EdgeInsets.all(16.0)),
           side: WidgetStatePropertyAll(
             BorderSide(color: CustomColors.getLineColor(context), width: 2),
           ),
@@ -39,8 +33,7 @@ class CustomButton extends StatelessWidget {
             CustomColors.getPrimaryBackground(context),
           ),
         ),
-        child: Text(text, style: CustomColors.getTitleSmall(context, null)),
-      ),
+      child: Text(text, style: CustomColors.getBodyLarge(context, null)),
     );
   }
 }

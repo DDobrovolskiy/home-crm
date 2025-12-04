@@ -17,17 +17,17 @@ abstract class OrganizationEditState extends Equatable {
 class OrganizationEditInitState extends OrganizationEditState {
   @override
   final bool success;
+  @override
+  final OrganizationDto? organization;
 
-  OrganizationEditInitState({required this.success});
+  OrganizationEditInitState(
+      {required this.success, required this.organization});
 
   @override
   bool get loaded => true;
 
   @override
   bool get isCan => false;
-
-  @override
-  OrganizationDto? get organization => null;
 
   @override
   PortException? get error => null;

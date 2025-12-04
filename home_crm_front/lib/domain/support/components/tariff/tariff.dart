@@ -13,7 +13,7 @@ class Tariff extends StatelessWidget {
           width: 200,
           height: 120,
           decoration: BoxDecoration(
-            color: CustomColors.getAccent1(context),
+            color: CustomColors.getSecondaryText(context),
             // borderRadius: BorderRadius.all(), // Углы квадратные
           ),
           child: Padding(

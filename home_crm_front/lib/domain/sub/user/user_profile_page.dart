@@ -94,8 +94,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
         children: [
           CustomButton(
             text: 'Продолжить',
-            height: 50,
-            width: 150,
             onPressed: () => AutoRouter.of(context).push(HomeRoute()),
           ),
         ],
@@ -321,7 +319,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
             child: Container(
-              height: 230,
               child: scrollOrganization(),
             ),
           ),
