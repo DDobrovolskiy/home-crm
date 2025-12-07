@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../theme/theme.dart';
 import '../screen/Screen.dart';
 
-class CustomTableRowCell extends StatelessWidget {
+class CustomTableRowCellText extends StatelessWidget {
   final String text;
   final bool textVisibleAlways;
   final String? subText;
@@ -12,7 +12,7 @@ class CustomTableRowCell extends StatelessWidget {
   final Widget? icon;
   final int flex;
 
-  const CustomTableRowCell({
+  const CustomTableRowCellText({
     super.key,
     required this.text,
     this.textVisibleAlways = false,
@@ -60,3 +60,29 @@ class CustomTableRowCell extends StatelessWidget {
     );
   }
 }
+
+class CustomTableRowCell extends StatelessWidget {
+  final Widget body;
+  final bool textVisibleAlways;
+  final int flex;
+
+  const CustomTableRowCell({
+    super.key,
+    required this.body,
+    this.textVisibleAlways = false,
+    this.flex = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool flag = Screen.isWeb(context);
+    if (!flag && !textVisibleAlways) {
+      return SizedBox();
+    }
+    return Expanded(
+      flex: flex,
+      child: body,
+    );
+  }
+}
+

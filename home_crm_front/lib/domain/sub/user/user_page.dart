@@ -35,8 +35,9 @@ class _UserPageState extends State<UserPage> {
       context,
     ).add(UserOrganizationRefreshEvent());
     BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
-    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
-    super.initState();
+    BlocProvider.of<OrganizationCurrentBloc>(
+      context,
+    ).add(OrganizationRefreshEvent())super.initState();
   }
 
   @override
@@ -96,7 +97,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _organization(BuildContext context) {
-    return BlocConsumer<OrganizationBloc, OrganizationState>(
+    return BlocConsumer<OrganizationCurrentBloc, OrganizationCurrentState>(
       listener: (context, state) {
         if (state is OrganizationErrorState) {
           Stamp.showTemporarySnackbar(context, state.error.message);
@@ -161,7 +162,7 @@ class _UserPageState extends State<UserPage> {
                       icon: Icon(Icons.keyboard_arrow_right),
                       label: Text("Выбрать"),
                       onPressed: () {
-                        BlocProvider.of<OrganizationBloc>(context).add(
+                        BlocProvider.of<OrganizationCurrentBloc>(context).add(
                           OrganizationSelectedEvent(id: empOrg.organization.id),
                         );
                         AutoRouter.of(context).push(HomeRoute());
@@ -207,7 +208,7 @@ class _UserPageState extends State<UserPage> {
                           TextButton(
                             style: Stamp.giperLink(),
                             onPressed: () {
-                              BlocProvider.of<OrganizationBloc>(
+                              BlocProvider.of<OrganizationCurrentBloc>(
                                 context,
                               ).add(OrganizationSelectedEvent(id: org.id));
                               AutoRouter.of(context).push(OrganizationRoute());
@@ -234,7 +235,7 @@ class _UserPageState extends State<UserPage> {
                         icon: Icon(Icons.keyboard_arrow_right),
                         label: Text("Выбрать"),
                         onPressed: () {
-                          BlocProvider.of<OrganizationBloc>(
+                          BlocProvider.of<OrganizationCurrentBloc>(
                             context,
                           ).add(OrganizationSelectedEvent(id: org.id));
                           AutoRouter.of(context).push(HomeRoute());
@@ -250,7 +251,7 @@ class _UserPageState extends State<UserPage> {
                   leading: Icon(Icons.add_circle_outline),
                   title: Text("Добавить организацию"),
                   onTap: () {
-                    BlocProvider.of<OrganizationBloc>(
+                    BlocProvider.of<OrganizationCurrentBloc>(
                       context,
                     ).add(OrganizationUnSelectedEvent());
                     AutoRouter.of(context).push(OrganizationRoute());

@@ -23,8 +23,8 @@ class OrganizationEditBloc
       .get<OrganizationRepository>();
   late final UserRepository _userRepository = GetIt.instance
       .get<UserRepository>();
-  late final OrganizationBloc _organizationBloc = GetIt.instance
-      .get<OrganizationBloc>();
+  late final OrganizationCurrentBloc _organizationBloc = GetIt.instance
+      .get<OrganizationCurrentBloc>();
   late final UserOrganizationBloc _userOrganizationBloc = GetIt.instance
       .get<UserOrganizationBloc>();
   late final UserEmployeeBloc _userEmployeeBloc = GetIt.instance

@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:home_crm_front/domain/support/components/table/table_row_cell.dart';
 
 class CustomTableRow extends StatelessWidget {
-  final List<CustomTableRowCell> cells;
+  final List<Widget> cells;
 
   const CustomTableRow({super.key, required this.cells});
 

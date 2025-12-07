@@ -35,7 +35,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
     return BlocConsumer<OrganizationEditBloc, OrganizationEditState>(
       listener: (context, state) {
         if (state.success) {
-          BlocProvider.of<OrganizationBloc>(
+          BlocProvider.of<OrganizationCurrentBloc>(
             context,
           ).add(OrganizationSelectedEvent(id: state.organization!.id));
           context.router.back();

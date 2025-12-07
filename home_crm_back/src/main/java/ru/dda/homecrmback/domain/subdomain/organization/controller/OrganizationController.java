@@ -44,14 +44,6 @@ public class OrganizationController {
         ).response(ResultAggregate::getErrorData);
     }
 
-//    @GetMapping
-//    public IResponse<OrganizationDTO> getOrganization() {
-//        return Organization.FindById.of(UserContextHolder.getCurrentUser().getOrganizationId())
-//                .execute(organizationService::findById)
-//                .map(OrganizationAggregate::organizationDTO)
-//                .response(ResultAggregate::getErrorData);
-//    }
-
     @PostMapping
     public IResponse<OrganizationDTO> createOrganization(@RequestBody OrganizationCreateDTO dto) {
         return Organization.Create.of(dto.name(), UserContextHolder.getCurrentUser().getUserId())

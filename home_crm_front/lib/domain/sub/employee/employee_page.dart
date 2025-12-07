@@ -114,7 +114,7 @@ class _EmployeePageState extends State<EmployeePage> {
                     SizedBox(height: 5),
                     BlocBuilder<OrganizationRoleBloc, OrganizationRoleState>(
                       builder: (context, stateOrg) {
-                        if (!stateOrg.loaded) {
+                        if (!stateOrg.loaded()) {
                           return Stamp.loadWidget(context);
                         } else {
                           return _roleSelect(
@@ -217,7 +217,12 @@ class _EmployeePageState extends State<EmployeePage> {
   Widget _roleSelect(BuildContext context, int? initRole,
       OrganizationRoleState state) {
     _selectedRole = _selectedRole ?? initRole ??
-        state.organization?.roles.first.role.id;
+        state
+            .getBody()
+            ?.roles
+            .first
+            .role
+            .id;
     return DropdownButton<int>(
       value: _selectedRole,
       // The currently selected value
@@ -226,7 +231,10 @@ class _EmployeePageState extends State<EmployeePage> {
       elevation: 8,
       isExpanded: true,
       items: [
-        ...?state.organization?.roles.map((role) {
+        ...?state
+            .getBody()
+            ?.roles
+            .map((role) {
           return DropdownMenuItem<int>(
               value: role.role.id, child: Text(role.role.name));
         }).toList()

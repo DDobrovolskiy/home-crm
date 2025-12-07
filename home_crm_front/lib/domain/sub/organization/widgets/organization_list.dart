@@ -30,7 +30,7 @@ class _OrganizationListState extends State<OrganizationList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrganizationBloc, OrganizationState>(
+    return BlocConsumer<OrganizationCurrentBloc, OrganizationCurrentState>(
       listener: (context, state) {
         if (state is OrganizationErrorState) {
           Stamp.showTemporarySnackbar(context, state.error.message);
@@ -62,7 +62,7 @@ class _OrganizationListState extends State<OrganizationList> {
         for (final empOrg in widget.employees)
           HoveredRegion(
             onTap: () async {
-              BlocProvider.of<OrganizationBloc>(
+              BlocProvider.of<OrganizationCurrentBloc>(
                 context,
               ).add(OrganizationSelectedEvent(id: empOrg.organization.id));
             },

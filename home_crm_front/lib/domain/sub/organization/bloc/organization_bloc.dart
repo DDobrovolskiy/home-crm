@@ -7,15 +7,16 @@ import '../../../support/port/port.dart';
 import '../event/organization_event.dart';
 import '../state/organization_state.dart';
 
-class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
+class OrganizationCurrentBloc
+    extends Bloc<OrganizationCurrentEvent, OrganizationCurrentState> {
   late final OrganizationRepository _repository = GetIt.instance
       .get<OrganizationRepository>();
   late final TokenService _tokenService = GetIt.instance
       .get<TokenService>();
 
-  OrganizationBloc() : super(OrganizationUnSelectedState()) {
+  OrganizationCurrentBloc() : super(OrganizationUnSelectedState()) {
     on<OrganizationRefreshEvent>((event, emit) async {
-      await refresh();
+      refresh();
     });
     on<OrganizationUnSelectedEvent>((event, emit) async {
       await _tokenService.clearToken(
@@ -33,7 +34,7 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
     });
   }
 
-  Future<void> refresh() async {
+  void refresh() async {
     // emit.call(OrganizationUnSelectedState());
     var token = await _tokenService.getToken(TokenService.organizationToken);
     if (token == null) {

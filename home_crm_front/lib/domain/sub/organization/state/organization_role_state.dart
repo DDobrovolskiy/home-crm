@@ -1,57 +1,64 @@
 import '../../../support/exceptions/exceptions.dart';
-import '../../scope/scope.dart';
+import '../../../support/service/loaded.dart';
 import '../dto/response/organization_role_dto.dart';
 
-abstract class OrganizationRoleState {
-  static ScopeType scope = ScopeType.ORGANIZATION_UPDATE;
-  abstract final bool loaded;
-  abstract final OrganizationRoleDto? organization;
-  abstract final PortException? error;
-  abstract final bool hasEdit;
-}
+abstract class OrganizationRoleState extends StateLoad<OrganizationRoleDto> {}
 
 class OrganizationRoleInitState extends OrganizationRoleState {
   @override
-  PortException? get error => null;
+  bool loaded() {
+    return false;
+  }
 
   @override
-  bool get loaded => false;
+  PortException? getError() {
+    return null;
+  }
 
   @override
-  OrganizationRoleDto? get organization => null;
-
-  @override
-  bool get hasEdit => false;
+  OrganizationRoleDto? getBody() {
+    return null;
+  }
 }
 
 class OrganizationRoleLoadedState extends OrganizationRoleState {
-  @override
-  final OrganizationRoleDto? organization;
-  @override
-  final bool hasEdit;
+  final OrganizationRoleDto organization;
 
-  OrganizationRoleLoadedState(
-      {required this.organization, required this.hasEdit});
+  OrganizationRoleLoadedState({required this.organization});
 
   @override
-  PortException? get error => null;
+  PortException? getError() {
+    return null;
+  }
 
   @override
-  bool get loaded => true;
+  OrganizationRoleDto? getBody() {
+    return organization;
+  }
+
+  @override
+  bool loaded() {
+    return true;
+  }
 }
 
 class OrganizationRoleErrorState extends OrganizationRoleState {
-  @override
   final PortException error;
+
+  @override
+  PortException? getError() {
+    return error;
+  }
 
   OrganizationRoleErrorState({required this.error});
 
   @override
-  bool get loaded => true;
+  OrganizationRoleDto? getBody() {
+    return null;
+  }
 
   @override
-  OrganizationRoleDto? get organization => null;
-
-  @override
-  bool get hasEdit => false;
+  bool loaded() {
+    return true;
+  }
 }

@@ -17,13 +17,14 @@ class OrganizationSelect extends StatefulWidget {
 class _OrganizationSelectState extends State<OrganizationSelect> {
   @override
   void initState() {
-    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
+    BlocProvider.of<OrganizationCurrentBloc>(context).add(
+        OrganizationRefreshEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrganizationBloc, OrganizationState>(
+    return BlocConsumer<OrganizationCurrentBloc, OrganizationCurrentState>(
       listener: (context, state) {
         if (state is OrganizationErrorState) {
           Stamp.showTemporarySnackbar(context, state.error.message);

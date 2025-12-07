@@ -20,6 +20,7 @@ import 'package:home_crm_front/domain/sub/employee/bloc/employee_test_bloc.dart'
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
+import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 import 'package:home_crm_front/domain/sub/role/bloc/role_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/role/cubit/role_current_scopes.dart';
 import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
@@ -71,7 +72,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(UserOrganizationBloc());
   GetIt.I.registerSingleton(UserEmployeeBloc());
 
-  GetIt.I.registerSingleton(OrganizationBloc());
+  GetIt.I.registerSingleton(OrganizationCurrentBloc());
   GetIt.I.registerSingleton(OrganizationEditBloc());
   GetIt.I.registerSingleton(OrganizationEmployeeBloc());
   GetIt.I.registerSingleton(OrganizationRoleBloc());
@@ -93,6 +94,9 @@ void setupLocator() {
   GetIt.I.registerSingleton(OptionEditBloc());
 
   GetIt.I.registerSingleton(SessionBloc());
+
+  //Service
+  GetIt.I.registerSingleton(OrganizationCurrentService());
 
   //callback
   GetIt.I.registerLazySingleton(() => SheetElementAddCallback());
@@ -136,8 +140,8 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<UserEmployeeBloc>.value(
           value: GetIt.I.get<UserEmployeeBloc>(),
         ),
-        BlocProvider<OrganizationBloc>.value(
-          value: GetIt.I.get<OrganizationBloc>(),
+        BlocProvider<OrganizationCurrentBloc>.value(
+          value: GetIt.I.get<OrganizationCurrentBloc>(),
         ),
         BlocProvider<OrganizationEditBloc>.value(
           value: GetIt.I.get<OrganizationEditBloc>(),

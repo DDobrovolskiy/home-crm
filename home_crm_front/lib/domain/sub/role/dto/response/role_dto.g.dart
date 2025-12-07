@@ -11,6 +11,9 @@ RoleDto _$RoleDtoFromJson(Map<String, dynamic> json) => RoleDto(
   name: json['name'] as String,
   description: json['description'] as String,
   owner: json['owner'] as bool,
+  scopes: (json['scopes'] as List<dynamic>)
+      .map((e) => ScopeDTO.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$RoleDtoToJson(RoleDto instance) => <String, dynamic>{
@@ -18,4 +21,5 @@ Map<String, dynamic> _$RoleDtoToJson(RoleDto instance) => <String, dynamic>{
   'name': instance.name,
   'description': instance.description,
   'owner': instance.owner,
+  'scopes': instance.scopes,
 };

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/organization/repository/organization_repository.dart';
+import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 
 import '../../../support/port/port.dart';
 import '../../role/cubit/role_current_scopes.dart';
@@ -18,15 +19,18 @@ class OrganizationRoleBloc
     on<OrganizationRoleRefreshEvent>((event, emit) async {
       emit.call(OrganizationRoleInitState());
       var organizationRole = await _organizationRepository.organizationRole();
-      var hasEdit = await _roleCurrentScopesCubit.checkScope(
-        OrganizationRoleState.scope,
-      );
-      emit.call(
-        OrganizationRoleLoadedState(
-          organization: organizationRole,
-          hasEdit: hasEdit,
-        ),
-      );
+      if (organizationRole != null) {
+        emit.call(OrganizationRoleLoadedState(organization: organizationRole));
+      } else {
+        emit.call(
+          OrganizationRoleErrorState(
+            error: PortException(
+              message: 'Не удалось загрузить контекст',
+              auth: false,
+            ),
+          ),
+        );
+      }
     });
     on<OrganizationRoleErrorEvent>((event, emit) async {
       emit.call(OrganizationRoleErrorState(error: event.error));

@@ -86,15 +86,15 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             for (final empOrg in state.organization!.employees)
               CustomTableRow(
                 cells: [
-                  CustomTableRowCell(
+                  CustomTableRowCellText(
                     text: empOrg.user.name,
                     flex: 2,
                     textVisibleAlways: true,
                     subText: empOrg.user.phone,
                     icon: Icon(Icons.face),
                   ),
-                  CustomTableRowCell(text: empOrg.user.phone, flex: 2),
-                  CustomTableRowCell(
+                  CustomTableRowCellText(text: empOrg.user.phone, flex: 2),
+                  CustomTableRowCellText(
                     text: empOrg.role.name,
                     textVisibleAlways: true,
                   ),
@@ -102,7 +102,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
               ),
             CustomTableRow(
               cells: [
-                CustomTableRowCell(
+                CustomTableRowCellText(
                   text: '',
                   textVisibleAlways: true,
                   icon: IconButton(

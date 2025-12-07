@@ -111,6 +111,9 @@ public class RoleAggregate {
                 .name(name)
                 .description(description)
                 .owner(owner)
+                .scopes(scopes.stream()
+                        .map(ScopeAggregate::getScopeDTO)
+                        .toList())
                 .build();
     }
 

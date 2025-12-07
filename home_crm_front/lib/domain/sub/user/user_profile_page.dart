@@ -41,7 +41,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   void initState() {
     BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
     BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
-    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
+    BlocProvider.of<OrganizationCurrentBloc>(context).add(
+        OrganizationRefreshEvent());
     super.initState();
   }
 

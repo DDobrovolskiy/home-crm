@@ -8,6 +8,7 @@ import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
 import '../../../../theme/theme.dart';
 import '../../../sub/organization/organization_employees_page.dart';
+import '../../../sub/organization/organization_role_page.dart';
 import '../../../sub/organization/widgets/organization_select.dart';
 import '../animate/Test.dart';
 import '../callback/NavBarCallBack.dart';
@@ -97,6 +98,17 @@ class _NavBarState extends State<NavBar> {
                                 print('Организация');
                               },
                               subElements: [
+                                NavSubElement(
+                                  label: 'Роли',
+                                  onTap: () {
+                                    GetIt.I.get<SheetElementAddCallback>().call(
+                                      'Роли',
+                                          () =>
+                                          OrganizationRolesWrapper()
+                                              .build(context),
+                                    );
+                                  },
+                                ),
                                 NavSubElement(
                                   label: 'Сотрудники',
                                   onTap: () {
