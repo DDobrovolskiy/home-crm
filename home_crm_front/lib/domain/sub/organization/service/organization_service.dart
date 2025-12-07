@@ -50,4 +50,8 @@ class OrganizationCurrentService {
       },
     );
   }
+
+  bool isEditor() {
+    return true;
+  }
 }

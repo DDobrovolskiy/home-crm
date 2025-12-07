@@ -29,97 +29,142 @@ class OrganizationRolesPage extends StatefulWidget {
 }
 
 class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
+  var organizationCurrentService = GetIt.instance
+      .get<OrganizationCurrentService>();
+
   @override
   void initState() {
-    GetIt.instance.get<OrganizationCurrentService>().refreshOrganizationRoles(
-      Loaded.ifNotLoad,
-    );
+    organizationCurrentService.refreshOrganizationRoles(Loaded.ifNotLoad);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetIt.instance.get<OrganizationCurrentService>().organizationRole(
+    return organizationCurrentService.organizationRole(context, (
       context,
-      (context, organization) {
-        return CustomTable(
-          head: CustomTableHeadRow(
-            cells: [
-              CustomTableHeadRowCell(
-                text: 'Название',
-                textVisibleAlways: true,
-                subText: 'Описание',
-              ),
-              CustomTableHeadRowCell(text: 'Описание', flex: 2),
-              CustomTableHeadRowCell(text: 'Сотрудники с ролью'),
-              CustomTableHeadRowCell(
-                flex: 2,
-                text: 'Разрешения',
-                textVisibleAlways: true,
-                subText: 'Описание',
-                subTextVisibleAlways: true,
-              ),
-            ],
-          ),
-          rows: [
-            for (final role in organization.roles)
-              CustomTableRow(
-                cells: [
-                  CustomTableRowCellText(
-                    text: role.role.name,
-                    textVisibleAlways: true,
-                    subText: role.role.description,
-                  ),
-                  CustomTableRowCellText(text: role.role.description, flex: 2),
-                  CustomTableRowCell(
-                    body: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final employee in role.roleEmployee.employees)
-                          Text(
-                            employee.user.name,
-                            style: CustomColors.getBodyLarge(context, null),
-                          ),
-                      ],
-                    ),
-                  ),
-                  CustomTableRowCell(
-                    flex: 2,
-                    body: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (role.role.owner)
-                          Text(
-                            '[Нет ограничений]',
-                            style: CustomColors.getBodyLarge(context, null),
-                          ),
-                        for (final scope in role.roleScopes.scopes)
-                          Row(
-                            children: [
-                              Text(
-                                scope.name,
-                                style: CustomColors.getBodyLarge(context, null),
-                              ),
-                              Text(
-                                ' (${scope.description})',
-                                style: CustomColors.getBodyMedium(
-                                  context,
-                                  null,
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        organization,) {
+      return CustomTable(
+        head: CustomTableHeadRow(
+          cells: [
+            CustomTableHeadRowCell(
+              text: 'Название',
+              textVisibleAlways: true,
+              subText: 'Описание',
+            ),
+            CustomTableHeadRowCell(text: 'Описание', flex: 2),
+            CustomTableHeadRowCell(text: 'Сотрудники с ролью'),
+            CustomTableHeadRowCell(
+              flex: 2,
+              text: 'Разрешения',
+              textVisibleAlways: true,
+              subText: 'Описание',
+              subTextVisibleAlways: true,
+            ),
+            CustomTableHeadRowCell(
+              text: 'Дополнительно',
+              textVisibleAlways: true,
+            ),
           ],
-        );
-      },
-    );
+        ),
+        rows: [
+          for (final role in organization.roles)
+            CustomTableRow(
+              cells: [
+                CustomTableRowCellText(
+                  text: role.role.name,
+                  textVisibleAlways: true,
+                  subText: role.role.description,
+                ),
+                CustomTableRowCellText(text: role.role.description, flex: 2),
+                CustomTableRowCell(
+                  body: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final employee in role.roleEmployee.employees)
+                        Text(
+                          employee.user.name,
+                          style: CustomColors.getBodyLarge(context, null),
+                        ),
+                    ],
+                  ),
+                ),
+                CustomTableRowCell(
+                  flex: 2,
+                  textVisibleAlways: true,
+                  body: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (role.role.owner)
+                        Text(
+                          '[Нет ограничений]',
+                          style: CustomColors.getBodyLarge(context, null),
+                        ),
+                      for (final scope in role.roleScopes.scopes)
+                        Row(
+                          children: [
+                            Text(
+                              scope.name,
+                              style: CustomColors.getBodyLarge(context, null),
+                            ),
+                            Text(
+                              ' (${scope.description})',
+                              style: CustomColors.getBodyMedium(context, null),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+                if (organizationCurrentService.isEditor())
+                  CustomTableRowCell(
+                    textVisibleAlways: true,
+                    body: PopupMenuButton<String>(
+                      color: CustomColors.getSecondaryBackground(context),
+                      icon: Icon(Icons.more_horiz), // Три точки
+                      onSelected: (String choice) {
+                        if (choice == 'Edit') {
+                          // OrganizationDialog(
+                          //   organization: organization,
+                          // ).addOrganization(context);
+                        } else if (choice == 'Delete') {
+                          // BlocProvider.of<OrganizationEditBloc>(
+                          //   context,
+                          // ).add(
+                          //   OrganizationEditDeleteEvent(
+                          //     id: organization.id,
+                          //   ),
+                          // );
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return <PopupMenuEntry<String>>[
+                          PopupMenuItem<String>(
+                            value: 'Edit',
+                            child: Text(
+                              'Редактировать',
+                              style: CustomColors.getBodyMedium(context, null),
+                            ),
+                          ),
+                          if(!role.role.owner)
+                            PopupMenuItem<String>(
+                              value: 'Delete',
+                              child: Text(
+                                'Удалить',
+                                style: CustomColors.getBodyMedium(
+                                    context, null),
+                              ),
+                            ),
+                        ];
+                      },
+                    ),
+                  ),
+              ],
+            ),
+        ],
+      );
+    });
   }
 
   // Widget getContent(BuildContext context, OrganizationRoleState state) {

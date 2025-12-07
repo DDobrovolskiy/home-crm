@@ -37,7 +37,8 @@ class _UserPageState extends State<UserPage> {
     BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
     BlocProvider.of<OrganizationCurrentBloc>(
       context,
-    ).add(OrganizationRefreshEvent())super.initState();
+    ).add(OrganizationRefreshEvent());
+    super.initState();
   }
 
   @override

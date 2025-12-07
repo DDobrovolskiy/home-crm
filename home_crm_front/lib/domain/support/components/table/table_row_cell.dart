@@ -86,3 +86,28 @@ class CustomTableRowCell extends StatelessWidget {
   }
 }
 
+class CustomTableRowCellMinimal extends StatelessWidget {
+  final Widget body;
+  final bool textVisibleAlways;
+  final int flex;
+
+  const CustomTableRowCellMinimal({
+    super.key,
+    required this.body,
+    this.textVisibleAlways = false,
+    this.flex = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool flag = Screen.isWeb(context);
+    if (!flag && !textVisibleAlways) {
+      return SizedBox();
+    }
+    return Flexible(
+      flex: flex,
+      child: body,
+    );
+  }
+}
+
