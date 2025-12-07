@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -186,25 +188,26 @@ class HomeCrmApp extends StatelessWidget {
         // Светлая тема
         darkTheme: getDarkApplicationTheme(),
         // Темная тема
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         routerConfig: GetIt.instance.get<AppRouter>().config(
           // navigatorObservers:
         ),
-        // scrollBehavior: MyCustomScrollBehavior(),
+        scrollBehavior: MyCustomScrollBehavior(),
       ),
     );
   }
 }
 
-// class MyCustomScrollBehavior extends MaterialScrollBehavior {
-//   // Override behavior methods and getters like dragDevices
-//   @override
-//   Set<PointerDeviceKind> get dragDevices => {
-//     PointerDeviceKind.touch,
-//     PointerDeviceKind.mouse,
-//     PointerDeviceKind.trackpad,
-//     PointerDeviceKind.stylus,
-//     PointerDeviceKind.unknown,
-//     // etc.
-//   };
-// }
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices =>
+      {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.unknown,
+        // etc.
+      };
+}

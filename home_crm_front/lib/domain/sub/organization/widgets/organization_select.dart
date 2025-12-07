@@ -93,6 +93,10 @@ class _OrganizationSelectState extends State<OrganizationSelect> {
                         style: CustomColors.getBodyLarge(context, null),
                       ),
                       Text(
+                        'ID: ${state.selected.organization.id}',
+                        style: CustomColors.getLabelMedium(context, null),
+                      ),
+                      Text(
                         state.selected.role.name,
                         style: CustomColors.getLabelMedium(context, null),
                       ),

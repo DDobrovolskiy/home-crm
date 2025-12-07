@@ -3,20 +3,31 @@ import 'dart:core';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/event/employee_edit_event.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
 import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
+import 'package:home_crm_front/domain/support/components/table/table.dart';
+import 'package:home_crm_front/domain/support/components/table/table_head_row.dart';
+import 'package:home_crm_front/domain/support/components/table/table_head_row_cell.dart';
+import 'package:home_crm_front/domain/support/components/table/table_row.dart';
+import 'package:home_crm_front/domain/support/components/table/table_row_cell.dart';
 import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
-import '../../support/components/navbar/NavBar.dart';
-import '../../support/components/sheetbar/SheetBar.dart';
 import '../../support/widgets/stamp.dart';
 import '../employee/dto/response/employee_dto.dart';
+
+class OrganizationEmployeesWrapper extends StatelessWidget {
+  const OrganizationEmployeesWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return OrganizationEmployeesPage();
+  }
+}
 
 @RoutePage()
 class OrganizationEmployeesPage extends StatefulWidget {
@@ -28,7 +39,6 @@ class OrganizationEmployeesPage extends StatefulWidget {
 }
 
 class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
-
   @override
   void initState() {
     BlocProvider.of<OrganizationEmployeeBloc>(
@@ -46,103 +56,8 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
         }
       },
       builder: (context, state) {
-        return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Scaffold(
-            drawer: !Screen.isWeb(context) ? NavBar() : null,
-            backgroundColor: CustomColors.getPrimaryBackground(context),
-            appBar: !Screen.isWeb(context) ? getAppBar(context) : null,
-            body: getContentBody(context),
-          ),
-        );
+        return getContent(context, state);
       },
-    );
-  }
-
-  PreferredSizeWidget getAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: CustomColors.getPrimary(context),
-      automaticallyImplyLeading: false,
-      title: Text(
-        'Dashboard',
-        style: CustomColors.getDisplaySmall(
-          context,
-          CustomColors.getPrimaryBtnText(context),
-        ),
-      ),
-      leading: !Screen.isWeb(context) ? Stamp.buttonMenuMain(context) : null,
-    );
-    //+add animation
-  }
-
-  Widget getContentBody(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (Screen.isWeb(context)) NavBar(),
-              Flexible(
-                // flex: 10,
-                child: GetIt.I.get<SheetBar>(),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNavElementWithHover(
-    BuildContext context, {
-    required String label,
-    required IconData icon,
-    required Color backgroundColor,
-    required Color foregroundColor,
-  }) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: Material(
-        color: backgroundColor,
-        child: InkWell(
-          onHover: (hovering) {
-            // Здесь можно запустить анимацию или какое-то другое действие при наведении
-            print('object');
-          },
-          onTap: () {}, // Сюда можно поставить действие при тапе
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(icon, color: foregroundColor, size: 28),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                    child: Text(
-                      label,
-                      style: CustomColors.getBodyLarge(context, null),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -151,7 +66,55 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
       return Stamp.loadWidget(context);
     } else if (state.organization != null) {
       if (true) {
-        return getTable(context);
+        return CustomTable(
+          head: CustomTableHeadRow(
+            cells: [
+              CustomTableHeadRowCell(
+                text: 'ФИО',
+                flex: 2,
+                textVisibleAlways: true,
+                subText: 'Телефон',
+              ),
+              CustomTableHeadRowCell(text: 'Телефон', flex: 2),
+              CustomTableHeadRowCell(
+                text: 'Должность',
+                textVisibleAlways: true,
+              ),
+            ],
+          ),
+          rows: [
+            for (final empOrg in state.organization!.employees)
+              CustomTableRow(
+                cells: [
+                  CustomTableRowCell(
+                    text: empOrg.user.name,
+                    flex: 2,
+                    textVisibleAlways: true,
+                    subText: empOrg.user.phone,
+                    icon: Icon(Icons.face),
+                  ),
+                  CustomTableRowCell(text: empOrg.user.phone, flex: 2),
+                  CustomTableRowCell(
+                    text: empOrg.role.name,
+                    textVisibleAlways: true,
+                  ),
+                ],
+              ),
+            CustomTableRow(
+              cells: [
+                CustomTableRowCell(
+                  text: '',
+                  textVisibleAlways: true,
+                  icon: IconButton(
+                    onPressed: () async {},
+                    icon: Icon(Icons.add_circle),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+        return getTable(context, state);
       } else {
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
@@ -310,7 +273,7 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
     }
   }
 
-  Widget getTable(BuildContext context) {
+  Widget getTable(BuildContext context, OrganizationEmployeeState state) {
     bool flag = Screen.isWeb(context);
     return SingleChildScrollView(
       primary: true,

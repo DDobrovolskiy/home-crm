@@ -7,6 +7,7 @@ import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
 import '../../../../theme/theme.dart';
+import '../../../sub/organization/organization_employees_page.dart';
 import '../../../sub/organization/widgets/organization_select.dart';
 import '../animate/Test.dart';
 import '../callback/NavBarCallBack.dart';
@@ -90,36 +91,19 @@ class _NavBarState extends State<NavBar> {
                           )
                           .add(
                             Item(
-                              label: 'Customers',
+                              label: 'Организация',
                               icon: Icons.business_rounded,
                               onTap: () {
-                                print('Customers');
+                                print('Организация');
                               },
                               subElements: [
                                 NavSubElement(
-                                  label: 'My team',
+                                  label: 'Сотрудники',
                                   onTap: () {
                                     GetIt.I.get<SheetElementAddCallback>().call(
-                                      'My team',
-                                      () => CounterWrap().build(context),
-                                    );
-                                  },
-                                ),
-                                NavSubElement(
-                                  label: 'Employee',
-                                  onTap: () {
-                                    GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Employee',
-                                      () => CounterWrap().build(context),
-                                    );
-                                  },
-                                ),
-                                NavSubElement(
-                                  label: 'Contracts',
-                                  onTap: () {
-                                    GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Contracts',
-                                      () => CounterWrap().build(context),
+                                      'Сотрудники',
+                                      () => OrganizationEmployeesWrapper()
+                                          .build(context),
                                     );
                                   },
                                 ),

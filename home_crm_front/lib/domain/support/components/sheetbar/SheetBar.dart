@@ -99,7 +99,7 @@ class _SheetBarState extends State<SheetBar> {
             child: Row(
               children: [
                 Text(
-                  'SheetBar',
+                  'Быстрый доступ',
                   style: CustomColors.getLabelLarge(context, null),
                 ),
               ],

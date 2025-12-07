@@ -23,7 +23,7 @@ class Stamp {
         const Padding(padding: EdgeInsets.all(16)),
         Text(
           'Что-то пошло не так...',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: CustomColors.getBodyMedium(context, null),
         ),
       ],
     );
@@ -38,6 +38,22 @@ class Stamp {
     return Center(
       child: CircularProgressIndicator(), // Стандартное кольцо загрузки
     );
+  }
+
+  static void showTemporarySnackbarWithoutContext(String message) {
+    var context = GetIt.instance
+        .get<AppRouter>()
+        .navigatorKey
+        .currentContext!;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(
+      message, style: CustomColors.getBodyLarge(context, null),)));
+    Timer(Duration(seconds: 5), () {
+      ScaffoldMessenger.of(
+        context,
+      ).hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
+    });
   }
 
   static void showTemporarySnackbar(BuildContext? context, String message) {
@@ -175,7 +191,7 @@ class Stamp {
                   },
                 ),
                 onTap: () {
-                  AutoRouter.of(context).push(UserRoute());
+                  AutoRouter.of(context).push(UserProfileRoute());
                 },
               ),
             ],
@@ -206,7 +222,7 @@ class Stamp {
               leading: Icon(Icons.account_box), // Иконка выхода
               title: Text('Личный кабинет'),
               onTap: () {
-                AutoRouter.of(context).push(UserRoute());
+                AutoRouter.of(context).push(UserProfileRoute());
               },
             ),
             Spacer(),

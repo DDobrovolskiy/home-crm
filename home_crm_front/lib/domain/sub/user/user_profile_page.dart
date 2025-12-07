@@ -11,10 +11,13 @@ import 'package:home_crm_front/domain/support/router/roters.gr.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
+import '../../../home_crm_app.dart';
 import '../../support/components/button/button.dart';
 import '../../support/components/screen/Screen.dart';
 import '../../support/components/status/user.dart';
 import '../../support/components/tariff/tariff.dart';
+import '../authentication/bloc/auth_bloc.dart';
+import '../authentication/event/auth_event.dart';
 import '../organization/bloc/organization_bloc.dart';
 import '../organization/widgets/organization_list.dart';
 import '../organization/widgets/organization_select.dart';
@@ -92,6 +95,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          CustomButton(
+            text: 'Выйти со всех устройств',
+            onPressed: () async {
+              BlocProvider.of<AuthBloc>(context).add(AuthLogoutAllEvent());
+              var bool = await resetBlocs();
+              AutoRouter.of(context).replace(AuthLoginRoute());
+            },
+          ),
+          CustomButton(
+            text: 'Выйти',
+            onPressed: () async {
+              BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
+              var bool = await resetBlocs();
+              AutoRouter.of(context).replace(AuthLoginRoute());
+            },
+          ),
           CustomButton(
             text: 'Продолжить',
             onPressed: () => AutoRouter.of(context).push(HomeRoute()),

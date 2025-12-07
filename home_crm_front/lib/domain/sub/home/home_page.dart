@@ -1,14 +1,13 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
+import '../../../theme/theme.dart';
+import '../../support/components/navbar/NavBar.dart';
+import '../../support/components/screen/Screen.dart';
+import '../../support/components/sheetbar/SheetBar.dart';
 import '../../support/widgets/stamp.dart';
-import '../organization/bloc/organization_bloc.dart';
-import '../organization/event/organization_event.dart';
-import '../organization/state/organization_state.dart';
-import '../user/bloc/user_bloc.dart';
-import '../user/event/user_event.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -21,69 +20,65 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
-    BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
+    // BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
+    // BlocProvider.of<OrganizationBloc>(context).add(OrganizationRefreshEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth >= 800) {
-      return Scaffold(
-        body: Row(
-          children: [
-            Stamp.menuMain(context), // Открытое меню
-            Expanded(
-              child: Scaffold(
-                endDrawer: Stamp.menuSupplier(context),
-                appBar: AppBar(
-                  title: BlocBuilder<OrganizationBloc, OrganizationState>(
-                    builder: (context, state) {
-                      if (state is OrganizationSelectedState) {
-                        return Text(
-                          state.selected.organization.name,
-                          // style: Theme.of(context).textTheme.titleLarge,
-                        );
-                      }
-                      return Stamp.loadWidget(context);
-                    },
-                  ),
-                  actions: [Stamp.buttonMenuSupplier(context)],
-                ),
-                body: Text('AutoRouter()'),
-              ),
-            ), // Основная область
-          ],
-        ),
-      );
-    } else {
-      return Scaffold(
-        drawer: Stamp.menuMain(context),
-        endDrawer: Stamp.menuSupplier(context),
-        appBar: AppBar(
-          title: BlocBuilder<OrganizationBloc, OrganizationState>(
-            builder: (context, state) {
-              if (state is OrganizationSelectedState) {
-                return Text(state.selected.organization.name);
-              }
-              return Stamp.loadWidget(context);
-            },
-          ),
-          actions: [Stamp.buttonMenuSupplier(context)],
-          leading: Stamp.buttonMenuMain(context),
-        ),
-        body: Text('AutoRouter()'),
-      );
-    }
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        drawer: !Screen.isWeb(context) ? NavBar() : null,
+        backgroundColor: CustomColors.getPrimaryBackground(context),
+        appBar: !Screen.isWeb(context) ? getAppBar(context) : null,
+        body: getContentBody(context),
+      ),
+    );
   }
-}
 
-class ContentPage extends StatelessWidget {
-  const ContentPage({super.key});
+  PreferredSizeWidget getAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: CustomColors.getPrimary(context),
+      automaticallyImplyLeading: false,
+      title: Text(
+        'Dashboard',
+        style: CustomColors.getDisplaySmall(
+          context,
+          CustomColors.getPrimaryBtnText(context),
+        ),
+      ),
+      leading: !Screen.isWeb(context) ? Stamp.buttonMenuMain(context) : null,
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Column(children: []));
+  Widget getContentBody(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (Screen.isWeb(context)) NavBar(),
+              Flexible(
+                child: SingleChildScrollView(
+                  primary: true,
+                  child:
+                      // flex: 10,
+                      GetIt.I.get<SheetBar>(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
