@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 import 'package:home_crm_front/domain/support/port/response_dto.dart';
+import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../token_service.dart';
 
@@ -143,6 +144,7 @@ class Port {
     var responseDTO = ResponseDTO.fromJson(response.data, fromJsonT);
     if (responseDTO.status != 0) {
       debugPrint(responseDTO.convertToString());
+      Stamp.showTemporarySnackbar(null, responseDTO.convertToString());
       throw PortException(message: responseDTO.convertToString(), auth: false);
     }
     return responseDTO;

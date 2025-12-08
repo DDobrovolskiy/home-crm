@@ -116,3 +116,6 @@ CREATE INDEX IF NOT EXISTS test_sessions_result ON test_sessions (result_id);
 ALTER TABLE test_result
     ADD CONSTRAINT FK_TEST_RESULT_ON_SESSION FOREIGN KEY (session_id) REFERENCES test_sessions (id);
 CREATE INDEX IF NOT EXISTS test_result_test ON test_result (session_id);
+
+INSERT INTO scope (type)
+VALUES ('TEST_CREATE');

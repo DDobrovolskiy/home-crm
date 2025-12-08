@@ -97,6 +97,9 @@ public class RoleAggregate {
     }
 
     public boolean roleHasScope(ScopeType scopeType) {
+        if (owner) {
+            return true;
+        }
         return this.getScopes().stream()
                 .anyMatch(scopeAggregate -> scopeAggregate.getType().equals(scopeType));
     }

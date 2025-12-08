@@ -24,6 +24,7 @@ class OrganizationCurrentService {
 
   void refreshOrganizationRoles(Loaded loaded) {
     if (loaded.needLoad(_organizationRoleBloc.state)) {
+      print('refreshOrganizationRoles');
       _organizationRoleBloc.add(OrganizationRoleRefreshEvent());
     }
   }
@@ -51,7 +52,7 @@ class OrganizationCurrentService {
     );
   }
 
-  bool isEditor() {
+  bool isEditor(ScopeType scope) {
     return true;
   }
 }

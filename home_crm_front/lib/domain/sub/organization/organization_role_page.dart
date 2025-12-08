@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
+import 'package:home_crm_front/domain/sub/role/widget/role_add.dart';
+import 'package:home_crm_front/domain/sub/scope/scope.dart';
 import 'package:home_crm_front/domain/support/service/loaded.dart';
 
 import '../../../theme/theme.dart';
@@ -60,10 +62,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
               subText: 'Описание',
               subTextVisibleAlways: true,
             ),
-            CustomTableHeadRowCell(
-              text: 'Дополнительно',
-              textVisibleAlways: true,
-            ),
+            CustomTableHeadRowCell(text: '', textVisibleAlways: true),
           ],
         ),
         rows: [
@@ -105,19 +104,16 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                         Row(
                           children: [
                             Text(
-                              scope.name,
+                              scope.description,
                               style: CustomColors.getBodyLarge(context, null),
-                            ),
-                            Text(
-                              ' (${scope.description})',
-                              style: CustomColors.getBodyMedium(context, null),
                             ),
                           ],
                         ),
                     ],
                   ),
                 ),
-                if (organizationCurrentService.isEditor())
+                if (organizationCurrentService.isEditor(
+                    ScopeType.ORGANIZATION_UPDATE))
                   CustomTableRowCell(
                     textVisibleAlways: true,
                     body: PopupMenuButton<String>(
@@ -147,13 +143,15 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                               style: CustomColors.getBodyMedium(context, null),
                             ),
                           ),
-                          if(!role.role.owner)
+                          if (!role.role.owner)
                             PopupMenuItem<String>(
                               value: 'Delete',
                               child: Text(
                                 'Удалить',
                                 style: CustomColors.getBodyMedium(
-                                    context, null),
+                                  context,
+                                  null,
+                                ),
                               ),
                             ),
                         ];
@@ -162,6 +160,13 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                   ),
               ],
             ),
+          if (organizationCurrentService.isEditor(
+              ScopeType.ORGANIZATION_UPDATE))
+            CustomTableRow(cells: [
+              IconButton(onPressed: () async {
+                RoleAdd().build(context);
+              }, icon: Icon(Icons.add_circle))
+            ]),
         ],
       );
     });
