@@ -12,6 +12,9 @@ import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
 import '../../support/components/table/table_row.dart';
 import '../../support/components/table/table_row_cell.dart';
+import '../role/dto/request/role_delete_dto.dart';
+import '../role/service/role_service.dart';
+import '../role/widget/role_edit.dart';
 
 class OrganizationRolesWrapper extends StatelessWidget {
   const OrganizationRolesWrapper({super.key});
@@ -54,7 +57,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
               subText: 'Описание',
             ),
             CustomTableHeadRowCell(text: 'Описание', flex: 2),
-            CustomTableHeadRowCell(text: 'Сотрудники с ролью'),
+            CustomTableHeadRowCell(text: 'Сотрудники с должностью'),
             CustomTableHeadRowCell(
               flex: 2,
               text: 'Разрешения',
@@ -119,19 +122,17 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                     body: PopupMenuButton<String>(
                       color: CustomColors.getSecondaryBackground(context),
                       icon: Icon(Icons.more_horiz), // Три точки
-                      onSelected: (String choice) {
+                      onSelected: (String choice) async {
                         if (choice == 'Edit') {
-                          // OrganizationDialog(
-                          //   organization: organization,
-                          // ).addOrganization(context);
+                          RoleEdit().edit(context, role);
                         } else if (choice == 'Delete') {
-                          // BlocProvider.of<OrganizationEditBloc>(
-                          //   context,
-                          // ).add(
-                          //   OrganizationEditDeleteEvent(
-                          //     id: organization.id,
-                          //   ),
-                          // );
+                          await GetIt.I
+                              .get<RoleService>()
+                              .deleteRole(
+                            RoleDeleteDto(
+                              id: role.role.id,
+                            ),
+                          );
                         }
                       },
                       itemBuilder: (BuildContext context) {
@@ -164,7 +165,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
               ScopeType.ORGANIZATION_UPDATE))
             CustomTableRow(cells: [
               IconButton(onPressed: () async {
-                RoleAdd().build(context);
+                RoleAdd().create(context);
               }, icon: Icon(Icons.add_circle))
             ]),
         ],

@@ -6,6 +6,8 @@ import '../../scope/dto/response/scope_dto.dart';
 import '../../scope/repository/scope_repository.dart';
 import '../../scope/scope.dart';
 import '../dto/request/role_create_dto.dart';
+import '../dto/request/role_delete_dto.dart';
+import '../dto/request/role_update_dto.dart';
 import '../dto/response/role_dto.dart';
 import '../repository/role_repository.dart';
 
@@ -27,6 +29,18 @@ class RoleService {
     RoleDto? roleNew = await _roleRepository.roleCreate(role);
     refreshRole();
     return roleNew;
+  }
+
+  Future<RoleDto?> updateRole(RoleUpdateDto role) async {
+    RoleDto? roleNew = await _roleRepository.roleUpdate(role);
+    refreshRole();
+    return roleNew;
+  }
+
+  Future<bool> deleteRole(RoleDeleteDto role) async {
+    await _roleRepository.roleDelete(role);
+    refreshRole();
+    return true;
   }
 
   Future<List<ScopeDTO>?> getAllScopes() async {

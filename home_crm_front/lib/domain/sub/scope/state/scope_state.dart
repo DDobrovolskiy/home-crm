@@ -1,46 +1,65 @@
 import 'package:home_crm_front/domain/sub/scope/dto/response/scope_dto.dart';
 
 import '../../../support/exceptions/exceptions.dart';
+import '../../../support/service/loaded.dart';
 
-abstract class ScopeState {
-  abstract final PortException? error;
-  abstract final bool loaded;
-  abstract final List<ScopeDTO>? scopes;
-}
+abstract class ScopeState extends StateLoad<List<ScopeDTO>> {}
 
 class ScopeInitState extends ScopeState {
   @override
-  PortException? get error => null;
+  List<ScopeDTO>? getBody() {
+    return null;
+  }
 
   @override
-  bool get loaded => false;
+  PortException? getError() {
+    return null;
+  }
 
   @override
-  List<ScopeDTO>? get scopes => [];
+  bool loaded() {
+    return false;
+  }
 }
 
 class ScopeLoadedState extends ScopeState {
-  @override
   final List<ScopeDTO>? scopes;
 
   ScopeLoadedState({required this.scopes});
 
   @override
-  PortException? get error => null;
+  List<ScopeDTO>? getBody() {
+    return scopes;
+  }
 
   @override
-  bool get loaded => true;
+  PortException? getError() {
+    return null;
+  }
+
+  @override
+  bool loaded() {
+    return true;
+  }
 }
 
 class ScopeErrorState extends ScopeState {
-  @override
   final PortException error;
 
   ScopeErrorState({required this.error});
 
   @override
-  bool get loaded => true;
+  List<ScopeDTO>? getBody() {
+    return null;
+  }
 
   @override
-  List<ScopeDTO>? get scopes => [];
+  PortException? getError() {
+    return error;
+  }
+
+  @override
+  bool loaded() {
+    return true;
+  }
 }

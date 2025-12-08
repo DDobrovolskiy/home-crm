@@ -42,6 +42,7 @@ import 'domain/sub/organization/bloc/organization_test_bloc.dart';
 import 'domain/sub/organization/repository/organization_repository.dart';
 import 'domain/sub/role/bloc/role_current.dart';
 import 'domain/sub/role/service/role_service.dart';
+import 'domain/sub/scope/service/scope_service.dart';
 import 'domain/sub/user/bloc/user_bloc.dart';
 import 'domain/sub/user/repository/user_repository.dart';
 import 'domain/support/components/callback/NavBarCallBack.dart';
@@ -97,6 +98,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(SessionBloc());
 
   //Service
+  GetIt.I.registerSingleton(ScopeService());
   GetIt.I.registerSingleton(OrganizationCurrentService());
   GetIt.I.registerSingleton(RoleService());
 
