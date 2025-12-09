@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:home_crm_front/domain/support/components/table/table_head_row.dart';
-import 'package:home_crm_front/domain/support/components/table/table_row.dart';
 
 import '../../../../theme/theme.dart';
 
 class CustomTable extends StatelessWidget {
   final CustomTableHeadRow head;
-  final List<CustomTableRow> rows;
+  final List<Widget> rows;
 
   const CustomTable({super.key, required this.head, required this.rows});
 
