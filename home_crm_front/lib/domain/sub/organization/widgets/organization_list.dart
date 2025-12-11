@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/organization/dto/request/organization_delete_dto.dart';
 import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 
 import '../../../../theme/theme.dart';
 import '../../../support/components/button/hovered_region.dart';
+import '../../../support/components/dialog/custom_dialog.dart';
 import '../../../support/widgets/stamp.dart';
 import '../../employee/dto/response/employee_dto.dart';
 import '../../role/dto/response/role_dto.dart';
 import '../bloc/organization_bloc.dart';
-import '../bloc/organization_edit_bloc.dart';
 import '../dto/response/organization_dto.dart';
-import '../event/organization_edit_event.dart';
 import '../event/organization_event.dart';
+import '../service/organization_service.dart';
 import '../state/organization_state.dart';
 import 'organization_dialog.dart';
 import 'orgnization_add.dart';
@@ -152,17 +154,13 @@ class _OrganizationListState extends State<OrganizationList> {
                           icon: Icon(Icons.more_horiz), // Три точки
                           onSelected: (String choice) {
                             if (choice == 'Edit') {
-                              OrganizationDialog(
-                                organization: organization,
-                              ).addOrganization(context);
+                              CustomDialog.showDialog(OrganizationDialog(
+                                  organization: organization), context);
                             } else if (choice == 'Delete') {
-                              BlocProvider.of<OrganizationEditBloc>(
-                                context,
-                              ).add(
-                                OrganizationEditDeleteEvent(
-                                  id: organization.id,
-                                ),
-                              );
+                              GetIt.I
+                                  .get<OrganizationService>()
+                                  .deleteOrganization(
+                                  OrganizationDeleteDto(id: organization.id));
                             }
                           },
                           itemBuilder: (BuildContext context) {

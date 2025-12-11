@@ -28,6 +28,7 @@ import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
 import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
+import 'package:home_crm_front/domain/sub/user/service/user_service.dart';
 import 'package:home_crm_front/domain/support/components/content/ContentList.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/SheetBar.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
@@ -98,8 +99,9 @@ void setupLocator() {
   GetIt.I.registerSingleton(SessionBloc());
 
   //Service
+  GetIt.I.registerSingleton(UserService());
   GetIt.I.registerSingleton(ScopeService());
-  GetIt.I.registerSingleton(OrganizationCurrentService());
+  GetIt.I.registerSingleton(OrganizationService());
   GetIt.I.registerSingleton(RoleService());
 
   //callback
@@ -196,7 +198,7 @@ class HomeCrmApp extends StatelessWidget {
         // Светлая тема
         darkTheme: getDarkApplicationTheme(),
         // Темная тема
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         routerConfig: GetIt.instance.get<AppRouter>().config(
           // navigatorObservers:
         ),

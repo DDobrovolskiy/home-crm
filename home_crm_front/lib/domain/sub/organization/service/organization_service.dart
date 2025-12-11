@@ -1,19 +1,25 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/user/service/user_service.dart';
 
 import '../../../support/service/loaded.dart';
-import '../../../support/widgets/stamp.dart';
 import '../../scope/scope.dart';
 import '../bloc/organization_bloc.dart';
 import '../bloc/organization_employee_bloc.dart';
 import '../bloc/organization_role_bloc.dart';
-import '../dto/response/organization_role_dto.dart';
+import '../dto/request/organization_create_dto.dart';
+import '../dto/request/organization_delete_dto.dart';
+import '../dto/request/organization_update_dto.dart';
+import '../dto/response/organization_dto.dart';
+import '../event/organization_employee_event.dart';
+import '../event/organization_event.dart';
 import '../event/organization_role_event.dart';
-import '../state/organization_role_state.dart';
+import '../repository/organization_repository.dart';
 
-class OrganizationCurrentService {
+class OrganizationService {
   static ScopeType scope = ScopeType.ORGANIZATION_UPDATE;
+
+  late final OrganizationRepository _organizationRepository = GetIt.instance
+      .get<OrganizationRepository>();
 
   late final OrganizationCurrentBloc _organizationBloc = GetIt.instance
       .get<OrganizationCurrentBloc>();
@@ -22,37 +28,54 @@ class OrganizationCurrentService {
   late final OrganizationRoleBloc _organizationRoleBloc = GetIt.instance
       .get<OrganizationRoleBloc>();
 
+  late final UserService _userService = GetIt.I.get<UserService>();
+
+  void refreshOrganizationCurrent(Loaded loaded) {
+    if (loaded.needLoad(_organizationBloc.state)) {
+      _organizationBloc.add(OrganizationRefreshEvent());
+    }
+  }
+
   void refreshOrganizationRoles(Loaded loaded) {
     if (loaded.needLoad(_organizationRoleBloc.state)) {
-      print('refreshOrganizationRoles');
       _organizationRoleBloc.add(OrganizationRoleRefreshEvent());
     }
   }
 
-  Widget organizationRole(
-    BuildContext context,
-    Widget Function(BuildContext context, OrganizationRoleDto organization)
-    builder,
-  ) {
-    return BlocConsumer<OrganizationRoleBloc, OrganizationRoleState>(
-      listener: (context, state) {
-        if (state is OrganizationRoleErrorState) {
-          Stamp.showTemporarySnackbar(context, state.error.message);
-        }
-      },
-      builder: (context, state) {
-        if (!state.loaded()) {
-          return Stamp.loadWidget(context);
-        } else if (state.getBody() != null) {
-          return builder(context, state.getBody()!);
-        } else {
-          return Stamp.errorWidget(context);
-        }
-      },
-    );
+  void refreshOrganizationEmployees(Loaded loaded) {
+    if (loaded.needLoad(_organizationEmployeeBloc.state)) {
+      _organizationEmployeeBloc.add(OrganizationEmployeeRefreshEvent());
+    }
   }
 
-  bool isEditor(ScopeType scope) {
+  Future<OrganizationDto?> addOrganization(
+      OrganizationCreateDto organization) async {
+    OrganizationDto? result = await _organizationRepository.organizationCreate(
+        organization);
+    _userService.refreshUserOrganization(Loaded.ifLoad);
+    return result;
+  }
+
+  Future<OrganizationDto?> updateOrganization(
+      OrganizationUpdateDto organization) async {
+    OrganizationDto? result = await _organizationRepository.organizationUpdate(
+        organization);
+    _userService.refreshUserOrganization(Loaded.ifLoad);
+    return result;
+  }
+
+  Future<bool> deleteOrganization(OrganizationDeleteDto organization) async {
+    await _organizationRepository.organizationDelete(organization);
+    _userService.refreshUserOrganization(Loaded.ifLoad);
     return true;
+  }
+
+
+  bool isEditor(ScopeType scope) {
+    var state = _organizationBloc.state;
+    if (state.getBody() != null) {
+      return state.getBody()?.include(scope) ?? false;
+    }
+    return false;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../theme/theme.dart';
 import '../../../support/components/button/hovered_region.dart';
+import '../../../support/components/dialog/custom_dialog.dart';
 import 'organization_dialog.dart';
 
 class OrganizationAdd extends StatefulWidget {
@@ -16,7 +17,8 @@ class _OrganizationAddState extends State<OrganizationAdd> {
   Widget build(BuildContext context) {
     return HoveredRegion(
       onTap: () async {
-        OrganizationDialog(organization: null).addOrganization(context);
+        CustomDialog.showDialog(
+            OrganizationDialog(organization: null), context);
       },
       child: (isHovered) {
         return Padding(

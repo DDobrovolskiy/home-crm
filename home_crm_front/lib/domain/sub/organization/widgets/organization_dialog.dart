@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/organization/dto/request/organization_create_dto.dart';
+import 'package:home_crm_front/domain/sub/organization/dto/request/organization_update_dto.dart';
+import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 
 import '../../../../theme/theme.dart';
 import '../../../support/components/button/button.dart';
-import '../../../support/components/dialog/custom_dialog.dart';
-import '../bloc/organization_edit_bloc.dart';
 import '../dto/response/organization_dto.dart';
-import '../event/organization_edit_event.dart';
 
-class OrganizationDialog {
-  final _formKey = GlobalKey<FormState>();
+class OrganizationDialog extends StatefulWidget {
   final OrganizationDto? organization;
+
+  const OrganizationDialog({super.key, this.organization});
+
+  @override
+  _OrganizationDialogState createState() => _OrganizationDialogState();
+}
+
+class _OrganizationDialogState extends State<OrganizationDialog> {
+  final _formKey = GlobalKey<FormState>();
   String? organizationName;
 
-  OrganizationDialog({required this.organization}) {
-    organizationName = organization?.name;
+  @override
+  void initState() {
+    organizationName = widget.organization?.name;
+    super.initState();
   }
 
   bool isCreate() {
-    return organization == null;
+    return widget.organization == null;
   }
 
-  void addOrganization(BuildContext context) async {
-    CustomDialog.showDialog(_body(context), context);
-  }
-
-  Widget _body(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -76,16 +83,16 @@ class OrganizationDialog {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     if (isCreate()) {
-                      BlocProvider.of<OrganizationEditBloc>(context).add(
-                        OrganizationEditCreateEvent(name: organizationName!),
-                      );
+                      GetIt.I.get<OrganizationService>().addOrganization(
+                          OrganizationCreateDto(
+                            name: organizationName ?? widget.organization!.name,
+                          ));
                     } else {
-                      BlocProvider.of<OrganizationEditBloc>(context).add(
-                        OrganizationEditUpdateEvent(
-                          id: organization!.id,
-                          name: organizationName ?? organization!.name,
-                        ),
-                      );
+                      GetIt.I.get<OrganizationService>().updateOrganization(
+                          OrganizationUpdateDto(
+                            id: widget.organization!.id,
+                            name: organizationName ?? widget.organization!.name,
+                          ));
                     }
                     Navigator.pop(context);
                   }

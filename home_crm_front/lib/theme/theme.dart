@@ -16,7 +16,7 @@ extension CustomColors on BuildContext {
   static const Color primary = Color(0xFF6F61EF);
 
   static Color getPrimary(BuildContext context) {
-    return primary;
+    return Colors.blueAccent;
   }
 
   static const Color secondary = Color(0xFF39D2C0);
@@ -75,7 +75,7 @@ extension CustomColors on BuildContext {
   static const Color accent1 = Color(0x4D9489F5);
 
   static Color getAccent1(BuildContext context) {
-    return accent1;
+    return Colors.blueAccent.withAlpha(30);
   }
 
   static const Color accent2 = Color(0x4C39d2c0);

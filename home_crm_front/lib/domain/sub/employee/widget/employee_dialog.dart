@@ -1,61 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/role/dto/request/role_create_dto.dart';
-import 'package:home_crm_front/domain/sub/role/dto/request/role_update_dto.dart';
-import 'package:home_crm_front/domain/support/service/loaded.dart';
+import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
 
 import '../../../../theme/theme.dart';
 import '../../../support/components/button/button.dart';
 import '../../../support/components/dialog/custom_dialog.dart';
+import '../../../support/phone.dart';
+import '../../../support/service/loaded.dart';
 import '../../../support/widgets/stamp.dart';
-import '../../scope/bloc/scope_bloc.dart';
-import '../../scope/dto/response/scope_dto.dart';
-import '../../scope/service/scope_service.dart';
-import '../../scope/state/scope_state.dart';
-import '../dto/response/role_dto.dart';
-import '../service/role_service.dart';
+import '../../organization/dto/response/organization_role_dto.dart';
+import '../../organization/service/organization_service.dart';
+import '../../organization/state/organization_role_state.dart';
+import '../dto/request/employee_create_dto.dart';
+import '../dto/request/employee_update_dto.dart';
+import '../dto/response/employee_dto.dart';
+import '../service/employee_service.dart';
 
-class RoleDialog extends StatefulWidget {
-  static Future<RoleDto?> show(BuildContext context, RoleDto? role) async {
-    return CustomDialog.showDialog<RoleDto?>(RoleDialog(role: role), context);
+class EmployeeDialog extends StatefulWidget {
+  static Future<EmployeeDto?> show(
+    BuildContext context,
+    EmployeeDto? employee,
+  ) async {
+    return CustomDialog.showDialog<EmployeeDto?>(
+      EmployeeDialog(employee: employee),
+      context,
+    );
   }
 
-  final RoleDto? role;
+  final EmployeeDto? employee;
 
-  const RoleDialog({super.key, this.role});
+  const EmployeeDialog({super.key, this.employee});
 
   @override
-  _RoleDialogState createState() => _RoleDialogState();
+  _EmployeeDialogState createState() => _EmployeeDialogState();
 }
 
-class _RoleDialogState extends State<RoleDialog> {
+class _EmployeeDialogState extends State<EmployeeDialog> {
   final _formKey = GlobalKey<FormState>();
   int? _id;
   String? _name;
-  String? _description;
-  List<ScopeDTO> _selectedItems = [];
+  String? _phone;
+  String? _password;
+  int? _selectedRole;
 
   @override
   void initState() {
-    GetIt.instance.get<ScopeService>().refreshScopes(Loaded.ifNotLoad);
-    _id = widget.role?.id;
-    _name = widget.role?.name;
-    _description = widget.role?.description;
-    _selectedItems = widget.role?.scopes ?? [];
+    GetIt.instance.get<OrganizationService>().refreshOrganizationRoles(
+      Loaded.ifNotLoad,
+    );
+    _id = widget.employee?.id;
+    _selectedRole = widget.employee?.role.id;
     super.initState();
   }
 
   bool isCreate() {
-    return widget.role == null;
+    return widget.employee == null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ScopeBloc, ScopeState>(
+    return BlocConsumer<OrganizationRoleBloc, OrganizationRoleState>(
       listener: (context, state) {
-        if (state is ScopeErrorState) {
-          Stamp.showTemporarySnackbar(context, state.error.message);
+        if (state.getError() != null) {
+          Stamp.showTemporarySnackbar(context, state.getError()!.message);
         }
       },
       builder: (context, state) {
@@ -68,7 +76,9 @@ class _RoleDialogState extends State<RoleDialog> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
                 child: Text(
-                  isCreate() ? 'Добавить роль' : 'Обновить роль',
+                  isCreate()
+                      ? 'Добавить сотрудника'
+                      : 'Обновить данные сотрудника',
                   style: CustomColors.getDisplaySmall(context, null),
                 ),
               ),
@@ -81,7 +91,7 @@ class _RoleDialogState extends State<RoleDialog> {
                       padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
                       child: TextFormField(
                         decoration: CustomColors.getTextFormInputDecoration(
-                          'Название роли',
+                          'Имя сотрудника',
                           context,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
@@ -90,7 +100,7 @@ class _RoleDialogState extends State<RoleDialog> {
                         initialValue: _name,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Необходимо ввести название роли';
+                            return 'Необходимо ввести имя сотрудника';
                           }
                           return null;
                         },
@@ -100,33 +110,46 @@ class _RoleDialogState extends State<RoleDialog> {
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
                       child: TextFormField(
+                        inputFormatters: [Phone.phoneFormatter],
+                        decoration: InputDecoration(
+                          labelText: 'Телефон',
+                          hintText: '+7 (___) ___-__-__',
+                        ),
+                        keyboardType: TextInputType.phone,
+                        initialValue: _phone,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (Phone.isValidPhoneNumber(value)) {
+                            return null;
+                          }
+                          return 'Необходимо ввести номер телефона сотрудника';
+                        },
+                        onChanged: (value) => _phone = value,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                      child: TextFormField(
                         decoration: CustomColors.getTextFormInputDecoration(
-                          'Описание роли',
+                          'Транспортный пароль',
                           context,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
                         maxLines: null,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        initialValue: _description,
+                        initialValue: _password,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Необходимо ввести описание роли';
+                            return 'Необходимо ввести транспортный пароль';
                           }
                           return null;
                         },
-                        onChanged: (value) => _description = value,
+                        onChanged: (value) => _password = value,
                       ),
                     ),
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
-                      child: Text(
-                        'Разрешения:',
-                        style: CustomColors.getLabelMedium(context, null),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
-                      child: fieldMultySelected(state.getBody()!),
+                      child: _roleSelect(state.getBody()!),
                     ),
                   ],
                 ),
@@ -147,28 +170,23 @@ class _RoleDialogState extends State<RoleDialog> {
                         if (_formKey.currentState!.validate()) {
                           if (isCreate()) {
                             var resul = await GetIt.I
-                                .get<RoleService>()
-                                .addRole(
-                                  RoleCreateDto(
+                                .get<EmployeeService>()
+                                .addEmployee(
+                                  EmployeeCreateDto(
                                     name: _name!,
-                                    description: _description!,
-                                    scopes: _selectedItems
-                                        .map((i) => i.id)
-                                        .toList(),
+                                    phone: _phone!,
+                                    password: _password!,
+                                    roleId: _selectedRole!,
                                   ),
                                 );
                             Navigator.pop(context, resul);
                           } else {
                             var resul = await GetIt.I
-                                .get<RoleService>()
-                                .updateRole(
-                                  RoleUpdateDto(
+                                .get<EmployeeService>()
+                                .updateEmployee(
+                                  EmployeeUpdateDto(
                                     id: _id!,
-                                    name: _name!,
-                                    description: _description!,
-                                    scopes: _selectedItems
-                                        .map((i) => i.id)
-                                        .toList(),
+                                    roleId: _selectedRole!,
                                   ),
                                 );
                             Navigator.pop(context, resul);
@@ -188,28 +206,26 @@ class _RoleDialogState extends State<RoleDialog> {
     );
   }
 
-  Widget fieldMultySelected(List<ScopeDTO> allScope) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: allScope.length,
-      itemBuilder: (_, index) {
-        final currentScope = allScope[index];
-        return CheckboxListTile(
-          controlAffinity: ListTileControlAffinity.leading,
-          title: Text(currentScope.description),
-          value: _selectedItems.contains(currentScope),
-          activeColor: CustomColors.getPrimary(context),
-          checkColor: Colors.white,
-          onChanged: (bool? checked) {
-            if (checked!) {
-              _selectedItems.add(currentScope);
-            } else {
-              _selectedItems.remove(currentScope);
-            }
-            setState(() {});
-          },
-        );
+  Widget _roleSelect(OrganizationRoleDto role) {
+    _selectedRole = _selectedRole ?? role.roles.first.role.id;
+    return DropdownButton<int>(
+      value: _selectedRole,
+      // The currently selected value
+      hint: const Text('Выберите'),
+      icon: const Icon(Icons.arrow_drop_down),
+      elevation: 8,
+      isExpanded: true,
+      items: [
+        ...role.roles.map((role) {
+          return DropdownMenuItem<int>(
+            value: role.role.id,
+            child: Text(role.role.name),
+          );
+        }).toList(),
+      ],
+      onChanged: (int? newValue) {
+        _selectedRole = newValue;
+        setState(() {});
       },
     );
   }

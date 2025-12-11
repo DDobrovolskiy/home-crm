@@ -35,7 +35,6 @@ import 'package:home_crm_front/domain/sub/organization/organization_test_page.da
 import 'package:home_crm_front/domain/sub/organization/organizations_page.dart'
     as _i9;
 import 'package:home_crm_front/domain/sub/role/role_page.dart' as _i13;
-import 'package:home_crm_front/domain/sub/user/user_page.dart' as _i15;
 import 'package:home_crm_front/domain/sub/user/user_profile_page.dart' as _i16;
 
 /// generated route for
@@ -416,22 +415,6 @@ class TestSuitRouteArgs {
   String toString() {
     return 'TestSuitRouteArgs{key: $key, testId: $testId}';
   }
-}
-
-/// generated route for
-/// [_i15.UserPage]
-class UserRoute extends _i17.PageRouteInfo<void> {
-  const UserRoute({List<_i17.PageRouteInfo>? children})
-    : super(UserRoute.name, initialChildren: children);
-
-  static const String name = 'UserRoute';
-
-  static _i17.PageInfo page = _i17.PageInfo(
-    name,
-    builder: (data) {
-      return const _i15.UserPage();
-    },
-  );
 }
 
 /// generated route for

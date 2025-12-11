@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../theme/theme.dart';
@@ -79,10 +78,7 @@ class CustomTableRowCell extends StatelessWidget {
     if (!flag && !textVisibleAlways) {
       return SizedBox();
     }
-    return Expanded(
-      flex: flex,
-      child: body,
-    );
+    return Expanded(flex: flex, child: body);
   }
 }
 
@@ -104,10 +100,59 @@ class CustomTableRowCellMinimal extends StatelessWidget {
     if (!flag && !textVisibleAlways) {
       return SizedBox();
     }
-    return Flexible(
-      flex: flex,
-      child: body,
-    );
+    return Flexible(flex: flex, child: body);
   }
 }
 
+class CustomTableRowCellPopupMenu extends StatelessWidget {
+  final PopupMenuItemSelected<String> onSelected;
+  final bool textVisibleAlways;
+  final int flex;
+  final bool editVisible;
+  final bool deleteVisible;
+
+  const CustomTableRowCellPopupMenu({
+    super.key,
+    this.textVisibleAlways = false,
+    this.flex = 1,
+    required this.onSelected,
+    this.editVisible = true,
+    this.deleteVisible = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool flag = Screen.isWeb(context);
+    if (!flag && !textVisibleAlways) {
+      return SizedBox();
+    }
+    return Expanded(
+      flex: flex,
+      child: PopupMenuButton<String>(
+        color: CustomColors.getSecondaryBackground(context),
+        icon: Icon(Icons.more_horiz), // Три точки
+        onSelected: onSelected,
+        itemBuilder: (BuildContext context) {
+          return <PopupMenuEntry<String>>[
+            if (editVisible)
+              PopupMenuItem<String>(
+                value: 'Edit',
+                child: Text(
+                  'Редактировать',
+                  style: CustomColors.getBodyMedium(context, null),
+                ),
+              ),
+            if (deleteVisible)
+              PopupMenuItem<String>(
+                value: 'Delete',
+                child: Text(
+                  'Удалить',
+                  style: CustomColors.getBodyMedium(context, null),
+                ),
+              ),
+          ];
+        },
+      ),
+    );
+  }
+}

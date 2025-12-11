@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_crm_front/domain/sub/organization/event/organization_event.dart';
-import 'package:home_crm_front/domain/sub/user/event/user_employee_event.dart';
-import 'package:home_crm_front/domain/sub/user/event/user_event.dart';
+import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/user/service/user_service.dart';
 import 'package:home_crm_front/domain/sub/user/user_state/user_employee_state.dart';
 import 'package:home_crm_front/domain/sub/user/user_state/user_state.dart';
 import 'package:home_crm_front/domain/support/components/divided/divider.dart';
@@ -16,9 +15,9 @@ import '../../support/components/button/button.dart';
 import '../../support/components/screen/Screen.dart';
 import '../../support/components/status/user.dart';
 import '../../support/components/tariff/tariff.dart';
+import '../../support/service/loaded.dart';
 import '../authentication/bloc/auth_bloc.dart';
 import '../authentication/event/auth_event.dart';
-import '../organization/bloc/organization_bloc.dart';
 import '../organization/widgets/organization_list.dart';
 import '../organization/widgets/organization_select.dart';
 import 'bloc/user_bloc.dart';
@@ -39,10 +38,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   void initState() {
-    BlocProvider.of<UserBloc>(context).add(UserLoadEvent());
-    BlocProvider.of<UserEmployeeBloc>(context).add(UserEmployeeLoadEvent());
-    BlocProvider.of<OrganizationCurrentBloc>(context).add(
-        OrganizationRefreshEvent());
+    GetIt.I.get<UserService>().refreshAll(Loaded.ifNotLoad);
     super.initState();
   }
 
@@ -260,9 +256,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
         }
       },
       builder: (context, state) {
-        if (state is UserInitState) {
+        if (state.loaded()) {
           return Stamp.loadWidget(context);
-        } else if (state is UserLoadedState) {
+        } else if (state.getBody() != null) {
           return Padding(
             padding: EdgeInsetsDirectional.fromSTEB(20, 16, 20, 0),
             child: Column(
@@ -274,7 +270,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    createLabelRow('Ваш ID', state.user?.id.toString()),
+                    createLabelRow('Ваш ID', state
+                        .getBody()
+                        ?.id
+                        .toString()),
                   ],
                 ),
                 Row(
@@ -283,7 +282,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     createLabelRow('Фамилия', null),
-                    createLabelRow('Имя', state.user?.name),
+                    createLabelRow('Имя', state
+                        .getBody()
+                        ?.name),
                     createLabelRow('Отчество', null),
                   ],
                 ),
@@ -292,7 +293,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    createLabelRow('Телефон', state.user?.phone),
+                    createLabelRow('Телефон', state
+                        .getBody()
+                        ?.phone),
                     createLabelRow('@telegram', null),
                   ],
                 ),

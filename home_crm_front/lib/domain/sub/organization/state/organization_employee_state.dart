@@ -1,59 +1,66 @@
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_employee_dto.dart';
 
 import '../../../support/exceptions/exceptions.dart';
-import '../../scope/scope.dart';
+import '../../../support/service/loaded.dart';
 
-abstract class OrganizationEmployeeState {
-  static ScopeType scope = ScopeType.ORGANIZATION_UPDATE;
-  abstract final bool loaded;
-  abstract final OrganizationEmployeeDto? organization;
-  abstract final PortException? error;
-  abstract final bool hasEdit;
-}
+abstract class OrganizationEmployeeState
+    extends StateLoad<OrganizationEmployeeDto> {}
 
 class OrganizationEmployeeInitState extends OrganizationEmployeeState {
   @override
-  PortException? get error => null;
+  OrganizationEmployeeDto? getBody() {
+    return null;
+  }
 
   @override
-  bool get loaded => false;
+  PortException? getError() {
+    return null;
+  }
 
   @override
-  OrganizationEmployeeDto? get organization => null;
-
-  @override
-  bool get hasEdit => false;
+  bool loaded() {
+    return false;
+  }
 }
 
 class OrganizationEmployeeLoadedState extends OrganizationEmployeeState {
-  @override
   final OrganizationEmployeeDto? organization;
 
-  @override
-  final bool hasEdit;
-
-  OrganizationEmployeeLoadedState(
-      {required this.organization, required this.hasEdit});
+  OrganizationEmployeeLoadedState({required this.organization});
 
   @override
-  PortException? get error => null;
+  OrganizationEmployeeDto? getBody() {
+    return organization;
+  }
 
   @override
-  bool get loaded => true;
+  PortException? getError() {
+    return null;
+  }
+
+  @override
+  bool loaded() {
+    return true;
+  }
 }
 
 class OrganizationEmployeeErrorState extends OrganizationEmployeeState {
-  @override
   final PortException error;
 
   OrganizationEmployeeErrorState({required this.error});
 
   @override
-  bool get loaded => true;
+  OrganizationEmployeeDto? getBody() {
+    return null;
+  }
 
   @override
-  OrganizationEmployeeDto? get organization => null;
+  PortException? getError() {
+    return error;
+  }
 
   @override
-  bool get hasEdit => false;
+  bool loaded() {
+    return true;
+  }
 }
