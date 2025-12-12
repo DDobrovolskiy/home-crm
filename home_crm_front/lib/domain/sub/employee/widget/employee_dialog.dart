@@ -92,6 +92,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                       child: TextFormField(
                         decoration: CustomColors.getTextFormInputDecoration(
                           'Имя сотрудника',
+                          null,
                           context,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
@@ -111,10 +112,13 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                       padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
                       child: TextFormField(
                         inputFormatters: [Phone.phoneFormatter],
-                        decoration: InputDecoration(
-                          labelText: 'Телефон',
-                          hintText: '+7 (___) ___-__-__',
+                        decoration: CustomColors.getTextFormInputDecoration(
+                          'Телефон',
+                          '+7 (___) ___-__-__',
+                          context,
                         ),
+                        style: CustomColors.getBodyMedium(context, null),
+                        maxLines: null,
                         keyboardType: TextInputType.phone,
                         initialValue: _phone,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -132,6 +136,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                       child: TextFormField(
                         decoration: CustomColors.getTextFormInputDecoration(
                           'Транспортный пароль',
+                          null,
                           context,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
@@ -148,7 +153,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
+                      padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
                       child: _roleSelect(state.getBody()!),
                     ),
                   ],
@@ -211,15 +216,21 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
     return DropdownButton<int>(
       value: _selectedRole,
       // The currently selected value
-      hint: const Text('Выберите'),
+      hint: Text('Выберите', style: CustomColors.getBodyMedium(context, null),),
       icon: const Icon(Icons.arrow_drop_down),
+      dropdownColor: CustomColors.getPrimaryBackground(context),
+      borderRadius: BorderRadius.circular(8),
       elevation: 8,
       isExpanded: true,
       items: [
-        ...role.roles.map((role) {
+        ...role.roles.where((role) {
+          return !role.role.owner;
+        }).map((role) {
           return DropdownMenuItem<int>(
             value: role.role.id,
-            child: Text(role.role.name),
+            child: Padding(padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
+              child: Text(role.role.name,
+                style: CustomColors.getLabelMedium(context, null),),),
           );
         }).toList(),
       ],

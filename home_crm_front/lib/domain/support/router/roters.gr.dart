@@ -34,7 +34,6 @@ import 'package:home_crm_front/domain/sub/organization/organization_test_page.da
     as _i11;
 import 'package:home_crm_front/domain/sub/organization/organizations_page.dart'
     as _i9;
-import 'package:home_crm_front/domain/sub/role/role_page.dart' as _i13;
 import 'package:home_crm_front/domain/sub/user/user_profile_page.dart' as _i16;
 
 /// generated route for
@@ -333,34 +332,6 @@ class QuestionRouteArgs {
   String toString() {
     return 'QuestionRouteArgs{key: $key, testId: $testId, questionId: $questionId}';
   }
-}
-
-/// generated route for
-/// [_i13.RolePage]
-class RoleRoute extends _i17.PageRouteInfo<RoleRouteArgs> {
-  RoleRoute({
-    _i18.Key? key,
-    required int? roleId,
-    List<_i17.PageRouteInfo>? children,
-  }) : super(
-         RoleRoute.name,
-         args: RoleRouteArgs(key: key, roleId: roleId),
-         rawPathParams: {'roleId': roleId},
-         initialChildren: children,
-       );
-
-  static const String name = 'RoleRoute';
-
-  static _i17.PageInfo page = _i17.PageInfo(
-    name,
-    builder: (data) {
-      final pathParams = data.inheritedPathParams;
-      final args = data.argsAs<RoleRouteArgs>(
-        orElse: () => RoleRouteArgs(roleId: pathParams.optInt('roleId')),
-      );
-      return _i13.RolePage(key: args.key, roleId: args.roleId);
-    },
-  );
 }
 
 class RoleRouteArgs {

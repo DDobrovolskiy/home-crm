@@ -270,10 +270,12 @@ extension CustomColors on BuildContext {
   static const Color backgroundDark = Color(0xFF121212); // Темный фон
 
   static InputDecoration getTextFormInputDecoration(String label,
+      String? hintText,
       BuildContext context) {
     return InputDecoration(
       labelText: label,
       labelStyle: CustomColors.getLabelMedium(context, null),
+      hintText: hintText,
       hintStyle: CustomColors.getBodySmall(context, null),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(

@@ -19,6 +19,9 @@ class OrganizationSelectedDto {
   }
 
   bool include(ScopeType scope) {
+    if (role.owner) {
+      return true;
+    }
     return scopes.contains(scope.name);
   }
 

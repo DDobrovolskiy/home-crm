@@ -82,6 +82,7 @@ class _RoleDialogState extends State<RoleDialog> {
                       child: TextFormField(
                         decoration: CustomColors.getTextFormInputDecoration(
                           'Название роли',
+                          null,
                           context,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
@@ -102,6 +103,7 @@ class _RoleDialogState extends State<RoleDialog> {
                       child: TextFormField(
                         decoration: CustomColors.getTextFormInputDecoration(
                           'Описание роли',
+                          null,
                           context,
                         ),
                         style: CustomColors.getBodyMedium(context, null),

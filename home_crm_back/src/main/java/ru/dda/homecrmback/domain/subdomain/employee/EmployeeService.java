@@ -41,14 +41,15 @@ public class EmployeeService {
     @Transactional
     public Result<EmployeeAggregate, IFailAggregate> create(Employee.Create command) {
         return roleService.checkScope(ScopeType.ORGANIZATION_UPDATE, () ->
-                Result.merge(
-                                command.user().execute(userDomainService::registrationOrGet),
+                command.user().execute(userDomainService::registrationOrGet)
+                        .isTrue(user -> employeeRepository.findByUserIdAndOrganizationId(
+                                        user.getId(), command.organization().organizationId()).isEmpty(),
+                                onFail -> ResultAggregate.Fails.Default.of(FailEvent.EMPLOYEE_IS_EXIST.fail()))
+                        .then(user -> Result.merge(
                                 command.organization().execute(organizationService::findById),
                                 command.role().execute(roleService::find),
-                                (EmployeeAggregate::create))
-                        .isTrue(employeeAggregate -> employeeRepository.findByUserIdAndOrganizationId(
-                                        employeeAggregate.getUser().getId(), employeeAggregate.getOrganization().getId()).isEmpty(),
-                                onFail -> ResultAggregate.Fails.Default.of(FailEvent.EMPLOYEE_IS_EXIST.fail()))
+                                (organization, role) ->
+                                        EmployeeAggregate.create(user, organization, role)))
                         .then(employeeAggregate -> {
                             try {
                                 return Result.success(employeeRepository.save(employeeAggregate));

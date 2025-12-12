@@ -18,10 +18,10 @@ import 'package:home_crm_front/domain/sub/education/test/repository/test_reposit
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_test_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
+import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
-import 'package:home_crm_front/domain/sub/role/bloc/role_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/role/cubit/role_current_scopes.dart';
 import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
 import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
@@ -86,7 +86,6 @@ void setupLocator() {
   GetIt.I.registerSingleton(EmployeeTestBloc());
 
   GetIt.I.registerSingleton(RoleCurrentBloc());
-  GetIt.I.registerSingleton(RoleEditBloc());
 
   GetIt.I.registerSingleton(ScopeBloc());
 
@@ -103,6 +102,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(ScopeService());
   GetIt.I.registerSingleton(OrganizationService());
   GetIt.I.registerSingleton(RoleService());
+  GetIt.I.registerSingleton(EmployeeService());
 
   //callback
   GetIt.I.registerLazySingleton(() => SheetElementAddCallback());
@@ -173,7 +173,6 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<RoleCurrentBloc>.value(
           value: GetIt.I.get<RoleCurrentBloc>(),
         ),
-        BlocProvider<RoleEditBloc>.value(value: GetIt.I.get<RoleEditBloc>()),
         BlocProvider<ScopeBloc>.value(value: GetIt.instance.get<ScopeBloc>()),
         BlocProvider<TestEditBloc>.value(value: GetIt.I.get<TestEditBloc>()),
         BlocProvider<TestQuestionBloc>.value(

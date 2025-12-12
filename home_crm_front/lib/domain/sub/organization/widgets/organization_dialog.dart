@@ -51,6 +51,7 @@ class _OrganizationDialogState extends State<OrganizationDialog> {
               TextFormField(
                 decoration: CustomColors.getTextFormInputDecoration(
                   'Название организации',
+                  null,
                   context,
                 ),
                 style: CustomColors.getBodyMedium(context, null),

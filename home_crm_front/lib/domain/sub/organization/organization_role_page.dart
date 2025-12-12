@@ -114,6 +114,15 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              if (role.roleScopes.scopes.isEmpty &&
+                                  !role.role.owner)
+                                Text(
+                                  '[Отсутствуют]',
+                                  style: CustomColors.getBodyLarge(
+                                    context,
+                                    null,
+                                  ),
+                                ),
                               if (role.role.owner)
                                 Text(
                                   '[Нет ограничений]',

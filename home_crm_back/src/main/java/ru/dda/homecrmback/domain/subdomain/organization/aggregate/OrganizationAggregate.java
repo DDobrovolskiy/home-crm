@@ -99,6 +99,7 @@ public class OrganizationAggregate {
     public OrganizationEmployeesDTO organizationEmployeesDTO() {
         return OrganizationEmployeesDTO.builder()
                 .employees(employees.stream()
+                        .sorted(EmployeeAggregate::compareTo)
                         .map(EmployeeAggregate::getEmployeeDTO)
                         .toList())
                 .build();

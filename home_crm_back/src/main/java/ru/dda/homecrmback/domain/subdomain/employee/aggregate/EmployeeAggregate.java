@@ -30,7 +30,7 @@ import java.util.*;
 @Setter
 @Entity
 @Table(name = "employee")
-public class EmployeeAggregate {
+public class EmployeeAggregate implements Comparable<EmployeeAggregate> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -132,5 +132,10 @@ public class EmployeeAggregate {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public int compareTo(EmployeeAggregate o) {
+        return id.compareTo(o.id);
     }
 }
