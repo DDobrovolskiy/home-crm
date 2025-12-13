@@ -3,18 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
-import 'package:home_crm_front/domain/sub/education/test/dto/response/test_view_dto.dart';
+import 'package:home_crm_front/domain/sub/education/test/widget/test_dialog.dart';
+import 'package:home_crm_front/domain/sub/employee/widget/employee_tooltip.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_test_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_test_event.dart';
+import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_test_state.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_test_state.dart';
-import 'package:home_crm_front/domain/support/router/roters.gr.dart';
+import 'package:home_crm_front/theme/theme.dart';
 
+import '../../support/components/button/hovered_region.dart';
+import '../../support/components/scope/check_scope.dart';
+import '../../support/components/table/table.dart';
+import '../../support/components/table/table_head_row.dart';
+import '../../support/components/table/table_head_row_cell.dart';
+import '../../support/components/table/table_row.dart';
+import '../../support/components/table/table_row_cell.dart';
 import '../../support/widgets/stamp.dart';
+import '../education/result/dto/response/result_dto.dart';
 import '../education/test/bloc/test_edit_bloc.dart';
 import '../education/test/event/test_edit_event.dart';
+import '../scope/scope.dart';
 import 'bloc/organization_test_bloc.dart';
 import 'event/organization_test_event.dart';
+
+class OrganizationTestsWrapper extends StatelessWidget {
+  const OrganizationTestsWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return OrganizationTestsPage();
+  }
+}
 
 @RoutePage()
 class OrganizationTestsPage extends StatefulWidget {
@@ -25,6 +45,7 @@ class OrganizationTestsPage extends StatefulWidget {
 }
 
 class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
+  var organizationCurrentService = GetIt.instance.get<OrganizationService>();
   final textController = TextEditingController(); // Контроллер для поля ввода
   final formKey = GlobalKey<FormState>(); // Глобальный ключ формы для валидации
 
@@ -45,124 +66,220 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
         }
       },
       builder: (context, state) {
-        return SafeArea(
-          child: Scaffold(
-            appBar: AppBar(title: Text('Обучение в организации')),
-            body: getContent(context, state),
-          ),
-        );
+        return getContent(context, state);
       },
     );
   }
 
   Widget getContent(BuildContext context, OrganizationTestState state) {
-    if (!state.loaded) {
+    if (!state.loaded()) {
       return Stamp.loadWidget(context);
-    } else if (state.organization != null) {
+    } else if (state.getBody() != null) {
       return Column(
         children: [
-          Text('Тесты:', textAlign: TextAlign.left),
-          for (final test in state.organization!.tests)
-            Card(
-              margin: const EdgeInsets.all(8),
-              child: ListTile(
-                leading: Icon(Icons.text_snippet_rounded),
-                title: Text(test.test.name),
-                subtitle: Column(
-                  children: [
-                    Row(
-                      children: [
-                        test.test.ready
-                            ? Icon(Icons.done)
-                            : Icon(Icons.play_arrow),
-                        test.test.ready
-                            ? Text('(Тест готов)')
-                            : Text('(Тест в процессе создания)'),
-                        ?delete(context, test, state),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text('Ограничение по времени (мин.): '),
-                        test.test.timeLimitMinutes == 0
-                            ? Text('нет')
-                            : Text(test.test.timeLimitMinutes.toString()),
-                      ],
-                    ),
-                    if (state.hasEdit)
-                      OutlinedButton.icon(
-                        // Добавили кнопку с иконкой
-                        icon: Icon(Icons.add_circle),
-                        label: Text("Назначить"),
-                        onPressed: () {
-                          openAddTestDialog(test.test.id);
-                        },
-                      ),
-                    Text(
-                      'Тест назначен сотрудникам:',
-                      textAlign: TextAlign.left,
-                    ),
-                    Column(
-                      children: [
-                        for (final employee in test.testEmployees.employees)
-                          Stamp.giperLinkText(
-                            Text(employee.user.name, textAlign: TextAlign.left),
-                            () {
-                              AutoRouter.of(
-                                context,
-                              ).push(EmployeeRoute(employeeId: employee.id));
-                            },
-                          ),
-                      ],
-                    ),
-                    Text(
-                      'Следующие сотрудники проходят тест:',
-                      textAlign: TextAlign.left,
-                    ),
-                    Column(
-                      children: [
-                        for (final session in test.testSessions.sessions)
-                          if (session.active)
-                            Text(
-                              session.employee.user.name,
-                              textAlign: TextAlign.left,
-                            ),
-                      ],
-                    ),
-                    Text('Результаты тестирования:', textAlign: TextAlign.left),
-                    Column(
-                      children: [
-                        for (final result in test.testResults)
-                          Row(
+          // Padding(
+          //   padding: EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
+          //   child: Text(
+          //     'Тесты',
+          //     textAlign: TextAlign.start,
+          //     style: CustomColors.getDisplaySmall(context, null),
+          //   ),
+          // ),
+          CustomTable(
+            head: CustomTableHeadRow(
+              cells: [
+                CustomTableHeadRowCell(
+                  text: 'Название',
+                  textVisibleAlways: true,
+                  subText: 'Статус',
+                ),
+                CustomTableHeadRowCell(text: 'Статус'),
+                CustomTableHeadRowCell(text: 'Ограничение по времени (мин.)'),
+                CustomTableHeadRowCell(
+                  text: 'Назначен',
+                  textVisibleAlways: true,
+                  subText: 'Проходят',
+                  subTextVisibleAlways: true,
+                ),
+              ],
+            ),
+            rows: [
+              for (final test in state.getBody()!.tests)
+                HoveredRegion(
+                  onTap: () async {
+                    CheckScope(
+                      onTrue: () {
+                        TestDialog.show(context, test.test);
+                      },
+                    ).checkScope(ScopeType.TEST_CREATE, context);
+                  },
+                  child: (isHovered) {
+                    return CustomTableRow(
+                      hover: isHovered,
+                      cells: [
+                        CustomTableRowCellText(
+                          text: test.test.name,
+                          textVisibleAlways: true,
+                          subText: test.test.ready ? 'Готов' : 'В работе',
+                          icon: test.test.ready
+                              ? Icon(Icons.done)
+                              : Icon(Icons.play_arrow),
+                        ),
+                        CustomTableRowCellText(
+                          text: test.test.ready ? 'Готов' : 'В работе',
+                        ),
+                        CustomTableRowCellText(
+                          text: test.test.timeLimitMinutes == 0
+                              ? 'Нет'
+                              : test.test.timeLimitMinutes.toString(),
+                        ),
+                        CustomTableRowCell(
+                          textVisibleAlways: true,
+                          body: Column(
                             children: [
-                              Text(
-                                result.session.employee.user.name,
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                ' Правильных ответов: ${result.details.where((d) => d.isCorrect).length} из ${result.details.length}',
-                              ),
+                              for (final employee
+                              in test.testEmployees.employees)
+                                EmployeeTooltip(employee: employee),
+                              if (test.testSessions.sessions.isNotEmpty)
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                    0,
+                                    2,
+                                    0,
+                                    0,
+                                  ),
+                                  child: Text(
+                                    'Проходят тестирование:',
+                                    style: CustomColors.getLabelSmall(
+                                      context,
+                                      null,
+                                    ),
+                                  ),
+                                ),
+                              for (final session
+                              in test.testSessions.sessions)
+                                EmployeeTooltip(
+                                  employee: session.employee,
+                                  style: CustomColors.getLabelSmall(
+                                    context,
+                                    null,
+                                  ),
+                                ),
                             ],
                           ),
+                        ),
                       ],
-                    ),
-                  ],
+                    );
+                  },
                 ),
-                trailing: edit(context, test, state),
-              ),
-            ),
-          if (state.hasEdit)
-            Card(
-              color: Colors.blue.shade100,
-              margin: const EdgeInsets.all(8),
-              child: ListTile(
-                leading: Icon(Icons.add_circle_outline),
-                title: Text("Добавить тест"),
-                onTap: () {
-                  openAddDialog();
-                },
-              ),
-            ),
+              if (organizationCurrentService.isEditor(ScopeType.TEST_CREATE))
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          TestDialog.show(context, null);
+                        },
+                        color: CustomColors.getSecondaryText(context),
+                        icon: Icon(Icons.add_circle),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+
+          // for (final test in state.organization!.tests)
+          //   Card(
+          //     margin: const EdgeInsets.all(8),
+          //     child: ListTile(
+          //       leading: Icon(Icons.text_snippet_rounded),
+          //       title: Text(test.test.name),
+          //       subtitle: Column(
+          //         children: [
+          //           Row(
+          //             children: [
+          //               test.test.ready
+          //                   ? Icon(Icons.done)
+          //                   : Icon(Icons.play_arrow),
+          //               test.test.ready
+          //                   ? Text('(Тест готов)')
+          //                   : Text('(Тест в процессе создания)'),
+          //               ?delete(context, test, state),
+          //             ],
+          //           ),
+          //           Row(
+          //             children: [
+          //               Text('Ограничение по времени (мин.): '),
+          //               test.test.timeLimitMinutes == 0
+          //                   ? Text('нет')
+          //                   : Text(test.test.timeLimitMinutes.toString()),
+          //             ],
+          //           ),
+          //           if (state.hasEdit)
+          //             OutlinedButton.icon(
+          //               // Добавили кнопку с иконкой
+          //               icon: Icon(Icons.add_circle),
+          //               label: Text("Назначить"),
+          //               onPressed: () {
+          //                 openAddTestDialog(test.test.id);
+          //               },
+          //             ),
+          //           Text(
+          //             'Тест назначен сотрудникам:',
+          //             textAlign: TextAlign.left,
+          //           ),
+          //           Column(
+          //             children: [
+          //               for (final employee in test.testEmployees.employees)
+          //                 Stamp.giperLinkText(
+          //                   Text(employee.user.name, textAlign: TextAlign.left),
+          //                   () {
+          //                     // AutoRouter.of(
+          //                     //   context,
+          //                     // ).push(EmployeeRoute(employeeId: employee.id));
+          //                   },
+          //                 ),
+          //             ],
+          //           ),
+          //           Text(
+          //             'Следующие сотрудники проходят тест:',
+          //             textAlign: TextAlign.left,
+          //           ),
+          //           Column(
+          //             children: [
+          //               for (final session in test.testSessions.sessions)
+          //                 if (session.active)
+          //                   Text(
+          //                     session.employee.user.name,
+          //                     textAlign: TextAlign.left,
+          //                   ),
+          //             ],
+          //           ),
+          //           Text('Результаты тестирования:', textAlign: TextAlign.left),
+          //           Column(
+          //             children: [
+          //               for (final result in test.testResults)
+          //                 Row(
+          //                   children: [
+          //                     Text(
+          //                       result.session.employee.user.name,
+          //                       textAlign: TextAlign.left,
+          //                     ),
+          //                     Text(
+          //                       ' Правильных ответов: ${result.details.where((d) => d.isCorrect).length} из ${result.details.length}',
+          //                     ),
+          //                   ],
+          //                 ),
+          //             ],
+          //           ),
+          //         ],
+          //       ),
+          //       trailing: edit(context, test, state),
+          //     ),
+          //   ),
+
         ],
       );
     } else {
@@ -170,41 +287,16 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
     }
   }
 
-  Widget? edit(
-    BuildContext context,
-    TestViewDto test,
-    OrganizationTestState state,
-  ) {
-    if (state.hasEdit) {
-      return IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () {
-          AutoRouter.of(context).push(TestSuitRoute(testId: test.test.id));
-        },
+  Widget? _tableResult(List<ResultDto> testResults) {
+    if (testResults.isNotEmpty) {
+      return Column(
+        children: [
+        ],
       );
-    } else {
-      return null;
     }
+    return null;
   }
 
-  Widget? delete(
-    BuildContext context,
-    TestViewDto test,
-    OrganizationTestState state,
-  ) {
-    if (state.hasEdit) {
-      return IconButton(
-        icon: Icon(Icons.close),
-        onPressed: () {
-          BlocProvider.of<TestEditBloc>(
-            context,
-          ).add(TestEditDeleteEvent(id: test.test.id));
-        },
-      );
-    } else {
-      return null;
-    }
-  }
 
   void openAddDialog() {
     showDialog(
@@ -315,9 +407,9 @@ class _CustomDialogWidgetState extends State<CustomDialogWidget> {
                               textAlign: TextAlign.left,
                             ),
                             () {
-                              AutoRouter.of(context).push(
-                                EmployeeRoute(employeeId: employee.employee.id),
-                              );
+                              // AutoRouter.of(context).push(
+                              //   EmployeeRoute(employeeId: employee.employee.id),
+                              // );
                             },
                           ),
                           Spacer(),

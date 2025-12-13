@@ -15,7 +15,6 @@ import 'package:home_crm_front/domain/sub/education/session/repository/session_r
 import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
-import 'package:home_crm_front/domain/sub/employee/bloc/employee_edit_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/bloc/employee_test_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
@@ -82,7 +81,6 @@ void setupLocator() {
   GetIt.I.registerSingleton(OrganizationTestBloc());
   GetIt.I.registerSingleton(OrganizationEmployeeTestBloc());
 
-  GetIt.I.registerSingleton(EmployeeEditBloc());
   GetIt.I.registerSingleton(EmployeeTestBloc());
 
   GetIt.I.registerSingleton(RoleCurrentBloc());
@@ -163,9 +161,6 @@ class HomeCrmApp extends StatelessWidget {
         ),
         BlocProvider<OrganizationEmployeeTestBloc>.value(
           value: GetIt.I.get<OrganizationEmployeeTestBloc>(),
-        ),
-        BlocProvider<EmployeeEditBloc>.value(
-          value: GetIt.I.get<EmployeeEditBloc>(),
         ),
         BlocProvider<EmployeeTestBloc>.value(
           value: GetIt.I.get<EmployeeTestBloc>(),

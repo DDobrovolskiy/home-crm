@@ -1,59 +1,66 @@
 import '../../../support/exceptions/exceptions.dart';
-import '../../scope/scope.dart';
+import '../../../support/service/loaded.dart';
 import '../dto/response/organization_test_dto.dart';
 
-abstract class OrganizationTestState {
-  static ScopeType scope = ScopeType.TEST_CREATE;
-  abstract final bool loaded;
-  abstract final OrganizationTestDto? organization;
-  abstract final PortException? error;
-  abstract final bool hasEdit;
-}
+abstract class OrganizationTestState extends StateLoad<OrganizationTestDto> {}
 
 class OrganizationTestInitState extends OrganizationTestState {
   @override
-  PortException? get error => null;
+  OrganizationTestDto? getBody() {
+    return null;
+  }
 
   @override
-  bool get loaded => false;
+  PortException? getError() {
+    return null;
+  }
 
   @override
-  OrganizationTestDto? get organization => null;
-
-  @override
-  bool get hasEdit => false;
+  bool loaded() {
+    return false;
+  }
 }
 
 class OrganizationTestLoadedState extends OrganizationTestState {
-  @override
   final OrganizationTestDto? organization;
-  @override
-  final bool hasEdit;
 
   OrganizationTestLoadedState({
     required this.organization,
-    required this.hasEdit,
   });
 
   @override
-  PortException? get error => null;
+  OrganizationTestDto? getBody() {
+    return organization;
+  }
 
   @override
-  bool get loaded => true;
+  PortException? getError() {
+    return null;
+  }
+
+  @override
+  bool loaded() {
+    return true;
+  }
 }
 
 class OrganizationTestErrorState extends OrganizationTestState {
-  @override
   final PortException error;
 
   OrganizationTestErrorState({required this.error});
 
   @override
-  bool get loaded => true;
+  OrganizationTestDto? getBody() {
+    return null;
+  }
 
   @override
-  OrganizationTestDto? get organization => null;
+  PortException? getError() {
+    return error;
+  }
 
   @override
-  bool get hasEdit => false;
+  bool loaded() {
+    return true;
+  }
 }

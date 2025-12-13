@@ -18,13 +18,9 @@ class OrganizationTestBloc
     on<OrganizationTestRefreshEvent>((event, emit) async {
       emit.call(OrganizationTestInitState());
       var organizationTest = await _organizationRepository.organizationTest();
-      var hasEdit = await _roleCurrentScopesCubit.checkScope(
-        OrganizationTestState.scope,
-      );
       emit.call(
         OrganizationTestLoadedState(
           organization: organizationTest,
-          hasEdit: hasEdit,
         ),
       );
     });

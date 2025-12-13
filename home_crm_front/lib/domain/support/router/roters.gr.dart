@@ -19,7 +19,6 @@ import 'package:home_crm_front/domain/sub/education/question/question_page.dart'
     as _i12;
 import 'package:home_crm_front/domain/sub/education/test/test_page.dart'
     as _i14;
-import 'package:home_crm_front/domain/sub/employee/employee_page.dart' as _i3;
 import 'package:home_crm_front/domain/sub/employee/employee_test_page.dart'
     as _i5;
 import 'package:home_crm_front/domain/sub/employee/employee_test_run_page.dart'
@@ -64,35 +63,6 @@ class AuthLoginRoute extends _i17.PageRouteInfo<void> {
     name,
     builder: (data) {
       return const _i2.AuthLoginPage();
-    },
-  );
-}
-
-/// generated route for
-/// [_i3.EmployeePage]
-class EmployeeRoute extends _i17.PageRouteInfo<EmployeeRouteArgs> {
-  EmployeeRoute({
-    _i18.Key? key,
-    required int? employeeId,
-    List<_i17.PageRouteInfo>? children,
-  }) : super(
-         EmployeeRoute.name,
-         args: EmployeeRouteArgs(key: key, employeeId: employeeId),
-         rawPathParams: {'employeeId': employeeId},
-         initialChildren: children,
-       );
-
-  static const String name = 'EmployeeRoute';
-
-  static _i17.PageInfo page = _i17.PageInfo(
-    name,
-    builder: (data) {
-      final pathParams = data.inheritedPathParams;
-      final args = data.argsAs<EmployeeRouteArgs>(
-        orElse: () =>
-            EmployeeRouteArgs(employeeId: pathParams.optInt('employeeId')),
-      );
-      return _i3.EmployeePage(key: args.key, employeeId: args.employeeId);
     },
   );
 }
