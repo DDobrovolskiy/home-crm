@@ -13,7 +13,9 @@ import '../../../support/widgets/stamp.dart';
 import '../../organization/dto/response/organization_role_dto.dart';
 import '../../organization/service/organization_service.dart';
 import '../../organization/state/organization_role_state.dart';
+import '../../scope/scope.dart';
 import '../dto/request/employee_create_dto.dart';
+import '../dto/request/employee_delete_dto.dart';
 import '../dto/request/employee_update_dto.dart';
 import '../dto/response/employee_dto.dart';
 import '../service/employee_service.dart';
@@ -76,12 +78,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
             children: [
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
-                child: Text(
-                  isCreate()
-                      ? 'Добавить сотрудника'
-                      : 'Обновить данные сотрудника',
-                  style: CustomColors.getDisplaySmall(context, null),
-                ),
+                child: _label(),
               ),
               Form(
                 key: _formKey,
@@ -246,10 +243,14 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
         return null;
       },
       onChanged: (value) {
-        //Do something when selected item is changed.
+        setState(() {
+          _selectedRole = value;
+        });
       },
       onSaved: (value) {
-        _selectedRole = value;
+        setState(() {
+          _selectedRole = value;
+        });
       },
       buttonStyleData: ButtonStyleData(
         padding: EdgeInsets.only(right: 8),
@@ -272,5 +273,40 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
         padding: EdgeInsets.symmetric(horizontal: 16),
       ),
     );
+  }
+
+  Widget _label() {
+    if (isCreate()) {
+      return Text(
+        'Добавить сотрудника',
+        style: CustomColors.getDisplaySmall(context, null),
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              textAlign: TextAlign.center,
+              'Редактирование сотрудника',
+              style: CustomColors.getDisplaySmall(context, null),
+            ),
+          ),
+          if (!widget.employee!.role.owner &&
+              GetIt.I.get<OrganizationService>().isEditor(
+                ScopeType.ORGANIZATION_UPDATE,
+              ))
+            IconButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await GetIt.I.get<EmployeeService>().deleteEmployee(
+                  EmployeeDeleteDto(id: widget.employee!.id),
+                );
+              },
+              color: CustomColors.getSecondaryText(context),
+              icon: Icon(Icons.delete),
+            ),
+        ],
+      );
+    }
   }
 }

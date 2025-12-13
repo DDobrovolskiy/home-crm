@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
 import 'package:home_crm_front/domain/sub/employee/widget/employee_dialog.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
@@ -17,8 +16,9 @@ import 'package:home_crm_front/domain/support/components/table/table_row.dart';
 import 'package:home_crm_front/domain/support/components/table/table_row_cell.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
+import '../../support/components/button/hovered_region.dart';
+import '../../support/components/scope/check_scope.dart';
 import '../../support/widgets/stamp.dart';
-import '../employee/dto/request/employee_delete_dto.dart';
 import '../role/widget/role_tooltip.dart';
 import '../scope/scope.dart';
 
@@ -80,45 +80,44 @@ class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
             ),
             CustomTableHeadRowCell(text: 'Телефон', flex: 2),
             CustomTableHeadRowCell(text: 'Должность', textVisibleAlways: true),
-            if (organizationCurrentService.isEditor(
-              ScopeType.ORGANIZATION_UPDATE,
-            ))
-              CustomTableHeadRowCell(text: '', textVisibleAlways: true),
           ],
         ),
         rows: [
           for (final empOrg in state.getBody()!.employees)
-            CustomTableRow(
-              cells: [
-                CustomTableRowCellText(
-                  text: empOrg.user.name,
-                  flex: 2,
-                  textVisibleAlways: true,
-                  subText: empOrg.user.phone,
-                  icon: Icon(Icons.face),
-                ),
-                CustomTableRowCellText(text: empOrg.user.phone, flex: 2),
-                CustomTableRowCell(
-                  textVisibleAlways: true,
-                  body: RoleTooltip(role: empOrg.role),
-                ),
-                if (organizationCurrentService.isEditor(
-                  ScopeType.ORGANIZATION_UPDATE,
-                ))
-                  CustomTableRowCellPopupMenu(
-                    onSelected: (String choice) async {
-                      if (choice == 'Edit') {
-                        EmployeeDialog.show(context, empOrg);
-                      } else if (choice == 'Delete') {
-                        await GetIt.I.get<EmployeeService>().deleteEmployee(
-                          EmployeeDeleteDto(id: empOrg.id),
-                        );
-                      }
-                    },
-                    textVisibleAlways: true,
-                    deleteVisible: !empOrg.role.owner,
-                  ),
-              ],
+            HoveredRegion(
+              onTap: () async {
+                CheckScope(
+                  onTrue: () {
+                    if (!empOrg.role.owner) {
+                      EmployeeDialog.show(context, empOrg);
+                    } else {
+                      Stamp.showTemporarySnackbar(
+                        context,
+                        'Редактирование ${empOrg.user.name} запрещено',
+                      );
+                    }
+                  },
+                ).checkScope(ScopeType.ORGANIZATION_UPDATE, context);
+              },
+              child: (isHovered) {
+                return CustomTableRow(
+                  hover: isHovered,
+                  cells: [
+                    CustomTableRowCellText(
+                      text: empOrg.user.name,
+                      flex: 2,
+                      textVisibleAlways: true,
+                      subText: empOrg.user.phone,
+                      icon: Icon(Icons.face),
+                    ),
+                    CustomTableRowCellText(text: empOrg.user.phone, flex: 2),
+                    CustomTableRowCell(
+                      textVisibleAlways: true,
+                      body: RoleTooltip(role: empOrg.role),
+                    ),
+                  ],
+                );
+              },
             ),
           if (organizationCurrentService.isEditor(
             ScopeType.ORGANIZATION_UPDATE,

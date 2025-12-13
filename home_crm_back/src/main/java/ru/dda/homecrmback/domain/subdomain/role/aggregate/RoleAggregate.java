@@ -15,6 +15,7 @@ import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleFullDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleScopesDTO;
 import ru.dda.homecrmback.domain.subdomain.scope.aggregate.ScopeAggregate;
 import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
+import ru.dda.homecrmback.domain.support.aggregete.IAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -27,7 +28,7 @@ import java.util.*;
 @Setter
 @Entity
 @Table(name = "role")
-public class RoleAggregate {
+public class RoleAggregate implements IAggregate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -115,6 +116,7 @@ public class RoleAggregate {
                 .description(description)
                 .owner(owner)
                 .scopes(scopes.stream()
+                        .sorted(IAggregate::compareTo)
                         .map(ScopeAggregate::getScopeDTO)
                         .toList())
                 .build();
@@ -123,6 +125,7 @@ public class RoleAggregate {
     public RoleScopesDTO getRoleScopesDTO() {
         return RoleScopesDTO.builder()
                 .scopes(scopes.stream()
+                        .sorted(IAggregate::compareTo)
                         .map(ScopeAggregate::getScopeDTO)
                         .toList())
                 .build();
@@ -131,6 +134,7 @@ public class RoleAggregate {
     public RoleEmployeeDTO getRoleEmployeesDTO() {
         return RoleEmployeeDTO.builder()
                 .employees(employees.stream()
+                        .sorted(IAggregate::compareTo)
                         .map(EmployeeAggregate::getEmployeeDTO)
                         .toList())
                 .build();
@@ -143,4 +147,5 @@ public class RoleAggregate {
                 .roleScopes(getRoleScopesDTO())
                 .build();
     }
+
 }

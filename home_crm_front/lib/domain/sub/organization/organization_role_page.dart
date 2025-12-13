@@ -9,14 +9,15 @@ import 'package:home_crm_front/domain/support/service/loaded.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 
 import '../../../theme/theme.dart';
+import '../../support/components/button/hovered_region.dart';
+import '../../support/components/scope/check_scope.dart';
 import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
 import '../../support/components/table/table_row.dart';
 import '../../support/components/table/table_row_cell.dart';
-import '../role/dto/request/role_delete_dto.dart';
-import '../role/service/role_service.dart';
 import '../role/widget/role_dialog.dart';
+import '../role/widget/role_scope.dart';
 import '../user/widget/user_tooltip.dart';
 import 'bloc/organization_role_bloc.dart';
 
@@ -71,105 +72,68 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                     CustomTableHeadRowCell(text: 'Описание', flex: 2),
                     CustomTableHeadRowCell(text: 'Сотрудники с ролью'),
                     CustomTableHeadRowCell(
-                      flex: 2,
+                      flex: 1,
                       text: 'Разрешения',
                       textVisibleAlways: true,
                       subText: 'Описание',
                       subTextVisibleAlways: true,
                     ),
-                    if (organizationCurrentService.isEditor(
-                      ScopeType.ORGANIZATION_UPDATE,
-                    ))
-                      CustomTableHeadRowCell(text: '', textVisibleAlways: true),
                   ],
                 ),
                 rows: [
                   for (final role in state.getBody()!.roles)
-                    CustomTableRow(
-                      cells: [
-                        CustomTableRowCellText(
-                          text: role.role.name,
-                          textVisibleAlways: true,
-                          subText: role.role.description,
-                        ),
-                        CustomTableRowCellText(
-                          text: role.role.description,
-                          flex: 2,
-                        ),
-                        CustomTableRowCell(
-                          body: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (final employee
-                                  in role.roleEmployee.employees)
-                                UserTooltip(user: employee.user),
-                            ],
-                          ),
-                        ),
-                        CustomTableRowCell(
-                          flex: 2,
-                          textVisibleAlways: true,
-                          body: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (role.roleScopes.scopes.isEmpty &&
-                                  !role.role.owner)
-                                Text(
-                                  '[Отсутствуют]',
-                                  style: CustomColors.getBodyLarge(
-                                    context,
-                                    null,
-                                  ),
-                                ),
-                              if (role.role.owner)
-                                Text(
-                                  '[Нет ограничений]',
-                                  style: CustomColors.getBodyLarge(
-                                    context,
-                                    null,
-                                  ),
-                                ),
-                              for (final scope in role.roleScopes.scopes)
-                                Row(
-                                  children: [
-                                    Text(
-                                      scope.description,
-                                      style: CustomColors.getBodyLarge(
-                                        context,
-                                        null,
-                                      ),
+                    HoveredRegion(
+                      onTap: () async {
+                        CheckScope(
+                          onTrue: () {
+                            RoleDialog.show(context, role.role);
+                          },
+                        ).checkScope(ScopeType.ORGANIZATION_UPDATE, context);
+                      },
+                      child: (isHovered) {
+                        return CustomTableRow(
+                          hover: isHovered,
+                          cells: [
+                            CustomTableRowCellText(
+                              text: role.role.name,
+                              textVisibleAlways: true,
+                              subText: role.role.description,
+                            ),
+                            CustomTableRowCellText(
+                              text: role.role.description,
+                              flex: 2,
+                            ),
+                            CustomTableRowCell(
+                              body: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for (final employee
+                                      in role.roleEmployee.employees)
+                                    UserTooltip(user: employee.user),
+                                ],
+                              ),
+                            ),
+                            CustomTableRowCell(
+                              flex: 1,
+                              textVisibleAlways: true,
+                              body: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  RoleScopes(
+                                    role: role.role,
+                                    style: CustomColors.getBodyLarge(
+                                      context,
+                                      null,
                                     ),
-                                  ],
-                                ),
-                            ],
-                          ),
-                        ),
-                        if (organizationCurrentService.isEditor(
-                          ScopeType.ORGANIZATION_UPDATE,
-                        ))
-                          CustomTableRowCellPopupMenu(
-                            onSelected: (String choice) async {
-                              if (choice == 'Edit') {
-                                RoleDialog.show(context, role.role);
-                              } else if (choice == 'Delete') {
-                                if (role.roleEmployee.employees.isNotEmpty) {
-                                  Stamp.showTemporarySnackbar(
-                                    context,
-                                    'Чтобы удалить роль, необходимо сначала сотрудников с ролью распределить на другие роли',
-                                  );
-                                } else {
-                                  await GetIt.I.get<RoleService>().deleteRole(
-                                    RoleDeleteDto(id: role.role.id),
-                                  );
-                                }
-                              }
-                            },
-                            textVisibleAlways: true,
-                            deleteVisible: !role.role.owner,
-                          ),
-                      ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   if (organizationCurrentService.isEditor(
                     ScopeType.ORGANIZATION_UPDATE,

@@ -14,6 +14,7 @@ import ru.dda.homecrmback.domain.subdomain.organization.Organization;
 import ru.dda.homecrmback.domain.subdomain.organization.dto.response.*;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
+import ru.dda.homecrmback.domain.support.aggregete.IAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -28,7 +29,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "organization")
-public class OrganizationAggregate {
+public class OrganizationAggregate implements IAggregate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -99,7 +100,7 @@ public class OrganizationAggregate {
     public OrganizationEmployeesDTO organizationEmployeesDTO() {
         return OrganizationEmployeesDTO.builder()
                 .employees(employees.stream()
-                        .sorted(EmployeeAggregate::compareTo)
+                        .sorted(IAggregate::compareTo)
                         .map(EmployeeAggregate::getEmployeeDTO)
                         .toList())
                 .build();
@@ -108,6 +109,7 @@ public class OrganizationAggregate {
     public OrganizationRolesDTO organizationRolesDTO() {
         return OrganizationRolesDTO.builder()
                 .roles(roles.stream()
+                        .sorted(IAggregate::compareTo)
                         .map(RoleAggregate::getRoleFullDTO)
                         .toList())
                 .build();
@@ -124,6 +126,7 @@ public class OrganizationAggregate {
     public OrganizationEmployeesTestsDTO getOrganizationEmployeesTestsDTO() {
         return OrganizationEmployeesTestsDTO.builder()
                 .employees(employees.stream()
+                        .sorted(IAggregate::compareTo)
                         .map(EmployeeAggregate::getEmployeeTestViewDTO)
                         .toList())
                 .build();

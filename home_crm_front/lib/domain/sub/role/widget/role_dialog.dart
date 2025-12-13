@@ -9,10 +9,13 @@ import '../../../../theme/theme.dart';
 import '../../../support/components/button/button.dart';
 import '../../../support/components/dialog/custom_dialog.dart';
 import '../../../support/widgets/stamp.dart';
+import '../../organization/service/organization_service.dart';
 import '../../scope/bloc/scope_bloc.dart';
 import '../../scope/dto/response/scope_dto.dart';
+import '../../scope/scope.dart';
 import '../../scope/service/scope_service.dart';
 import '../../scope/state/scope_state.dart';
+import '../dto/request/role_delete_dto.dart';
 import '../dto/response/role_dto.dart';
 import '../service/role_service.dart';
 
@@ -67,10 +70,7 @@ class _RoleDialogState extends State<RoleDialog> {
             children: [
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
-                child: Text(
-                  isCreate() ? 'Добавить роль' : 'Обновить роль',
-                  style: CustomColors.getDisplaySmall(context, null),
-                ),
+        child: _label(),
               ),
               Form(
                 key: _formKey,
@@ -119,17 +119,7 @@ class _RoleDialogState extends State<RoleDialog> {
                         onChanged: (value) => _description = value,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
-                      child: Text(
-                        'Разрешения:',
-                        style: CustomColors.getLabelMedium(context, null),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
-                      child: fieldMultySelected(state.getBody()!),
-                    ),
+        ?_scopes(state)
                   ],
                 ),
               ),
@@ -214,5 +204,63 @@ class _RoleDialogState extends State<RoleDialog> {
         );
       },
     );
+  }
+
+  Widget _label() {
+    if (isCreate()) {
+      return Text(
+        'Добавить роль',
+        style: CustomColors.getDisplaySmall(context, null),
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              textAlign: TextAlign.center,
+              'Редактирование роли',
+              style: CustomColors.getDisplaySmall(context, null),
+            ),
+          ),
+          if (!widget.role!.owner &&
+              GetIt.I.get<OrganizationService>().isEditor(
+                ScopeType.ORGANIZATION_UPDATE,
+              ))
+            IconButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await GetIt.I
+                    .get<RoleService>()
+                    .deleteRole(
+                  RoleDeleteDto(id: _id!),
+                );
+              },
+              color: CustomColors.getSecondaryText(context),
+              icon: Icon(Icons.delete),
+            ),
+        ],
+      );
+    }
+  }
+
+  Widget? _scopes(ScopeState state) {
+    if (!(widget.role?.owner ?? false)) {
+      return Column(
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
+            child: Text(
+              'Разрешения:',
+              style: CustomColors.getLabelMedium(context, null),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
+            child: fieldMultySelected(state.getBody()!),
+          ),
+        ],
+      );
+    }
+    return null;
   }
 }

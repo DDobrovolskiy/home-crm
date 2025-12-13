@@ -4,8 +4,9 @@ import 'package:home_crm_front/theme/theme.dart';
 
 class CustomTableRow extends StatelessWidget {
   final List<Widget> cells;
+  final bool hover;
 
-  const CustomTableRow({super.key, required this.cells});
+  const CustomTableRow({super.key, required this.cells, this.hover = false});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,9 @@ class CustomTableRow extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: CustomColors.getSecondaryBackground(context),
+          color: hover
+              ? CustomColors.getPrimaryBackground(context)
+              : CustomColors.getSecondaryBackground(context),
           boxShadow: [
             BoxShadow(
               blurRadius: 0,

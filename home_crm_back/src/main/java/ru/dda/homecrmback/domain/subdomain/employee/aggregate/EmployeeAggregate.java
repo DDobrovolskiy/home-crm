@@ -18,6 +18,7 @@ import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestsDT
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
+import ru.dda.homecrmback.domain.support.aggregete.IAggregate;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -30,7 +31,7 @@ import java.util.*;
 @Setter
 @Entity
 @Table(name = "employee")
-public class EmployeeAggregate implements Comparable<EmployeeAggregate> {
+public class EmployeeAggregate implements IAggregate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -132,10 +133,5 @@ public class EmployeeAggregate implements Comparable<EmployeeAggregate> {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    @Override
-    public int compareTo(EmployeeAggregate o) {
-        return id.compareTo(o.id);
     }
 }
