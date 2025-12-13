@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -87,74 +88,77 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                 autovalidateMode: AutovalidateMode.disabled,
                 child: Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                      child: TextFormField(
-                        decoration: CustomColors.getTextFormInputDecoration(
-                          'Имя сотрудника',
-                          null,
-                          context,
-                        ),
-                        style: CustomColors.getBodyMedium(context, null),
-                        maxLines: null,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        initialValue: _name,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Необходимо ввести имя сотрудника';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) => _name = value,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                      child: TextFormField(
-                        inputFormatters: [Phone.phoneFormatter],
-                        decoration: CustomColors.getTextFormInputDecoration(
-                          'Телефон',
-                          '+7 (___) ___-__-__',
-                          context,
-                        ),
-                        style: CustomColors.getBodyMedium(context, null),
-                        maxLines: null,
-                        keyboardType: TextInputType.phone,
-                        initialValue: _phone,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (Phone.isValidPhoneNumber(value)) {
+                    if (isCreate())
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                        child: TextFormField(
+                          decoration: CustomColors.getTextFormInputDecoration(
+                            'Имя сотрудника',
+                            null,
+                            context,
+                          ),
+                          style: CustomColors.getBodyMedium(context, null),
+                          maxLines: null,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          initialValue: _name,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Необходимо ввести имя сотрудника';
+                            }
                             return null;
-                          }
-                          return 'Необходимо ввести номер телефона сотрудника';
-                        },
-                        onChanged: (value) => _phone = value,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                      child: TextFormField(
-                        decoration: CustomColors.getTextFormInputDecoration(
-                          'Транспортный пароль',
-                          null,
-                          context,
+                          },
+                          onChanged: (value) => _name = value,
                         ),
-                        style: CustomColors.getBodyMedium(context, null),
-                        maxLines: null,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        initialValue: _password,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Необходимо ввести транспортный пароль';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) => _password = value,
                       ),
-                    ),
+                    if (isCreate())
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                        child: TextFormField(
+                          inputFormatters: [Phone.phoneFormatter],
+                          decoration: CustomColors.getTextFormInputDecoration(
+                            'Телефон',
+                            '+7 (___) ___-__-__',
+                            context,
+                          ),
+                          style: CustomColors.getBodyMedium(context, null),
+                          maxLines: null,
+                          keyboardType: TextInputType.phone,
+                          initialValue: _phone,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (Phone.isValidPhoneNumber(value)) {
+                              return null;
+                            }
+                            return 'Необходимо ввести номер телефона сотрудника';
+                          },
+                          onChanged: (value) => _phone = value,
+                        ),
+                      ),
+                    if (isCreate())
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                        child: TextFormField(
+                          decoration: CustomColors.getTextFormInputDecoration(
+                            'Транспортный пароль',
+                            null,
+                            context,
+                          ),
+                          style: CustomColors.getBodyMedium(context, null),
+                          maxLines: null,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          initialValue: _password,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Необходимо ввести транспортный пароль';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) => _password = value,
+                        ),
+                      ),
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                      child: _roleSelect(state.getBody()!),
+                      child: _roleSelect2(state.getBody()!),
                     ),
                   ],
                 ),
@@ -211,33 +215,62 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
     );
   }
 
-  Widget _roleSelect(OrganizationRoleDto role) {
-    _selectedRole = _selectedRole ?? role.roles.first.role.id;
-    return DropdownButton<int>(
+  Widget _roleSelect2(OrganizationRoleDto role) {
+    return DropdownButtonFormField2<int>(
       value: _selectedRole,
-      // The currently selected value
-      hint: Text('Выберите', style: CustomColors.getBodyMedium(context, null),),
-      icon: const Icon(Icons.arrow_drop_down),
-      dropdownColor: CustomColors.getPrimaryBackground(context),
-      borderRadius: BorderRadius.circular(8),
-      elevation: 8,
       isExpanded: true,
+      decoration: CustomColors.getTextFormInputDecoration(
+        'Роль сотрудника',
+        null,
+        context,
+      ),
       items: [
-        ...role.roles.where((role) {
-          return !role.role.owner;
-        }).map((role) {
-          return DropdownMenuItem<int>(
-            value: role.role.id,
-            child: Padding(padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-              child: Text(role.role.name,
-                style: CustomColors.getLabelMedium(context, null),),),
-          );
-        }).toList(),
+        ...role.roles
+            .where((role) {
+              return !role.role.owner;
+            })
+            .map((role) {
+              return DropdownMenuItem<int>(
+                value: role.role.id,
+                child: Text(
+                  role.role.name,
+                  style: CustomColors.getLabelMedium(context, null),
+                ),
+              );
+            }),
       ],
-      onChanged: (int? newValue) {
-        _selectedRole = newValue;
-        setState(() {});
+      validator: (value) {
+        if (value == null) {
+          return 'Необходимо выбрать роль сотруднику';
+        }
+        return null;
       },
+      onChanged: (value) {
+        //Do something when selected item is changed.
+      },
+      onSaved: (value) {
+        _selectedRole = value;
+      },
+      buttonStyleData: ButtonStyleData(
+        padding: EdgeInsets.only(right: 8),
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+      ),
+      iconStyleData: IconStyleData(
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: CustomColors.getSecondaryText(context),
+        ),
+        iconSize: 24,
+      ),
+      dropdownStyleData: DropdownStyleData(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: CustomColors.getPrimaryBackground(context),
+        ),
+      ),
+      menuItemStyleData: const MenuItemStyleData(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+      ),
     );
   }
 }

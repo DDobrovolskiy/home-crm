@@ -51,10 +51,21 @@ class RoleTooltip extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (!role.owner && role.scopes.isEmpty)
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(3, 3, 3, 3),
+                    child: Text(
+                      '- [отсутствуют]',
+                      style: CustomColors.getBodySmall(
+                        context,
+                        CustomColors.getSecondaryText(context),
+                      ),
+                    ),
+                  ),
                 if (!role.owner)
                   for (final scope in role.scopes)
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(3, 3, 3, 3),
+                      padding: EdgeInsetsDirectional.fromSTEB(3, 0, 3, 0),
                       child: Text(
                         '- ${scope.description}',
                         style: CustomColors.getBodySmall(

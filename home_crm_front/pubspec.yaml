@@ -42,7 +42,7 @@ dependencies:
   flutter_native_splash: ^2.4.6
   flutter_dotenv: ^5.2.1
   json_annotation: ^4.9.0
-
+  dropdown_button2: ^2.3.8
   #  flutter_improved_scrolling: ^0.0.3
 
   flutter_bloc: ^9.1.1

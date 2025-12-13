@@ -273,10 +273,12 @@ extension CustomColors on BuildContext {
       String? hintText,
       BuildContext context) {
     return InputDecoration(
+      hoverColor: Colors.transparent,
+      focusColor: Colors.transparent,
       labelText: label,
       labelStyle: CustomColors.getLabelMedium(context, null),
       hintText: hintText,
-      hintStyle: CustomColors.getBodySmall(context, null),
+      hintStyle: CustomColors.getLabelSmall(context, null),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: CustomColors.getPrimaryBackground(context),
