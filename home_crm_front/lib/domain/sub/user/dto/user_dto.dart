@@ -18,4 +18,8 @@ class UserDto {
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);
+
+  String getFullName() {
+    return name;
+  }
 }

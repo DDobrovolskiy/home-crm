@@ -213,6 +213,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
   }
 
   Widget _roleSelect2(OrganizationRoleDto role) {
+    // https://pub.dev/documentation/dropdown_button2/latest/
     return DropdownButtonFormField2<int>(
       value: _selectedRole,
       isExpanded: true,

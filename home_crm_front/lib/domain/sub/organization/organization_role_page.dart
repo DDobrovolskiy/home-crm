@@ -16,9 +16,9 @@ import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
 import '../../support/components/table/table_row.dart';
 import '../../support/components/table/table_row_cell.dart';
+import '../employee/widget/employee_tooltip.dart';
 import '../role/widget/role_dialog.dart';
 import '../role/widget/role_scope.dart';
-import '../user/widget/user_tooltip.dart';
 import 'bloc/organization_role_bloc.dart';
 
 class OrganizationRolesWrapper extends StatelessWidget {
@@ -110,7 +110,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
                                 children: [
                                   for (final employee
                                       in role.roleEmployee.employees)
-                                    UserTooltip(user: employee.user),
+                                    EmployeeTooltip(employee: employee),
                                 ],
                               ),
                             ),

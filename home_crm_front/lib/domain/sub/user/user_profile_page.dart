@@ -256,7 +256,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         }
       },
       builder: (context, state) {
-        if (state.loaded()) {
+        if (!state.loaded()) {
           return Stamp.loadWidget(context);
         } else if (state.getBody() != null) {
           return Padding(
