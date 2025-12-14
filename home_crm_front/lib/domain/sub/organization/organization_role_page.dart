@@ -11,6 +11,7 @@ import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 import '../../../theme/theme.dart';
 import '../../support/components/button/hovered_region.dart';
 import '../../support/components/scope/check_scope.dart';
+import '../../support/components/sheetbar/sheet_bar_page.dart';
 import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
@@ -21,25 +22,26 @@ import '../role/widget/role_dialog.dart';
 import '../role/widget/role_scope.dart';
 import 'bloc/organization_role_bloc.dart';
 
-class OrganizationRolesWrapper extends StatelessWidget {
-  const OrganizationRolesWrapper({super.key});
+@RoutePage()
+class OrganizationRolesPage extends SheetPage {
+  static String name = 'Роли';
+  const OrganizationRolesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return OrganizationRolesPage();
+  String getName() {
+    return name;
   }
-}
-
-@RoutePage()
-class OrganizationRolesPage extends StatefulWidget {
-  const OrganizationRolesPage({super.key});
 
   @override
   _OrganizationRolesPageState createState() => _OrganizationRolesPageState();
 }
 
-class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
+class _OrganizationRolesPageState extends State<OrganizationRolesPage>
+    with AutomaticKeepAliveClientMixin<OrganizationRolesPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _OrganizationRolesPageState extends State<OrganizationRolesPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocConsumer<OrganizationRoleBloc, OrganizationRoleState>(
       listener: (context, state) {
         if (state is OrganizationRoleErrorState) {

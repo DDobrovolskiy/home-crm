@@ -1,12 +1,11 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 import '../../../theme/theme.dart';
+import '../../support/components/content/ContentList.dart';
 import '../../support/components/navbar/NavBar.dart';
 import '../../support/components/screen/Screen.dart';
-import '../../support/components/sheetbar/SheetBar.dart';
 import '../../support/widgets/stamp.dart';
 
 @RoutePage()
@@ -67,14 +66,20 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (Screen.isWeb(context)) NavBar(),
-              Flexible(
-                child: SingleChildScrollView(
-                  primary: true,
-                  child:
-                      // flex: 10,
-                      GetIt.I.get<SheetBar>(),
-                ),
-              ),
+              Expanded(child: ContentList()),
+              // Flexible(
+              //   child: SingleChildScrollView(
+              //     primary: true,
+              //     child: Column(
+              //     children: [
+              //       GetIt.I.get<SheetBar>(),
+              //       const ContentList(),
+              //     ],
+              //     ),
+              //         // flex: 10,
+              //         // GetIt.I.get<SheetBar>(),
+              //   ),
+              // ),
             ],
           ),
         ),

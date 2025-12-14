@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 
 import '../../../../../theme/theme.dart';
 import '../../../../support/components/button/button.dart';
@@ -8,9 +9,14 @@ import '../../../organization/service/organization_service.dart';
 import '../../../scope/scope.dart';
 import '../dto/response/test_dto.dart';
 
-class TestDialog extends StatefulWidget {
+class TestDialog extends SheetPage {
   static Future<TestDto?> show(BuildContext context, TestDto? test) async {
     return CustomDialog.showDialog<TestDto?>(TestDialog(test: test), context);
+  }
+
+  @override
+  String getName() {
+    return test == null ? 'Новый тест' : 'Тест Т-${test?.id.toString()}';
   }
 
   final TestDto? test;
@@ -21,8 +27,10 @@ class TestDialog extends StatefulWidget {
   _TestDialogState createState() => _TestDialogState();
 }
 
-class _TestDialogState extends State<TestDialog> {
+class _TestDialogState extends State<TestDialog>
+    with AutomaticKeepAliveClientMixin<TestDialog> {
   final _formKey = GlobalKey<FormState>();
+  String? _name;
 
   bool isCreate() {
     return widget.test == null;
@@ -30,11 +38,33 @@ class _TestDialogState extends State<TestDialog> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
           child: _label(),
+        ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+          child: TextFormField(
+            decoration: CustomColors.getTextFormInputDecoration(
+              'Имя сотрудника',
+              null,
+              context,
+            ),
+            style: CustomColors.getBodyMedium(context, null),
+            maxLines: null,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            initialValue: _name,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Необходимо ввести имя сотрудника';
+              }
+              return null;
+            },
+            onChanged: (value) => _name = value,
+          ),
         ),
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
@@ -116,4 +146,7 @@ class _TestDialogState extends State<TestDialog> {
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

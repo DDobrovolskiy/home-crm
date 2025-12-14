@@ -10,9 +10,11 @@ import 'package:home_crm_front/domain/sub/organization/event/organization_employ
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_test_state.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_test_state.dart';
+import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import '../../support/components/button/hovered_region.dart';
+import '../../support/components/callback/NavBarCallBack.dart';
 import '../../support/components/scope/check_scope.dart';
 import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
@@ -27,27 +29,28 @@ import '../scope/scope.dart';
 import 'bloc/organization_test_bloc.dart';
 import 'event/organization_test_event.dart';
 
-class OrganizationTestsWrapper extends StatelessWidget {
-  const OrganizationTestsWrapper({super.key});
+@RoutePage()
+class OrganizationTestsPage extends SheetPage {
+  static String name = 'Тесты';
+  const OrganizationTestsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return OrganizationTestsPage();
+  String getName() {
+    return name;
   }
-}
-
-@RoutePage()
-class OrganizationTestsPage extends StatefulWidget {
-  const OrganizationTestsPage({super.key});
 
   @override
   _OrganizationTestsPageState createState() => _OrganizationTestsPageState();
 }
 
-class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
+class _OrganizationTestsPageState extends State<OrganizationTestsPage>
+    with AutomaticKeepAliveClientMixin<OrganizationTestsPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
   final textController = TextEditingController(); // Контроллер для поля ввода
   final formKey = GlobalKey<FormState>(); // Глобальный ключ формы для валидации
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -59,6 +62,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocConsumer<OrganizationTestBloc, OrganizationTestState>(
       listener: (context, state) {
         if (state is OrganizationTestErrorState) {
@@ -77,14 +81,27 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
     } else if (state.getBody() != null) {
       return Column(
         children: [
-          // Padding(
-          //   padding: EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
-          //   child: Text(
-          //     'Тесты',
-          //     textAlign: TextAlign.start,
-          //     style: CustomColors.getDisplaySmall(context, null),
-          //   ),
-          // ),
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    GetIt.I.get<SheetElementAddCallback>().call(
+                      const TestDialog(test: null),
+                    );
+                  },
+                  color: CustomColors.getSecondaryText(context),
+                  icon: Icon(Icons.add_circle, size: 36),
+                ),
+                Text(
+                  'Тесты',
+                  textAlign: TextAlign.start,
+                  style: CustomColors.getDisplaySmall(context, null),
+                ),
+              ],
+            ),
+          ),
           CustomTable(
             head: CustomTableHeadRow(
               cells: [
@@ -138,7 +155,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                           body: Column(
                             children: [
                               for (final employee
-                              in test.testEmployees.employees)
+                                  in test.testEmployees.employees)
                                 EmployeeTooltip(employee: employee),
                               if (test.testSessions.sessions.isNotEmpty)
                                 Padding(
@@ -156,8 +173,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
                                     ),
                                   ),
                                 ),
-                              for (final session
-                              in test.testSessions.sessions)
+                              for (final session in test.testSessions.sessions)
                                 EmployeeTooltip(
                                   employee: session.employee,
                                   style: CustomColors.getLabelSmall(
@@ -279,7 +295,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
           //       trailing: edit(context, test, state),
           //     ),
           //   ),
-
         ],
       );
     } else {
@@ -289,14 +304,10 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage> {
 
   Widget? _tableResult(List<ResultDto> testResults) {
     if (testResults.isNotEmpty) {
-      return Column(
-        children: [
-        ],
-      );
+      return Column(children: []);
     }
     return null;
   }
-
 
   void openAddDialog() {
     showDialog(

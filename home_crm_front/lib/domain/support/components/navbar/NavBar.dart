@@ -13,7 +13,6 @@ import '../../../sub/organization/organization_test_page.dart';
 import '../../../sub/organization/service/organization_service.dart';
 import '../../../sub/organization/widgets/organization_select.dart';
 import '../../../sub/scope/scope.dart';
-import '../animate/Test.dart';
 import '../callback/NavBarCallBack.dart';
 import '../divided/divider.dart';
 import 'NavElementList.dart';
@@ -68,7 +67,7 @@ class _NavBarState extends State<NavBar> {
                       NavElementList()
                           .add(
                             Item(
-                              label: 'Дашборд',
+                              label: 'Отчеты',
                               icon: Icons.dashboard_rounded,
                               onTap: () {
                               },
@@ -76,19 +75,19 @@ class _NavBarState extends State<NavBar> {
                                 NavSubElement(
                                   label: 'Личный',
                                   onTap: () {
-                                    GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Личный',
-                                      () => CounterWrap().build(context),
-                                    );
+                                    // GetIt.I.get<SheetElementAddCallback>().call(
+                                    //   'Личный',
+                                    //   () => CounterWrap().build(context),
+                                    // );
                                   },
                                 ),
                                 NavSubElement(
                                   label: 'Тестирование',
                                   onTap: () {
-                                    GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Тестирование',
-                                      () => Text('TEST'),
-                                    );
+                                    // GetIt.I.get<SheetElementAddCallback>().call(
+                                    //   'Тестирование',
+                                    //   () => Text('TEST'),
+                                    // );
                                   },
                                 ),
                               ],
@@ -103,23 +102,18 @@ class _NavBarState extends State<NavBar> {
                               },
                               subElements: [
                                 NavSubElement(
-                                  label: 'Роли',
+                                  label: OrganizationRolesPage.name,
                                   onTap: () {
                                     GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Роли',
-                                      () => OrganizationRolesWrapper().build(
-                                        context,
-                                      ),
+                                      const OrganizationRolesPage(),
                                     );
                                   },
                                 ),
                                 NavSubElement(
-                                  label: 'Сотрудники',
+                                  label: OrganizationEmployeesPage.name,
                                   onTap: () {
                                     GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Сотрудники',
-                                      () => OrganizationEmployeesWrapper()
-                                          .build(context),
+                                      const OrganizationEmployeesPage(),
                                     );
                                   },
                                 ),
@@ -136,26 +130,13 @@ class _NavBarState extends State<NavBar> {
                                   ScopeType.TEST_CREATE,
                                 ))
                                   NavSubElement(
-                                    label: 'Создание теста',
+                                    label: OrganizationTestsPage.name,
                                     onTap: () {
                                       GetIt.I
                                           .get<SheetElementAddCallback>()
-                                          .call(
-                                            'Создание теста',
-                                            () => OrganizationTestsWrapper()
-                                                .build(context),
-                                          );
+                                          .call(const OrganizationTestsPage());
                                     },
                                   ),
-                                NavSubElement(
-                                  label: 'Тесты',
-                                  onTap: () {
-                                    GetIt.I.get<SheetElementAddCallback>().call(
-                                      'Тесты',
-                                      () => Text('TEST'),
-                                    );
-                                  },
-                                ),
                               ],
                             ),
                           ),

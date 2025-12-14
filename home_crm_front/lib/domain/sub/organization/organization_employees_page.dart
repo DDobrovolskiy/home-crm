@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/employee/widget/employee_dialog.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
-import 'package:home_crm_front/domain/sub/organization/event/organization_employee_event.dart';
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_state.dart';
+import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 import 'package:home_crm_front/domain/support/components/table/table.dart';
 import 'package:home_crm_front/domain/support/components/table/table_head_row.dart';
 import 'package:home_crm_front/domain/support/components/table/table_head_row_cell.dart';
@@ -18,41 +18,42 @@ import 'package:home_crm_front/theme/theme.dart';
 
 import '../../support/components/button/hovered_region.dart';
 import '../../support/components/scope/check_scope.dart';
+import '../../support/service/loaded.dart';
 import '../../support/widgets/stamp.dart';
 import '../role/widget/role_tooltip.dart';
 import '../scope/scope.dart';
 
-class OrganizationEmployeesWrapper extends StatelessWidget {
-  const OrganizationEmployeesWrapper({super.key});
+@RoutePage()
+class OrganizationEmployeesPage extends SheetPage {
+  static String name = 'Сотрудники';
+  const OrganizationEmployeesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return OrganizationEmployeesPage();
+  String getName() {
+    return name;
   }
-}
-
-@RoutePage()
-class OrganizationEmployeesPage extends StatefulWidget {
-  const OrganizationEmployeesPage({super.key});
 
   @override
   _OrganizationEmployeesPageState createState() =>
       _OrganizationEmployeesPageState();
 }
 
-class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage> {
+class _OrganizationEmployeesPageState extends State<OrganizationEmployeesPage>
+    with AutomaticKeepAliveClientMixin<OrganizationEmployeesPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
-    BlocProvider.of<OrganizationEmployeeBloc>(
-      context,
-    ).add(OrganizationEmployeeRefreshEvent());
+    organizationCurrentService.refreshOrganizationEmployees(Loaded.ifNotLoad);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocConsumer<OrganizationEmployeeBloc, OrganizationEmployeeState>(
       listener: (context, state) {
         if (state is OrganizationEmployeeErrorState) {
