@@ -77,6 +77,7 @@ class _TestDialogState extends State<TestDialog>
               ),
               SizedBox(width: 10),
               CustomButton(
+                primary: true,
                 text: isCreate() ? 'Создать' : 'Обновить',
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {

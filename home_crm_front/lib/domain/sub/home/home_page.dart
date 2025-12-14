@@ -67,19 +67,6 @@ class _HomePageState extends State<HomePage> {
             children: [
               if (Screen.isWeb(context)) NavBar(),
               Expanded(child: ContentList()),
-              // Flexible(
-              //   child: SingleChildScrollView(
-              //     primary: true,
-              //     child: Column(
-              //     children: [
-              //       GetIt.I.get<SheetBar>(),
-              //       const ContentList(),
-              //     ],
-              //     ),
-              //         // flex: 10,
-              //         // GetIt.I.get<SheetBar>(),
-              //   ),
-              // ),
             ],
           ),
         ),

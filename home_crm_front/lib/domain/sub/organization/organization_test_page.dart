@@ -15,6 +15,7 @@ import 'package:home_crm_front/theme/theme.dart';
 
 import '../../support/components/button/hovered_region.dart';
 import '../../support/components/callback/NavBarCallBack.dart';
+import '../../support/components/label/label_page.dart';
 import '../../support/components/scope/check_scope.dart';
 import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
@@ -32,6 +33,7 @@ import 'event/organization_test_event.dart';
 @RoutePage()
 class OrganizationTestsPage extends SheetPage {
   static String name = 'Тесты';
+
   const OrganizationTestsPage({super.key});
 
   @override
@@ -81,26 +83,13 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
     } else if (state.getBody() != null) {
       return Column(
         children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    GetIt.I.get<SheetElementAddCallback>().call(
-                      const TestDialog(test: null),
-                    );
-                  },
-                  color: CustomColors.getSecondaryText(context),
-                  icon: Icon(Icons.add_circle, size: 36),
-                ),
-                Text(
-                  'Тесты',
-                  textAlign: TextAlign.start,
-                  style: CustomColors.getDisplaySmall(context, null),
-                ),
-              ],
-            ),
+          LabelPage(
+            text: OrganizationTestsPage.name,
+            onAdd: () async {
+              GetIt.I.get<SheetElementAddCallback>().call(
+                const TestDialog(test: null),
+              );
+            },
           ),
           CustomTable(
             head: CustomTableHeadRow(
@@ -187,21 +176,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                       ],
                     );
                   },
-                ),
-              if (organizationCurrentService.isEditor(ScopeType.TEST_CREATE))
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          TestDialog.show(context, null);
-                        },
-                        color: CustomColors.getSecondaryText(context),
-                        icon: Icon(Icons.add_circle),
-                      ),
-                    ],
-                  ),
                 ),
             ],
           ),

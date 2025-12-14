@@ -207,7 +207,7 @@ class _ContentListState extends State<ContentList>
             controller: _tabController,
             children: _contents.values.map((page) {
               // Создаем контент для каждой вкладки динамически
-              return page;
+              return SingleChildScrollView(primary: true, child: page);
             }).toList(),
           ),
         ),
