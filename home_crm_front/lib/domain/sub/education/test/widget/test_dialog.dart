@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/support/components/label/label_page.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 
 import '../../../../../theme/theme.dart';
-import '../../../../support/components/button/button.dart';
+import '../../../../support/components/callback/NavBarCallBack.dart';
 import '../../../../support/components/dialog/custom_dialog.dart';
-import '../../../organization/service/organization_service.dart';
-import '../../../scope/scope.dart';
+import '../../../../support/phone.dart';
 import '../dto/response/test_dto.dart';
 
 class TestDialog extends SheetPage {
@@ -30,124 +30,235 @@ class TestDialog extends SheetPage {
 class _TestDialogState extends State<TestDialog>
     with AutomaticKeepAliveClientMixin<TestDialog> {
   final _formKey = GlobalKey<FormState>();
+  int? _id;
   String? _name;
+  String? _phone;
+  String? _password;
 
   bool isCreate() {
     return widget.test == null;
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
-          child: _label(),
-        ),
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-          child: TextFormField(
-            decoration: CustomColors.getTextFormInputDecoration(
-              'Имя сотрудника',
-              null,
-              context,
-            ),
-            style: CustomColors.getBodyMedium(context, null),
-            maxLines: null,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            initialValue: _name,
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Необходимо ввести имя сотрудника';
+        LabelPage(
+          text: widget.getName(),
+          onButton: () async {
+            if (_formKey.currentState!.validate()) {
+              if (isCreate()) {
+                // var resul = await GetIt.I
+                //     .get<EmployeeService>()
+                //     .addEmployee(
+                //   EmployeeCreateDto(
+                //     name: _name!,
+                //     phone: _phone!,
+                //     password: _password!,
+                //     roleId: _selectedRole!,
+                //   ),
+                // );
+              } else {
+                // var resul = await GetIt.I
+                //     .get<EmployeeService>()
+                //     .updateEmployee(
+                //   EmployeeUpdateDto(
+                //     id: _id!,
+                //     roleId: _selectedRole!,
+                //   ),
+                // );
               }
-              return null;
-            },
-            onChanged: (value) => _name = value,
-          ),
+              GetIt.I.get<SheetElementDeleteCallback>().call(widget.getName());
+            }
+          },
+          buttonText: 'Сохранить и закрыть',
         ),
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CustomButton(
-                text: 'Отменить',
-                onPressed: () => Navigator.pop(context),
-              ),
-              SizedBox(width: 10),
-              CustomButton(
-                primary: true,
-                text: isCreate() ? 'Создать' : 'Обновить',
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (isCreate()) {
-                      // var resul = await GetIt.I
-                      //     .get<EmployeeService>()
-                      //     .addEmployee(
-                      //   EmployeeCreateDto(
-                      //     name: _name!,
-                      //     phone: _phone!,
-                      //     password: _password!,
-                      //     roleId: _selectedRole!,
-                      //   ),
-                      // );
-                      Navigator.pop(context);
-                    } else {
-                      // var resul = await GetIt.I
-                      //     .get<EmployeeService>()
-                      //     .updateEmployee(
-                      //   EmployeeUpdateDto(
-                      //     id: _id!,
-                      //     roleId: _selectedRole!,
-                      //   ),
-                      // );
-                      Navigator.pop(context);
-                    }
-                  }
-                },
-              ),
-            ],
+        Expanded(
+          child: Padding(
+            padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
+            child: CustomTab(
+              contents: [
+                CustomTabView(name: 'Основное', child: main()),
+                CustomTabView(
+                  name: 'Тест3',
+                  child: Container(
+                    color: Colors.green,
+                    height: 150,
+                    width: 150,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _label() {
-    if (isCreate()) {
-      return Text(
-        'Добавить тест',
-        style: CustomColors.getDisplaySmall(context, null),
-      );
-    } else {
-      return Row(
+  Widget main() {
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.disabled,
+      child: Column(
         children: [
-          Expanded(
-            child: Text(
-              textAlign: TextAlign.center,
-              'Редактирование теста',
-              style: CustomColors.getDisplaySmall(context, null),
+          if (isCreate())
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+              child: TextFormField(
+                decoration: CustomColors.getTextFormInputDecoration(
+                  'Имя сотрудника',
+                  null,
+                  context,
+                ),
+                style: CustomColors.getBodyMedium(context, null),
+                maxLines: null,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                initialValue: _name,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Необходимо ввести имя сотрудника';
+                  }
+                  return null;
+                },
+                onChanged: (value) => _name = value,
+              ),
             ),
-          ),
-          if (GetIt.I.get<OrganizationService>().isEditor(
-            ScopeType.TEST_CREATE,
-          ))
-            IconButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                // await GetIt.I.get<EmployeeService>().deleteEmployee(
-                //   EmployeeDeleteDto(id: widget.employee!.id),
-                // );
-              },
-              color: CustomColors.getSecondaryText(context),
-              icon: Icon(Icons.delete),
+          if (isCreate())
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+              child: TextFormField(
+                inputFormatters: [Phone.phoneFormatter],
+                decoration: CustomColors.getTextFormInputDecoration(
+                  'Телефон',
+                  '+7 (___) ___-__-__',
+                  context,
+                ),
+                style: CustomColors.getBodyMedium(context, null),
+                maxLines: null,
+                keyboardType: TextInputType.phone,
+                initialValue: _phone,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (Phone.isValidPhoneNumber(value)) {
+                    return null;
+                  }
+                  return 'Необходимо ввести номер телефона сотрудника';
+                },
+                onChanged: (value) => _phone = value,
+              ),
+            ),
+          if (isCreate())
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+              child: TextFormField(
+                decoration: CustomColors.getTextFormInputDecoration(
+                  'Транспортный пароль',
+                  null,
+                  context,
+                ),
+                style: CustomColors.getBodyMedium(context, null),
+                maxLines: null,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                initialValue: _password,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Необходимо ввести транспортный пароль';
+                  }
+                  return null;
+                },
+                onChanged: (value) => _password = value,
+              ),
             ),
         ],
-      );
-    }
+      ),
+    );
+  }
+}
+
+class CustomTab extends StatefulWidget {
+  final List<CustomTabView> contents;
+
+  const CustomTab({super.key, required this.contents});
+
+  @override
+  _CustomTabState createState() => _CustomTabState();
+}
+
+class _CustomTabState extends State<CustomTab> with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Инициализируем контроллер с начальной длиной списка
+    _tabController = TabController(length: widget.contents.length, vsync: this);
   }
 
   @override
-  bool get wantKeepAlive => true;
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // 1. Наш динамический TabBar
+        Container(
+          decoration: BoxDecoration(
+            color: CustomColors.getSecondaryBackground(context),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          ),
+          child: TabBar(
+            tabAlignment: TabAlignment.startOffset,
+            controller: _tabController,
+            isScrollable: true,
+            labelColor: CustomColors.getPrimaryText(context),
+            unselectedLabelColor: CustomColors.getSecondaryText(context),
+            labelStyle: CustomColors.getTitleMedium(context, null),
+            indicatorColor: CustomColors.getPrimary(context),
+            indicatorSize: TabBarIndicatorSize.label,
+            dividerColor: CustomColors.getAlternate(context),
+            dividerHeight: 2,
+            splashBorderRadius: BorderRadius.circular(12),
+            overlayColor: WidgetStateProperty.all(
+              CustomColors.getPrimaryBackground(context),
+            ),
+            tabs: widget.contents
+                .map((title) => Tab(text: title.name))
+                .toList(),
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: widget.contents.map((page) {
+              // Создаем контент для каждой вкладки динамически
+              return Container(
+                color: CustomColors.getSecondaryBackground(context),
+                child: SingleChildScrollView(primary: true, child: page),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CustomTabView extends StatelessWidget {
+  final String name;
+  final Widget child;
+
+  const CustomTabView({super.key, required this.name, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
+  }
 }

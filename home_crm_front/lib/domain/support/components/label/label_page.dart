@@ -48,7 +48,7 @@ class LabelPage extends StatelessWidget {
                     ),
                   if (onButton != null && buttonText != null)
                     Padding(
-                      padding: EdgeInsetsGeometry.fromLTRB(0, 0, 12, 0),
+                      padding: EdgeInsetsGeometry.fromLTRB(0, 0, 24, 0),
                       child: CustomButtonDisplay(
                         primary: true,
                         text: 'Сохранить и закрыть',

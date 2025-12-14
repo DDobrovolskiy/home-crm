@@ -106,6 +106,9 @@ class _ContentListState extends State<ContentList>
     GetIt.I.get<SheetElementAddCallback>().subscribe((page) {
       _addTab(page);
     });
+    GetIt.I.get<SheetElementDeleteCallback>().subscribe((page) {
+      _removeTab(page);
+    });
   }
 
   @override
@@ -207,8 +210,12 @@ class _ContentListState extends State<ContentList>
             controller: _tabController,
             children: _contents.values.map((page) {
               // Создаем контент для каждой вкладки динамически
-              return SingleChildScrollView(primary: true, child: page);
+              return page;
             }).toList(),
+            // children: _contents.values.map((page) {
+            //   // Создаем контент для каждой вкладки динамически
+            //   return SingleChildScrollView(primary: true, child: page);
+            // }).toList(),
           ),
         ),
       ],
