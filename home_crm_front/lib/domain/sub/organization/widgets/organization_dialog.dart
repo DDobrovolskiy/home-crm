@@ -53,6 +53,7 @@ class _OrganizationDialogState extends State<OrganizationDialog> {
                   'Название организации',
                   null,
                   context,
+                    true
                 ),
                 style: CustomColors.getBodyMedium(context, null),
                 maxLines: null,

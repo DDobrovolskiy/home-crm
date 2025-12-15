@@ -93,6 +93,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                             'Имя сотрудника',
                             null,
                             context,
+                              true
                           ),
                           style: CustomColors.getBodyMedium(context, null),
                           maxLines: null,
@@ -116,6 +117,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                             'Телефон',
                             '+7 (___) ___-__-__',
                             context,
+                              true
                           ),
                           style: CustomColors.getBodyMedium(context, null),
                           maxLines: null,
@@ -139,6 +141,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
                             'Транспортный пароль',
                             null,
                             context,
+                              true
                           ),
                           style: CustomColors.getBodyMedium(context, null),
                           maxLines: null,
@@ -221,6 +224,7 @@ class _EmployeeDialogState extends State<EmployeeDialog> {
         'Роль сотрудника',
         null,
         context,
+          true
       ),
       items: [
         ...role.roles

@@ -84,6 +84,7 @@ class _RoleDialogState extends State<RoleDialog> {
                           'Название роли',
                           null,
                           context,
+                          true
                         ),
                         style: CustomColors.getBodyMedium(context, null),
                         maxLines: null,
@@ -105,6 +106,7 @@ class _RoleDialogState extends State<RoleDialog> {
                           'Описание роли',
                           null,
                           context,
+        false
                         ),
                         style: CustomColors.getBodyMedium(context, null),
                         maxLines: null,

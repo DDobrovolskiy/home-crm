@@ -275,12 +275,14 @@ extension CustomColors on BuildContext {
 
   static InputDecoration getTextFormInputDecoration(String label,
       String? hintText,
-      BuildContext context) {
+      BuildContext context,
+      bool required) {
     return InputDecoration(
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
       labelText: label,
-      labelStyle: CustomColors.getLabelMedium(context, null),
+      labelStyle: CustomColors.getLabelMedium(
+          context, required ? CustomColors.getPrimaryText(context) : null),
       hintText: hintText,
       hintStyle: CustomColors.getLabelSmall(context, null),
       enabledBorder: OutlineInputBorder(
