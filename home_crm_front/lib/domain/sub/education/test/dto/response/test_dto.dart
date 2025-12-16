@@ -1,24 +1,31 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../organization/dto/response/organization_dto.dart';
+import '../../../../../support/components/status/doc.dart';
+import '../../../question/dto/response/question_dto.dart';
 
 part 'test_dto.g.dart';
 
 @JsonSerializable()
 class TestDto {
   final int id;
+  final String number;
   final String name;
-  final bool ready;
+  final String description;
+  final StatusDoc status;
   final int timeLimitMinutes;
-  final OrganizationDto organization;
+  final int iteration;
+  final List<QuestionDto> questions;
 
-  TestDto({
-    required this.id,
-    required this.name,
-    required this.ready,
-    required this.timeLimitMinutes,
-    required this.organization,
-  });
+  TestDto(
+    this.id,
+    this.number,
+    this.name,
+    this.description,
+    this.status,
+    this.timeLimitMinutes,
+    this.iteration,
+    this.questions,
+  );
 
   Map<String, dynamic> toJson() {
     return _$TestDtoToJson(this);

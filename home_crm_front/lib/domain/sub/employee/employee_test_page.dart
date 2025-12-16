@@ -50,8 +50,8 @@ class _EmployeeTestsPageState extends State<EmployeeTestsPage> {
         children: [
           Text('Назначенные тесты:', textAlign: TextAlign.left),
           for (final test in state.data!.employeeTests.tests)
-            if (test.ready)
-              Card(
+            // if (test.ready)
+            Card(
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
                   leading: Icon(Icons.text_snippet_outlined),

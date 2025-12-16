@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../theme/theme.dart';
+import '../text/custom_text_label.dart';
 
 class CustomTab extends StatefulWidget {
   final List<CustomTabView> contents;
@@ -43,7 +44,20 @@ class _CustomTabState extends State<CustomTab> with TickerProviderStateMixin {
               CustomColors.getPrimaryBackground(context),
             ),
             tabs: widget.contents
-                .map((title) => Tab(text: title.name))
+                .map(
+                  (title) =>
+                  Tab(
+                    child: Row(
+                      children: [
+                        // Text(title.name),
+                        CustomLabelCircleText(
+                          text: Text(title.name),
+                          number: title.label != null ? title.label!() : null,
+                        ),
+                      ],
+                    ),
+                  ),
+            )
                 .toList(),
           ),
         ),
@@ -67,8 +81,10 @@ class _CustomTabState extends State<CustomTab> with TickerProviderStateMixin {
 class CustomTabView extends StatefulWidget {
   final String name;
   final Widget child;
+  final int Function()? label;
 
-  const CustomTabView({super.key, required this.name, required this.child});
+  const CustomTabView(
+      {super.key, required this.name, required this.child, this.label});
 
   @override
   _CustomTabViewState createState() => _CustomTabViewState();

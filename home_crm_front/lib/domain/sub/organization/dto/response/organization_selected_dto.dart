@@ -10,10 +10,10 @@ part 'organization_selected_dto.g.dart';
 class OrganizationSelectedDto {
   final OrganizationDto organization;
   final RoleDto role;
-  Set<String> scopes = {};
+  Set<String> _scopes = {};
 
   OrganizationSelectedDto({required this.organization, required this.role}) {
-    scopes = role.scopes.map((s) {
+    _scopes = role.scopes.map((s) {
       return s.name;
     }).toSet();
   }
@@ -22,7 +22,7 @@ class OrganizationSelectedDto {
     if (role.owner) {
       return true;
     }
-    return scopes.contains(scope.name);
+    return _scopes.contains(scope.name);
   }
 
   Map<String, dynamic> toJson() {

@@ -7,19 +7,25 @@ part of 'test_dto.dart';
 // **************************************************************************
 
 TestDto _$TestDtoFromJson(Map<String, dynamic> json) => TestDto(
-  id: (json['id'] as num).toInt(),
-  name: json['name'] as String,
-  ready: json['ready'] as bool,
-  timeLimitMinutes: (json['timeLimitMinutes'] as num).toInt(),
-  organization: OrganizationDto.fromJson(
-    json['organization'] as Map<String, dynamic>,
-  ),
+  (json['id'] as num).toInt(),
+  json['number'] as String,
+  json['name'] as String,
+  json['description'] as String,
+  StatusDoc.fromJson(json['status'] as String),
+  (json['timeLimitMinutes'] as num).toInt(),
+  (json['iteration'] as num).toInt(),
+  (json['questions'] as List<dynamic>)
+      .map((e) => QuestionDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$TestDtoToJson(TestDto instance) => <String, dynamic>{
   'id': instance.id,
+  'number': instance.number,
   'name': instance.name,
-  'ready': instance.ready,
+  'description': instance.description,
+  'status': instance.status,
   'timeLimitMinutes': instance.timeLimitMinutes,
-  'organization': instance.organization,
+  'iteration': instance.iteration,
+  'questions': instance.questions,
 };

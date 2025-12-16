@@ -112,29 +112,29 @@ class _TestSuitPageState extends State<TestSuitPage> {
                       },
                     ),
                     SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text('Тест готов: '),
-                        Checkbox(
-                          value: state.data?.ready ?? false,
-                          onChanged: (bool? value) {
-                            _testEditBloc.add(
-                              TestEditUpdateReadyEvent(
-                                id: widget.testId,
-                                ready: value ?? false,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Text('Тест готов: '),
+                    //     Checkbox(
+                    //       value: state.data?.ready ?? false,
+                    //       onChanged: (bool? value) {
+                    //         _testEditBloc.add(
+                    //           TestEditUpdateReadyEvent(
+                    //             id: widget.testId,
+                    //             ready: value ?? false,
+                    //           ),
+                    //         );
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
                     SizedBox(height: 5),
                     Text('Вопросы: '),
                     SizedBox(height: 5),
-                    getQuestions(state.data?.ready ?? false),
+                    // getQuestions(state.data?.ready ?? false),
                     const SizedBox(height: 32),
-                    if (!(state.data?.ready ?? false))
-                      ElevatedButton(
+                    // if (!(state.data?.ready ?? false))
+                    ElevatedButton(
                         child: Text('Добавить вопрос'),
                         onPressed: () {
                           openAddDialog();

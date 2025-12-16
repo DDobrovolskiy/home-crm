@@ -11,6 +11,7 @@ import 'package:home_crm_front/domain/sub/organization/service/organization_serv
 import 'package:home_crm_front/domain/sub/organization/state/organization_employee_test_state.dart';
 import 'package:home_crm_front/domain/sub/organization/state/organization_test_state.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
+import 'package:home_crm_front/domain/support/components/status/doc.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import '../../support/components/button/hovered_region.dart';
@@ -126,13 +127,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                         CustomTableRowCellText(
                           text: test.test.name,
                           textVisibleAlways: true,
-                          subText: test.test.ready ? 'Готов' : 'В работе',
-                          icon: test.test.ready
-                              ? Icon(Icons.done)
-                              : Icon(Icons.play_arrow),
                         ),
-                        CustomTableRowCellText(
-                          text: test.test.ready ? 'Готов' : 'В работе',
+                        CustomTableRowCell(
+                          body: CustomStatusDoc(status: StatusDoc.DRAFT),
                         ),
                         CustomTableRowCellText(
                           text: test.test.timeLimitMinutes == 0

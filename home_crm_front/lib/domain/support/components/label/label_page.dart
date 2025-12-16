@@ -69,3 +69,35 @@ class LabelPage extends StatelessWidget {
     );
   }
 }
+
+class CustomLabelPage extends StatelessWidget {
+  final List<Widget> contents;
+
+  const CustomLabelPage({
+    super.key,
+    required this.contents,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            primary: false,
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: contents,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
