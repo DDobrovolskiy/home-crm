@@ -106,7 +106,7 @@ class _QuestionPageState extends State<QuestionPage> {
                       onPressed: () {
                         _questionEditBloc.add(
                           QuestionEditUpdateEvent(
-                            id: state.data!.id,
+                            id: state.data!.id!,
                             text: _text ?? state.data!.text,
                             testId: widget.testId,
                           ),
@@ -202,7 +202,7 @@ class _QuestionPageState extends State<QuestionPage> {
       icon: Icon(Icons.delete),
       onPressed: () {
         BlocProvider.of<OptionEditBloc>(context).add(
-          OptionEditDeleteEvent(id: question.id,
+          OptionEditDeleteEvent(id: question.id!,
               questionId: widget.questionId,
               testId: widget.testId),
         );

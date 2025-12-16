@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:home_crm_front/domain/support/components/table/table_head_row_cell.dart';
 
 class CustomTableHeadRow extends StatelessWidget {
-  final List<CustomTableHeadRowCell> cells;
+  final List<Widget> cells;
 
   const CustomTableHeadRow({super.key, required this.cells});
 

@@ -77,7 +77,7 @@ class _EmployeeTestRunPageState extends State<EmployeeTestRunPage> {
       if (answers.isEmpty) {
         for (var q in state.data!.test.questions) {
           answers.add(
-            SessionResultQuestionDto(questionId: q.question.id, options: {}),
+            SessionResultQuestionDto(questionId: q.question.id!, options: {}),
           );
         }
       }
@@ -167,9 +167,9 @@ class _EmployeeTestRunPageState extends State<EmployeeTestRunPage> {
               if (checked!) {
                 if (oneAnswer) {
                   answerQuestion.options.clear();
-                  answerQuestion.options.add(option.id);
+                  answerQuestion.options.add(option.id!);
                 } else {
-                  answerQuestion.options.add(option.id);
+                  answerQuestion.options.add(option.id!);
                 }
               } else {
                 answerQuestion.options.remove(option.id);

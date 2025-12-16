@@ -312,7 +312,7 @@ class _TestSuitPageState extends State<TestSuitPage> {
       onPressed: () {
         AutoRouter.of(
           context,
-        ).push(QuestionRoute(testId: widget.testId, questionId: question.id));
+        ).push(QuestionRoute(testId: widget.testId, questionId: question.id!));
       },
     );
   }
@@ -323,7 +323,7 @@ class _TestSuitPageState extends State<TestSuitPage> {
       onPressed: () {
         BlocProvider.of<QuestionEditBloc>(
           context,
-        ).add(QuestionEditDeleteEvent(id: question.id, testId: widget.testId));
+        ).add(QuestionEditDeleteEvent(id: question.id!, testId: widget.testId));
       },
     );
   }

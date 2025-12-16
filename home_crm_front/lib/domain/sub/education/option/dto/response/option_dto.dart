@@ -1,20 +1,17 @@
-import 'package:home_crm_front/domain/sub/education/question/dto/response/question_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'option_dto.g.dart';
 
 @JsonSerializable()
 class OptionDto {
-  final int id;
-  final String text;
-  final bool correct;
-  final QuestionDto question;
+  late int? id;
+  late String text;
+  late bool correct;
 
   OptionDto({
-    required this.id,
+    this.id,
     required this.text,
     required this.correct,
-    required this.question,
   });
 
   Map<String, dynamic> toJson() {

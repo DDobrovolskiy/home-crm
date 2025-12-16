@@ -70,7 +70,7 @@ class _RoleDialogState extends State<RoleDialog> {
             children: [
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
-        child: _label(),
+                child: _label(),
               ),
               Form(
                 key: _formKey,
@@ -84,7 +84,7 @@ class _RoleDialogState extends State<RoleDialog> {
                           'Название роли',
                           null,
                           context,
-                          true
+                          true,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
                         maxLines: null,
@@ -106,7 +106,7 @@ class _RoleDialogState extends State<RoleDialog> {
                           'Описание роли',
                           null,
                           context,
-        false
+                          false,
                         ),
                         style: CustomColors.getBodyMedium(context, null),
                         maxLines: null,
@@ -121,7 +121,7 @@ class _RoleDialogState extends State<RoleDialog> {
                         onChanged: (value) => _description = value,
                       ),
                     ),
-        ?_scopes(state)
+                    ?_scopes(state),
                   ],
                 ),
               ),
@@ -231,9 +231,7 @@ class _RoleDialogState extends State<RoleDialog> {
             IconButton(
               onPressed: () async {
                 Navigator.pop(context);
-                await GetIt.I
-                    .get<RoleService>()
-                    .deleteRole(
+                await GetIt.I.get<RoleService>().deleteRole(
                   RoleDeleteDto(id: _id!),
                 );
               },
