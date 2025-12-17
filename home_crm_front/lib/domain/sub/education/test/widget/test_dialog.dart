@@ -6,10 +6,8 @@ import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page
 
 import '../../../../../theme/theme.dart';
 import '../../../../support/components/button/button.dart';
-import '../../../../support/components/button/hovered_region.dart';
 import '../../../../support/components/callback/NavBarCallBack.dart';
 import '../../../../support/components/dialog/custom_dialog.dart';
-import '../../../../support/components/scope/check_scope.dart';
 import '../../../../support/components/status/doc.dart';
 import '../../../../support/components/tab/custom_tab.dart';
 import '../../../../support/components/table/table.dart';
@@ -17,7 +15,6 @@ import '../../../../support/components/table/table_head_row.dart';
 import '../../../../support/components/table/table_head_row_cell.dart';
 import '../../../../support/components/table/table_row.dart';
 import '../../../../support/components/table/table_row_cell.dart';
-import '../../../scope/scope.dart';
 import '../../question/dto/response/question_dto.dart';
 import '../dto/response/test_dto.dart';
 
@@ -131,11 +128,11 @@ class _TestDialogState extends State<TestDialog> {
                   textAlign: TextAlign.start,
                   style: CustomColors.getDisplaySmall(context, null),
                 ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
+                  child: Row(children: [CustomStatusDoc(status: _status!)]),
+                ),
               ],
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 6, 24, 12),
-              child: Row(children: [CustomStatusDoc(status: _status!)]),
             ),
           ],
         );
@@ -328,7 +325,7 @@ class _TestDialogState extends State<TestDialog> {
                       style: CustomColors.getBodyMedium(context, null),
                       maxLines: null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      initialValue: _name,
+                      initialValue: _description,
                       validator: (value) {
                         return null;
                       },
@@ -351,7 +348,11 @@ class _TestDialogState extends State<TestDialog> {
   Widget questions(GlobalKey<FormState> _formKeyTab) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(12, 16, 2, 2),
-      child: Column(children: [tableQuestions(_questions)]),
+      child: Form(
+        key: _formKeyTab,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Column(children: [tableQuestions(_questions)]),
+      ),
     );
   }
 
@@ -359,14 +360,19 @@ class _TestDialogState extends State<TestDialog> {
     return CustomTable(
       head: CustomTableHeadRow(
         cells: [
-          Checkbox(
-            value: false,
-            activeColor: CustomColors.getPrimary(context),
-            onChanged: (bool? value) {
-              setState(() {});
+          IconButton(
+            onPressed: () async {
+              setState(() {
+                _questions.clear();
+              });
             },
+            color: CustomColors.getSecondaryText(context),
+            icon: Icon(Icons.delete),
           ),
-          Text('№', style: CustomColors.getLabelMedium(context, null)),
+          Padding(
+            padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+            child: Text('№', style: CustomColors.getLabelMedium(context, null)),
+          ),
           CustomTableHeadRowCell(text: 'Вопрос', textVisibleAlways: true),
           CustomTableHeadRowCell(
             flex: 2,
@@ -377,44 +383,60 @@ class _TestDialogState extends State<TestDialog> {
       ),
       rows: [
         for (int i = 0; i < _questions.length; i++)
-          HoveredRegion(
-            onTap: () async {
-              CheckScope(
-                onTrue: () async {
-                  _questions[i] = await showQuestion(context, _questions[i]);
-                  setState(() {});
+          CustomTableRow(
+            error: getError(_questions[i]),
+            cells: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    _questions.removeAt(i);
+                  });
                 },
-              ).checkScope(ScopeType.TEST_CREATE, context);
-            },
-            child: (isHovered) {
-              return CustomTableRow(
-                hover: isHovered,
-                cells: [
-                  Checkbox(
-                    value: false,
-                    activeColor: CustomColors.getPrimary(context),
-                    onChanged: (bool? value) {
-                      setState(() {});
-                    },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.delete_outline),
+              ),
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                child: Text(
+                  (i + 1).toString(),
+                  style: CustomColors.getBodyLarge(context, null),
+                ),
+              ),
+              CustomTableRowCell(
+                textVisibleAlways: true,
+                body: TextFormField(
+                  decoration: CustomColors.getTextFormInputDecoration(
+                    'Вопрос',
+                    null,
+                    context,
+                    true,
                   ),
-                  Text(
-                    (i + 1).toString(),
-                    style: CustomColors.getLabelMedium(context, null),
-                  ),
-                  CustomTableRowCellText(
-                    text: _questions[i].text,
-                    textVisibleAlways: true,
-                  ),
-                  CustomTableRowCell(
-                    flex: 2,
-                    textVisibleAlways: true,
-                    body: Column(
-                      children: [tableOptions(_questions[i].options)],
-                    ),
-                  ),
-                ],
-              );
-            },
+                  style: CustomColors.getBodyMedium(context, null),
+                  maxLines: null,
+                  autovalidateMode:
+                  AutovalidateMode.always,
+                  initialValue: _questions[i].text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Необходимо ввести текст вопроса';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _questions[i].text = value;
+                    });
+                  },
+                ),
+              ),
+              CustomTableRowCell(
+                flex: 2,
+                textVisibleAlways: true,
+                body: Column(
+                  children: [tableOptions(_questions[i].options)],
+                ),
+              ),
+            ],
           ),
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
@@ -422,9 +444,8 @@ class _TestDialogState extends State<TestDialog> {
             children: [
               IconButton(
                 onPressed: () async {
-                  var question = await showQuestion(context, null);
                   setState(() {
-                    _questions.add(question);
+                    _questions.add(QuestionDto(text: '', options: []));
                   });
                 },
                 color: CustomColors.getSecondaryText(context),
@@ -437,73 +458,107 @@ class _TestDialogState extends State<TestDialog> {
     );
   }
 
-  Future<QuestionDto> showQuestion(
-    BuildContext context,
-    QuestionDto? question,
-  ) async {
-    return CustomDialog.showDialog<QuestionDto>(
-      QuestionDialog(question: question),
-      context,
-    );
+  String? getError(QuestionDto question) {
+    if (question.options.isEmpty || question.options.length < 2) {
+      return 'Необходимо добавить хотя бы два ответа';
+    }
+    if (!question.options.any((o) => o.correct)) {
+      return 'Должен быть хотя бы один правильный ответ';
+    }
+    return null;
   }
+
 
   Widget tableOptions(List<OptionDto> options) {
     return CustomTable(
       head: CustomTableHeadRow(
         cells: [
-          Checkbox(
-            value: false,
-            activeColor: CustomColors.getPrimary(context),
-            onChanged: (bool? value) {
-              setState(() {});
+          IconButton(
+            onPressed: () async {
+              setState(() {
+                options.clear();
+              });
             },
+            color: CustomColors.getSecondaryText(context),
+            icon: Icon(Icons.delete),
           ),
-          Text('№', style: CustomColors.getLabelMedium(context, null)),
+          Padding(
+            padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+            child: Text('№', style: CustomColors.getLabelMedium(context, null)),
+          ),
           CustomTableHeadRowCell(text: 'Верный ответ', textVisibleAlways: true),
           CustomTableHeadRowCell(
-            flex: 2,
-            text: 'Ответ',
+            flex: 3,
+            text: 'Варианты ответов',
             textVisibleAlways: true,
           ),
         ],
       ),
       rows: [
         for (int o = 0; o < options.length; o++)
-          HoveredRegion(
-            onTap: () async {
-              CheckScope(
-                onTrue: () async {
-                  options[o] = await showOption(context, options[o]);
-                  setState(() {});
+          CustomTableRow(
+            cells: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    options.removeAt(o);
+                  });
                 },
-              ).checkScope(ScopeType.TEST_CREATE, context);
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.delete_outline),
+              ),
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                child: Text(
+                  (o + 1).toString(),
+                  style: CustomColors.getLabelMedium(context, null),
+                ),
+              ),
+              CustomTableRowCell(
+                body: Row(
+                  children: [
+                    Checkbox(
+                      value: options[o].correct,
+                      activeColor: CustomColors.getPrimary(context),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options[o].correct = !options[o].correct;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                textVisibleAlways: true,
+              ),
+              CustomTableRowCell(
+                flex: 3,
+                textVisibleAlways: true,
+                body: TextFormField(
+                  decoration: CustomColors.getTextFormInputDecoration(
+                    'Ответ',
+                    null,
+                    context,
+                    true,
+                  ),
+                  style: CustomColors.getBodyMedium(context, null),
+                  maxLines: null,
+                  autovalidateMode:
+                  AutovalidateMode.always,
+                  initialValue: options[o].text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Необходимо ввести текст ответа';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      options[o].text = value;
+                    });
             },
-            child: (isHovered) {
-              return CustomTableRow(
-                hover: isHovered,
-                cells: [
-                  Checkbox(
-                    value: false,
-                    activeColor: CustomColors.getPrimary(context),
-                    onChanged: (bool? value) {
-                      setState(() {});
-                    },
-                  ),
-                  Text(
-                    (o + 1).toString(),
-                    style: CustomColors.getLabelMedium(context, null),
-                  ),
-                  CustomTableRowCellText(
-                    text: options[o].correct ? 'Да' : '',
-                    textVisibleAlways: true,
-                  ),
-                  CustomTableRowCellText(
-                    text: options[o].text,
-                    textVisibleAlways: true,
-                  ),
-                ],
-              );
-            },
+          ),
+              ),
+            ],
           ),
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
@@ -511,9 +566,8 @@ class _TestDialogState extends State<TestDialog> {
             children: [
               IconButton(
                 onPressed: () async {
-                  var option = await showOption(context, null);
                   setState(() {
-                    options.add(option);
+                    options.add(OptionDto(text: '', correct: false));
                   });
                 },
                 color: CustomColors.getSecondaryText(context),
@@ -526,217 +580,5 @@ class _TestDialogState extends State<TestDialog> {
     );
   }
 
-  Future<OptionDto> showOption(BuildContext context, OptionDto? option) async {
-    return CustomDialog.showDialog<OptionDto>(
-      OptionDialog(option: option),
-      context,
-    );
-  }
 }
 
-class QuestionDialog extends StatefulWidget {
-  final QuestionDto? question;
-
-  const QuestionDialog({super.key, this.question});
-
-  @override
-  _QuestionDialogState createState() => _QuestionDialogState();
-}
-
-class _QuestionDialogState extends State<QuestionDialog> {
-  final _formKey = GlobalKey<FormState>();
-  String? _text;
-
-  bool isCreate() {
-    return widget.question == null;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (!isCreate()) {
-      _text = widget.question?.text;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.disabled,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                child: TextFormField(
-                  decoration: CustomColors.getTextFormInputDecoration(
-                    'Текст вопроса *',
-                    null,
-                    context,
-                    true,
-                  ),
-                  style: CustomColors.getBodyMedium(context, null),
-                  maxLines: null,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  initialValue: _text,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Необходимо текст вопроса';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _text = value;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CustomButton(
-                text: 'Отменить',
-                onPressed: () => Navigator.pop(context),
-              ),
-              SizedBox(width: 10),
-              CustomButton(
-                text: isCreate() ? 'Создать' : 'Обновить',
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (isCreate()) {
-                      var result = QuestionDto(text: _text!, options: []);
-                      Navigator.pop(context, result);
-                    } else {
-                      widget.question?.text = _text!;
-                      Navigator.pop(context, widget.question);
-                    }
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class OptionDialog extends StatefulWidget {
-  final OptionDto? option;
-
-  const OptionDialog({super.key, this.option});
-
-  @override
-  _OptionDialogState createState() => _OptionDialogState();
-}
-
-class _OptionDialogState extends State<OptionDialog> {
-  final _formKey = GlobalKey<FormState>();
-  bool? _correct = false;
-  String? _text;
-
-  bool isCreate() {
-    return widget.option == null;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (!isCreate()) {
-      _text = widget.option?.text;
-      _correct = widget.option?.correct;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.disabled,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                child: TextFormField(
-                  decoration: CustomColors.getTextFormInputDecoration(
-                    'Текст ответа *',
-                    null,
-                    context,
-                    true,
-                  ),
-                  style: CustomColors.getBodyMedium(context, null),
-                  maxLines: null,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  initialValue: _text,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Необходимо текст ответа';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _text = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
-                child: Checkbox(
-                  value: _correct,
-                  activeColor: CustomColors.getPrimary(context),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _correct = value;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CustomButton(
-                text: 'Отменить',
-                onPressed: () => Navigator.pop(context),
-              ),
-              SizedBox(width: 10),
-              CustomButton(
-                text: isCreate() ? 'Создать' : 'Обновить',
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (isCreate()) {
-                      var result = OptionDto(text: _text!, correct: _correct!);
-                      Navigator.pop(context, result);
-                    } else {
-                      widget.option?.text = _text!;
-                      widget.option?.correct = _correct!;
-                      Navigator.pop(context, widget.option);
-                    }
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}

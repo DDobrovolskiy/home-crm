@@ -46,6 +46,9 @@ class _DialogPageState extends State<DialogPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: widget.contents.length, vsync: this);
+    widget.contents.forEach((w) {
+      _addKey();
+    });
   }
 
   GlobalKey<FormState> _addKey() {
@@ -72,7 +75,7 @@ class _DialogPageState extends State<DialogPage>
       // Вызываем валидацию для текущей формы
       if (formState != null && !formState.validate()) {
         // *** ОШИБКА ОБНАРУЖЕНА ***
-
+        print(i);
         // 1. Переключаем TabController на нужный индекс
         _tabController.animateTo(i);
 
@@ -105,7 +108,9 @@ class _DialogPageState extends State<DialogPage>
           child: Padding(
             padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
             child: CustomTab(
-              contents: widget.contents.map((c) => c(_addKey())).toList(),
+              contents: widget.contents.indexed
+                  .map((c) => c.$2(_formKeys[c.$1]))
+                  .toList(),
               tabController: _tabController,
             ),
           ),

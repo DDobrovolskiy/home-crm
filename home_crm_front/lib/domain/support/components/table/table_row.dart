@@ -5,30 +5,60 @@ import 'package:home_crm_front/theme/theme.dart';
 class CustomTableRow extends StatelessWidget {
   final List<Widget> cells;
   final bool hover;
+  final String? error;
 
-  const CustomTableRow({super.key, required this.cells, this.hover = false});
+  const CustomTableRow({
+    super.key,
+    required this.cells,
+    this.hover = false,
+    this.error,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 2),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: hover
-              ? CustomColors.getPrimaryBackground(context)
-              : CustomColors.getSecondaryBackground(context),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 0,
-              color: CustomColors.getLineColor(context),
-              offset: Offset(0, 1),
-            ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: hover
+            ? CustomColors.getPrimaryBackground(context)
+            : CustomColors.getSecondaryBackground(context),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 0,
+            color: CustomColors.getLineColor(context),
+            offset: Offset(0, 1),
+          ),
+        ],
+        borderRadius: error != null
+            ? BorderRadius.all(Radius.circular(8))
+            : null,
+        border: error != null
+            ? Border.fromBorderSide(
+                BorderSide(color: CustomColors.getError(context), width: 2),
+              )
+            : null,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Row(mainAxisSize: MainAxisSize.max, children: cells),
+            if (error != null)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    error!,
+                    style: CustomColors.getBodySmall(
+                      context,
+                      CustomColors.getError(
+                        context,
+                      ).withBlue(150).withGreen(150),
+                    ),
+                  ),
+                ],
+              ),
           ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Row(mainAxisSize: MainAxisSize.max, children: cells),
         ),
       ),
     );
