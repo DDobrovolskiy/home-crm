@@ -17,6 +17,9 @@ TestDto _$TestDtoFromJson(Map<String, dynamic> json) => TestDto(
   (json['questions'] as List<dynamic>)
       .map((e) => QuestionDto.fromJson(e as Map<String, dynamic>))
       .toList(),
+  (json['employees'] as List<dynamic>)
+      .map((e) => EmployeeDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$TestDtoToJson(TestDto instance) => <String, dynamic>{
@@ -28,4 +31,5 @@ Map<String, dynamic> _$TestDtoToJson(TestDto instance) => <String, dynamic>{
   'timeLimitMinutes': instance.timeLimitMinutes,
   'iteration': instance.iteration,
   'questions': instance.questions,
+  'employees': instance.employees,
 };

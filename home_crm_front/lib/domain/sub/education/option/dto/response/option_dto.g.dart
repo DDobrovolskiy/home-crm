@@ -7,7 +7,7 @@ part of 'option_dto.dart';
 // **************************************************************************
 
 OptionDto _$OptionDtoFromJson(Map<String, dynamic> json) => OptionDto(
-  id: (json['id'] as num).toInt(),
+  id: (json['id'] as num?)?.toInt(),
   text: json['text'] as String,
   correct: json['correct'] as bool,
 );

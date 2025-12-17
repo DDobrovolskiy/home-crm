@@ -34,7 +34,7 @@ class CustomTableHeadRowCell extends StatelessWidget {
           Text(text, style: CustomColors.getLabelMedium(context, null)),
           if (subText != null && !flag && !subTextVisibleAlways)
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 2, 0, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(0, 2, 0, 5),
               child: Text(
                 subText!,
                 style: CustomColors.getLabelSmall(context, null),

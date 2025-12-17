@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/option/dto/response/option_dto.dart';
+import 'package:home_crm_front/domain/sub/employee/dto/response/employee_dto.dart';
 import 'package:home_crm_front/domain/support/components/label/label_page.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 
@@ -47,6 +48,7 @@ class _TestDialogState extends State<TestDialog> {
   bool? _iterationFlag = true;
   int? _iteration = 0;
   List<QuestionDto> _questions = [];
+  List<EmployeeDto> _employees = [];
 
   @override
   void initState() {
@@ -60,6 +62,7 @@ class _TestDialogState extends State<TestDialog> {
       _timeLimitMinutes = test.timeLimitMinutes;
       _iteration = test.iteration;
       _questions = test.questions;
+      _employees = test.employees;
 
       _timeLimitMinutesFlag = _timeLimitMinutes == 0;
       _iterationFlag = _iteration == 0;
@@ -121,16 +124,18 @@ class _TestDialogState extends State<TestDialog> {
                   child: IconButton(
                     onPressed: () async {},
                     color: CustomColors.getSecondaryText(context),
-                    icon: Icon(Icons.save,
-                        size: Screen.isWeb(context) ? 44 : 22),
+                    icon: Icon(
+                      Icons.save,
+                      size: Screen.isWeb(context) ? 44 : 22,
+                    ),
                   ),
                 ),
                 Text(
                   widget.getName(),
                   textAlign: TextAlign.start,
-                  style: Screen.isWeb(context) ? CustomColors.getDisplaySmall(
-                      context, null) : CustomColors.getDisplaySmallButtonIsWeb(
-                      context, null),
+                  style: Screen.isWeb(context)
+                      ? CustomColors.getDisplaySmall(context, null)
+                      : CustomColors.getDisplaySmallButtonIsWeb(context, null),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
@@ -148,6 +153,12 @@ class _TestDialogState extends State<TestDialog> {
           child: questions(key),
           label: () => _questions.length,
         ),
+            (key) =>
+            CustomTabView(
+              name: 'Сотрудники',
+              child: employees(key),
+              label: () => _employees.length,
+            ),
       ],
     );
   }
@@ -225,7 +236,6 @@ class _TestDialogState extends State<TestDialog> {
                                 _timeLimitMinutesFlag = _timeLimitMinutes == 0;
                               });
                             },
-
                           ),
                         ),
                         Padding(
@@ -381,15 +391,22 @@ class _TestDialogState extends State<TestDialog> {
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
           ),
-          if(Screen.isWeb(context))
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-            child: Text('№', style: CustomColors.getLabelMedium(context, null)),
+          if (Screen.isWeb(context))
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+              child: Text(
+                '№',
+                style: CustomColors.getLabelMedium(context, null),
+              ),
+            ),
+          CustomTableHeadRowCell(
+            flex: 3,
+            text: 'Вопрос',
+            textVisibleAlways: true,
+            subText: 'Ответы',
           ),
           CustomTableHeadRowCell(
-            text: 'Вопрос', textVisibleAlways: true, subText: 'Ответы',),
-          CustomTableHeadRowCell(
-            flex: 2,
+            flex: 4,
             text: 'Ответы',
             textVisibleAlways: false,
           ),
@@ -409,28 +426,29 @@ class _TestDialogState extends State<TestDialog> {
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
               ),
-              if(Screen.isWeb(context))
-              Padding(
-                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-                child: Text(
-                  (i + 1).toString(),
-                  style: CustomColors.getBodyLarge(context, null),
+              if (Screen.isWeb(context))
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                  child: Text(
+                    (i + 1).toString(),
+                    style: CustomColors.getBodyLarge(context, null),
+                  ),
                 ),
-              ),
               CustomTableRowCell(
+                flex: 3,
                 textVisibleAlways: true,
                 body: TextFormField(
                   decoration: CustomColors.getTextFormInputDecoration(
-                    Screen.isWeb(context) ? 'Вопрос' : 'Вопрос №${(i + 1)
-                        .toString()}',
+                    Screen.isWeb(context)
+                        ? 'Вопрос'
+                        : 'Вопрос №${(i + 1).toString()}',
                     null,
                     context,
                     true,
                   ),
                   style: CustomColors.getBodyMedium(context, null),
                   maxLines: null,
-                  autovalidateMode:
-                  AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.always,
                   initialValue: _questions[i].text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -449,11 +467,9 @@ class _TestDialogState extends State<TestDialog> {
                 ),
               ),
               CustomTableRowCell(
-                flex: 2,
+                flex: 4,
                 textVisibleAlways: false,
-                body: Column(
-                  children: [tableOptions(_questions[i].options)],
-                ),
+                body: Column(children: [tableOptions(_questions[i].options)]),
               ),
             ],
           ),
@@ -487,7 +503,6 @@ class _TestDialogState extends State<TestDialog> {
     return null;
   }
 
-
   Widget tableOptions(List<OptionDto> options) {
     return CustomTable(
       head: CustomTableHeadRow(
@@ -501,14 +516,25 @@ class _TestDialogState extends State<TestDialog> {
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
           ),
-          if(Screen.isWeb(context))
+          if (Screen.isWeb(context))
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+              child: Text(
+                '№',
+                style: CustomColors.getLabelMedium(context, null),
+              ),
+            ),
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-            child: Text('№', style: CustomColors.getLabelMedium(context, null)),
+            child: SizedBox(
+              width: 55,
+              child: Text('Верный ответ', textAlign: TextAlign.center,
+                style: CustomColors.getLabelMedium(context, null),),
+            ),
           ),
-          CustomTableHeadRowCell(text: 'Верный ответ', textVisibleAlways: true),
+          // CustomTableHeadRowCell(text: 'Верный ответ', textVisibleAlways: true),
           CustomTableHeadRowCell(
-            flex: Screen.isWeb(context) ? 3 : 4,
+            flex: 5,
             text: 'Варианты ответов',
             textVisibleAlways: true,
           ),
@@ -527,41 +553,47 @@ class _TestDialogState extends State<TestDialog> {
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
               ),
-              if(Screen.isWeb(context))
+              if (Screen.isWeb(context))
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                  child: Text(
+                    (o + 1).toString(),
+                    style: CustomColors.getLabelMedium(context, null),
+                  ),
+                ),
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-                child: Text(
-                  (o + 1).toString(),
-                  style: CustomColors.getLabelMedium(context, null),
+                child: SizedBox(
+                  width: 55,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Checkbox(
+                      value: options[o].correct,
+                      activeColor: CustomColors.getPrimary(context),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options[o].correct = !options[o].correct;
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ),
               CustomTableRowCell(
-                body: Align(alignment: Alignment.centerLeft, child: Checkbox(
-                  value: options[o].correct,
-                  activeColor: CustomColors.getPrimary(context),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      options[o].correct = !options[o].correct;
-                    });
-                  },
-                ),),
-                textVisibleAlways: true,
-              ),
-              CustomTableRowCell(
-                flex: Screen.isWeb(context) ? 3 : 4,
+                flex: 5,
                 textVisibleAlways: true,
                 body: TextFormField(
                   decoration: CustomColors.getTextFormInputDecoration(
-                    Screen.isWeb(context) ? 'Ответ' : 'Ответ №${(o + 1)
-                        .toString()}',
+                    Screen.isWeb(context)
+                        ? 'Ответ'
+                        : 'Ответ №${(o + 1).toString()}',
                     null,
                     context,
                     true,
                   ),
                   style: CustomColors.getBodyMedium(context, null),
                   maxLines: null,
-                  autovalidateMode:
-                  AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.always,
                   initialValue: options[o].text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -573,8 +605,8 @@ class _TestDialogState extends State<TestDialog> {
                     setState(() {
                       options[o].text = value;
                     });
-            },
-          ),
+                  },
+                ),
               ),
             ],
           ),
@@ -598,5 +630,89 @@ class _TestDialogState extends State<TestDialog> {
     );
   }
 
-}
 
+  Widget employees(GlobalKey<FormState> _formKeyTab) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
+      child: Form(
+        key: _formKeyTab,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Column(children: [tableEmployees(_employees)]),
+      ),
+    );
+  }
+
+  Widget tableEmployees(List<EmployeeDto> employees) {
+    return CustomTable(
+      head: CustomTableHeadRow(
+        cells: [
+          IconButton(
+            onPressed: () async {
+              // setState(() {
+              //   _questions.clear();
+              // });
+            },
+            color: CustomColors.getSecondaryText(context),
+            icon: Icon(Icons.delete),
+          ),
+          Padding(
+            padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+            child: Text(
+              '№',
+              style: CustomColors.getLabelMedium(context, null),
+            ),
+          ),
+          CustomTableHeadRowCell(
+            flex: 2,
+            text: 'Сотрудник',
+            textVisibleAlways: true,
+          ),
+        ],
+      ),
+      rows: [
+        for (int i = 0; i < employees.length; i++)
+          CustomTableRow(
+            cells: [
+              IconButton(
+                onPressed: () async {
+                  // setState(() {
+                  //   _questions.removeAt(i);
+                  // });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.delete_outline),
+              ),
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                child: Text(
+                  (i + 1).toString(),
+                  style: CustomColors.getBodyLarge(context, null),
+                ),
+              ),
+              CustomTableRowCellText(
+                flex: 3,
+                textVisibleAlways: true,
+                text: employees[i].user.getFullName(),
+              ),
+            ],
+          ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    // _questions.add(QuestionDto(text: '', options: []));
+                  });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.add_circle),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

@@ -1,3 +1,4 @@
+import 'package:home_crm_front/domain/sub/employee/dto/response/employee_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../../support/components/status/doc.dart';
@@ -15,6 +16,7 @@ class TestDto {
   final int timeLimitMinutes;
   final int iteration;
   final List<QuestionDto> questions;
+  final List<EmployeeDto> employees;
 
   TestDto(
     this.id,
@@ -25,6 +27,7 @@ class TestDto {
     this.timeLimitMinutes,
     this.iteration,
     this.questions,
+    this.employees,
   );
 
   Map<String, dynamic> toJson() {
