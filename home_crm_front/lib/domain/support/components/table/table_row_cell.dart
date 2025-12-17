@@ -63,6 +63,7 @@ class CustomTableRowCellText extends StatelessWidget {
 class CustomTableRowCell extends StatelessWidget {
   final Widget body;
   final bool textVisibleAlways;
+  final Widget? subBody;
   final int flex;
 
   const CustomTableRowCell({
@@ -70,6 +71,7 @@ class CustomTableRowCell extends StatelessWidget {
     required this.body,
     this.textVisibleAlways = false,
     this.flex = 1,
+    this.subBody,
   });
 
   @override
@@ -78,7 +80,12 @@ class CustomTableRowCell extends StatelessWidget {
     if (!flag && !textVisibleAlways) {
       return SizedBox();
     }
-    return Expanded(flex: flex, child: body);
+    // return Expanded(flex: flex, child: body);
+    return Expanded(flex: flex, child: Column(children: [
+      body,
+      if(subBody != null && !Screen.isWeb(context))
+        subBody!
+    ],));
   }
 }
 

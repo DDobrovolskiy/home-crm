@@ -207,8 +207,13 @@ extension CustomColors on BuildContext {
     return getOutfitPrimary(36, FontWeight.w600, context, color);
   }
 
-  static TextStyle getDisplaySmallButton(BuildContext context, Color? color) {
+  static TextStyle getDisplaySmallButtonIsWeb(BuildContext context,
+      Color? color) {
     return getOutfitPrimary(22, FontWeight.normal, context, color);
+  }
+
+  static TextStyle getDisplaySmallButton(BuildContext context, Color? color) {
+    return getOutfitPrimary(16, FontWeight.normal, context, color);
   }
 
   static TextStyle getHeadLineLarge(BuildContext context, Color? color) {

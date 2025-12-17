@@ -8,7 +8,7 @@ class CustomTableHeadRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+      padding: EdgeInsetsDirectional.fromSTEB(1, 1, 1, 1),
       child: Row(mainAxisSize: MainAxisSize.max, children: cells),
     );
   }

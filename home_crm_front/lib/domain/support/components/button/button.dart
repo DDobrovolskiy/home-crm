@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../theme/theme.dart';
+import '../screen/Screen.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -21,9 +22,12 @@ class CustomButton extends StatelessWidget {
       style: ButtonStyle(
         padding: WidgetStateProperty.all(EdgeInsets.all(16.0)),
         side: WidgetStatePropertyAll(
-          BorderSide(color: primary
-              ? CustomColors.getPrimary(context)
-              : CustomColors.getLineColor(context), width: 2),
+          BorderSide(
+            color: primary
+                ? CustomColors.getPrimary(context)
+                : CustomColors.getLineColor(context),
+            width: 2,
+          ),
         ),
         // Толщина и цвет границы
         shape: WidgetStatePropertyAll(
@@ -69,9 +73,12 @@ class CustomButtonDisplay extends StatelessWidget {
       style: ButtonStyle(
         padding: WidgetStateProperty.all(EdgeInsets.all(16.0)),
         side: WidgetStatePropertyAll(
-          BorderSide(color: primary
-              ? CustomColors.getPrimary(context)
-              : CustomColors.getLineColor(context), width: 2),
+          BorderSide(
+            color: primary
+                ? CustomColors.getPrimary(context)
+                : CustomColors.getLineColor(context),
+            width: 2,
+          ),
         ),
         // Толщина и цвет границы
         shape: WidgetStatePropertyAll(
@@ -89,10 +96,15 @@ class CustomButtonDisplay extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: CustomColors.getDisplaySmallButton(
-          context,
-          primary ? CustomColors.getPrimaryBtnText(context) : null,
-        ),
+        style: Screen.isWeb(context)
+            ? CustomColors.getDisplaySmallButtonIsWeb(
+                context,
+                primary ? CustomColors.getPrimaryBtnText(context) : null,
+              )
+            : CustomColors.getDisplaySmallButton(
+                context,
+                primary ? CustomColors.getPrimaryBtnText(context) : null,
+              ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import '../../../../../theme/theme.dart';
 import '../../../../support/components/button/button.dart';
 import '../../../../support/components/callback/NavBarCallBack.dart';
 import '../../../../support/components/dialog/custom_dialog.dart';
+import '../../../../support/components/screen/Screen.dart';
 import '../../../../support/components/status/doc.dart';
 import '../../../../support/components/tab/custom_tab.dart';
 import '../../../../support/components/table/table.dart';
@@ -120,13 +121,16 @@ class _TestDialogState extends State<TestDialog> {
                   child: IconButton(
                     onPressed: () async {},
                     color: CustomColors.getSecondaryText(context),
-                    icon: Icon(Icons.save, size: 44),
+                    icon: Icon(Icons.save,
+                        size: Screen.isWeb(context) ? 44 : 22),
                   ),
                 ),
                 Text(
                   widget.getName(),
                   textAlign: TextAlign.start,
-                  style: CustomColors.getDisplaySmall(context, null),
+                  style: Screen.isWeb(context) ? CustomColors.getDisplaySmall(
+                      context, null) : CustomColors.getDisplaySmallButtonIsWeb(
+                      context, null),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
@@ -150,7 +154,7 @@ class _TestDialogState extends State<TestDialog> {
 
   Widget main(GlobalKey<FormState> _formKeyTab) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(12, 16, 2, 2),
+      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
       child: Form(
         key: _formKeyTab,
         autovalidateMode: AutovalidateMode.disabled,
@@ -199,14 +203,18 @@ class _TestDialogState extends State<TestDialog> {
                               context,
                               true,
                             ),
+
                             style: CustomColors.getBodyMedium(context, null),
                             maxLines: null,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             initialValue: _timeLimitMinutes.toString(),
                             validator: (value) {
-                              if (value == null ||
-                                  RegExp(r'\d{4}').hasMatch(value)) {
+                              if (value != null &&
+                                  (int.tryParse(value) == null ||
+                                      int.tryParse(value)! > 1000)) {
+                                return 'Необходимо ввести число до 1000';
+                              } else if (value == null) {
                                 return 'Необходимо ввести выполнениния в минутах';
                               }
                               return null;
@@ -217,6 +225,7 @@ class _TestDialogState extends State<TestDialog> {
                                 _timeLimitMinutesFlag = _timeLimitMinutes == 0;
                               });
                             },
+
                           ),
                         ),
                         Padding(
@@ -268,9 +277,12 @@ class _TestDialogState extends State<TestDialog> {
                                 AutovalidateMode.onUserInteraction,
                             initialValue: _iteration.toString(),
                             validator: (value) {
-                              if (value == null ||
-                                  RegExp(r'\d{4}').hasMatch(value)) {
-                                return 'Необходимо ввести выполнениния в минутах';
+                              if (value != null &&
+                                  (int.tryParse(value) == null ||
+                                      int.tryParse(value)! > 100)) {
+                                return 'Необходимо ввести число до 100';
+                              } else if (value == null) {
+                                return 'Необходимо ввести количество попыток';
                               }
                               return null;
                             },
@@ -347,7 +359,7 @@ class _TestDialogState extends State<TestDialog> {
 
   Widget questions(GlobalKey<FormState> _formKeyTab) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(12, 16, 2, 2),
+      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
       child: Form(
         key: _formKeyTab,
         autovalidateMode: AutovalidateMode.disabled,
@@ -369,15 +381,17 @@ class _TestDialogState extends State<TestDialog> {
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
           ),
+          if(Screen.isWeb(context))
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
             child: Text('№', style: CustomColors.getLabelMedium(context, null)),
           ),
-          CustomTableHeadRowCell(text: 'Вопрос', textVisibleAlways: true),
+          CustomTableHeadRowCell(
+            text: 'Вопрос', textVisibleAlways: true, subText: 'Ответы',),
           CustomTableHeadRowCell(
             flex: 2,
             text: 'Ответы',
-            textVisibleAlways: true,
+            textVisibleAlways: false,
           ),
         ],
       ),
@@ -395,6 +409,7 @@ class _TestDialogState extends State<TestDialog> {
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
               ),
+              if(Screen.isWeb(context))
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
                 child: Text(
@@ -406,7 +421,8 @@ class _TestDialogState extends State<TestDialog> {
                 textVisibleAlways: true,
                 body: TextFormField(
                   decoration: CustomColors.getTextFormInputDecoration(
-                    'Вопрос',
+                    Screen.isWeb(context) ? 'Вопрос' : 'Вопрос №${(i + 1)
+                        .toString()}',
                     null,
                     context,
                     true,
@@ -428,10 +444,13 @@ class _TestDialogState extends State<TestDialog> {
                     });
                   },
                 ),
+                subBody: Column(
+                  children: [tableOptions(_questions[i].options)],
+                ),
               ),
               CustomTableRowCell(
                 flex: 2,
-                textVisibleAlways: true,
+                textVisibleAlways: false,
                 body: Column(
                   children: [tableOptions(_questions[i].options)],
                 ),
@@ -482,13 +501,14 @@ class _TestDialogState extends State<TestDialog> {
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
           ),
+          if(Screen.isWeb(context))
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
             child: Text('№', style: CustomColors.getLabelMedium(context, null)),
           ),
           CustomTableHeadRowCell(text: 'Верный ответ', textVisibleAlways: true),
           CustomTableHeadRowCell(
-            flex: 3,
+            flex: Screen.isWeb(context) ? 3 : 4,
             text: 'Варианты ответов',
             textVisibleAlways: true,
           ),
@@ -507,6 +527,7 @@ class _TestDialogState extends State<TestDialog> {
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
               ),
+              if(Screen.isWeb(context))
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
                 child: Text(
@@ -515,27 +536,24 @@ class _TestDialogState extends State<TestDialog> {
                 ),
               ),
               CustomTableRowCell(
-                body: Row(
-                  children: [
-                    Checkbox(
-                      value: options[o].correct,
-                      activeColor: CustomColors.getPrimary(context),
-                      onChanged: (bool? value) {
-                        setState(() {
-                          options[o].correct = !options[o].correct;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+                body: Align(alignment: Alignment.centerLeft, child: Checkbox(
+                  value: options[o].correct,
+                  activeColor: CustomColors.getPrimary(context),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      options[o].correct = !options[o].correct;
+                    });
+                  },
+                ),),
                 textVisibleAlways: true,
               ),
               CustomTableRowCell(
-                flex: 3,
+                flex: Screen.isWeb(context) ? 3 : 4,
                 textVisibleAlways: true,
                 body: TextFormField(
                   decoration: CustomColors.getTextFormInputDecoration(
-                    'Ответ',
+                    Screen.isWeb(context) ? 'Ответ' : 'Ответ №${(o + 1)
+                        .toString()}',
                     null,
                     context,
                     true,

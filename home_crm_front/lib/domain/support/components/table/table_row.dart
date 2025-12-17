@@ -23,23 +23,25 @@ class CustomTableRow extends StatelessWidget {
             ? CustomColors.getPrimaryBackground(context)
             : CustomColors.getSecondaryBackground(context),
         boxShadow: [
-          BoxShadow(
-            blurRadius: 0,
-            color: CustomColors.getLineColor(context),
-            offset: Offset(0, 1),
-          ),
+          // BoxShadow(
+          //   blurRadius: 4,
+          //   color: CustomColors.getLineColor(context),
+          //   offset: Offset(0, 1),
+          // ),
         ],
-        borderRadius: error != null
-            ? BorderRadius.all(Radius.circular(8))
-            : null,
+        // borderRadius: error != null
+        //     ? BorderRadius.all(Radius.circular(8))
+        //     : null,
         border: error != null
             ? Border.fromBorderSide(
                 BorderSide(color: CustomColors.getError(context), width: 2),
               )
-            : null,
+            : Border.symmetric(horizontal:
+        BorderSide(color: CustomColors.getLineColor(context), width: 1),
+        ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.all(8),
         child: Column(
           children: [
             Row(mainAxisSize: MainAxisSize.max, children: cells),

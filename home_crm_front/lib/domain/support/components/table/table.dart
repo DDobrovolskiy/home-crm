@@ -12,21 +12,21 @@ class CustomTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16, 12, 16, 44),
+      padding: EdgeInsetsDirectional.fromSTEB(6, 6, 6, 6),
       child: Container(
         width: MediaQuery.sizeOf(context).width,
         decoration: BoxDecoration(
           color: CustomColors.getSecondaryBackground(context),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              color: Color(0x1F000000),
-              offset: Offset(0.0, 2),
-            ),
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     // blurRadius: 4,
+          //     color: Color(0x1F000000),
+          //     offset: Offset(0.0, 1),
+          //   ),
+          // ],
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: CustomColors.getPrimaryBackground(context),
+            color: CustomColors.getLineColor(context),
             width: 1,
           ),
         ),
