@@ -2,18 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/option/bloc/option_edit_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/option/repository/option_repository.dart';
-import 'package:home_crm_front/domain/sub/education/question/bloc/question_edit_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/question/bloc/question_option_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/question/repository/question_repository.dart';
-import 'package:home_crm_front/domain/sub/education/session/bloc/session_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/session/cubit/session_result.dart';
-import 'package:home_crm_front/domain/sub/education/session/repository/session_repository.dart';
-import 'package:home_crm_front/domain/sub/education/test/bloc/test_question_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/test/cubit/test_assign.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
-import 'package:home_crm_front/domain/sub/employee/bloc/employee_test_bloc.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
@@ -31,7 +20,6 @@ import 'package:home_crm_front/domain/support/token_service.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import 'domain/sub/authentication/repository/auth_repository.dart';
-import 'domain/sub/education/test/bloc/test_edit_bloc.dart';
 import 'domain/sub/organization/bloc/organization_bloc.dart';
 import 'domain/sub/organization/bloc/organization_edit_bloc.dart';
 import 'domain/sub/organization/bloc/organization_employee_test_bloc.dart';
@@ -57,13 +45,8 @@ void setupLocator() {
   GetIt.I.registerSingleton(RoleRepository());
   GetIt.I.registerSingleton(ScopeRepository());
   GetIt.I.registerSingleton(TestRepository());
-  GetIt.I.registerSingleton(QuestionRepository());
-  GetIt.I.registerSingleton(OptionRepository());
-  GetIt.I.registerSingleton(SessionRepository());
   //Cubits
   GetIt.I.registerSingleton(RoleCurrentScopesCubit());
-  GetIt.I.registerSingleton(TestAssignCubit());
-  GetIt.I.registerSingleton(SessionResultCubit());
   //Bloc
   GetIt.I.registerSingleton(AuthBloc());
   GetIt.I.registerSingleton(UserBloc());
@@ -78,19 +61,9 @@ void setupLocator() {
   GetIt.I.registerSingleton(OrganizationTestBloc());
   GetIt.I.registerSingleton(OrganizationEmployeeTestBloc());
 
-  GetIt.I.registerSingleton(EmployeeTestBloc());
-
   GetIt.I.registerSingleton(RoleCurrentBloc());
 
   GetIt.I.registerSingleton(ScopeBloc());
-
-  GetIt.I.registerSingleton(TestEditBloc());
-  GetIt.I.registerSingleton(TestQuestionBloc());
-  GetIt.I.registerSingleton(QuestionEditBloc());
-  GetIt.I.registerSingleton(QuestionOptionBloc());
-  GetIt.I.registerSingleton(OptionEditBloc());
-
-  GetIt.I.registerSingleton(SessionBloc());
 
   //Service
   GetIt.I.registerSingleton(UserService());
@@ -127,12 +100,6 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<RoleCurrentScopesCubit>.value(
           value: GetIt.I.get<RoleCurrentScopesCubit>(),
         ),
-        BlocProvider<TestAssignCubit>.value(
-          value: GetIt.I.get<TestAssignCubit>(),
-        ),
-        BlocProvider<SessionResultCubit>.value(
-          value: GetIt.I.get<SessionResultCubit>(),
-        ),
         BlocProvider<AuthBloc>.value(value: GetIt.I.get<AuthBloc>()),
         BlocProvider<UserBloc>.value(value: GetIt.I.get<UserBloc>()),
         BlocProvider<UserOrganizationBloc>.value(
@@ -159,29 +126,10 @@ class HomeCrmApp extends StatelessWidget {
         BlocProvider<OrganizationEmployeeTestBloc>.value(
           value: GetIt.I.get<OrganizationEmployeeTestBloc>(),
         ),
-        BlocProvider<EmployeeTestBloc>.value(
-          value: GetIt.I.get<EmployeeTestBloc>(),
-        ),
         BlocProvider<RoleCurrentBloc>.value(
           value: GetIt.I.get<RoleCurrentBloc>(),
         ),
         BlocProvider<ScopeBloc>.value(value: GetIt.instance.get<ScopeBloc>()),
-        BlocProvider<TestEditBloc>.value(value: GetIt.I.get<TestEditBloc>()),
-        BlocProvider<TestQuestionBloc>.value(
-          value: GetIt.I.get<TestQuestionBloc>(),
-        ),
-        BlocProvider<QuestionEditBloc>.value(
-          value: GetIt.I.get<QuestionEditBloc>(),
-        ),
-        BlocProvider<QuestionOptionBloc>.value(
-          value: GetIt.I.get<QuestionOptionBloc>(),
-        ),
-        BlocProvider<OptionEditBloc>.value(
-          value: GetIt.I.get<OptionEditBloc>(),
-        ),
-        BlocProvider<SessionBloc>.value(
-          value: GetIt.I.get<SessionBloc>(),
-        ),
       ],
       child: MaterialApp.router(
         title: 'homeCRM',

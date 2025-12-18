@@ -1,0 +1,739 @@
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/education/aggregate/option_aggregate.dart';
+import 'package:home_crm_front/domain/sub/education/aggregate/question_aggregate.dart';
+import 'package:home_crm_front/domain/sub/employee/dto/response/employee_dto.dart';
+import 'package:home_crm_front/domain/support/components/label/label_page.dart';
+import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
+
+import '../../../../../theme/theme.dart';
+import '../../../support/components/button/button.dart';
+import '../../../support/components/callback/NavBarCallBack.dart';
+import '../../../support/components/dialog/custom_dialog.dart';
+import '../../../support/components/screen/Screen.dart';
+import '../../../support/components/status/doc.dart';
+import '../../../support/components/tab/custom_tab.dart';
+import '../../../support/components/table/table.dart';
+import '../../../support/components/table/table_head_row.dart';
+import '../../../support/components/table/table_head_row_cell.dart';
+import '../../../support/components/table/table_row.dart';
+import '../../../support/components/table/table_row_cell.dart';
+import '../aggregate/appointed_aggregate.dart';
+import '../aggregate/test_aggregate.dart';
+
+class TestDialog extends SheetPage {
+
+  @override
+  String getName() {
+    return test.getNumber();
+  }
+
+  final TestAggregate test;
+
+  const TestDialog({super.key, required this.test});
+
+  @override
+  _TestDialogState createState() => _TestDialogState();
+}
+
+class _TestDialogState extends State<TestDialog> {
+  late TestAggregate test;
+
+  @override
+  void initState() {
+    super.initState();
+    test = widget.test;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DialogPage(
+      label: (validator) {
+        return Column(
+          children: [
+            CustomLabelPage(
+              contents: [
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                  child: CustomButtonDisplay(
+                    primary: true,
+                    text: 'Сохранить и закрыть',
+                    onPressed: () async {
+                      if (validator()) {
+                        GetIt.I.get<SheetElementDeleteCallback>().call(
+                          widget.getName(),
+                        );
+                      }
+                      // if (_formKey.currentState!.validate()) {
+                      //   if (isCreate()) {
+                      //     // var resul = await GetIt.I
+                      //     //     .get<EmployeeService>()
+                      //     //     .addEmployee(
+                      //     //   EmployeeCreateDto(
+                      //     //     name: _name!,
+                      //     //     phone: _phone!,
+                      //     //     password: _password!,
+                      //     //     roleId: _selectedRole!,
+                      //     //   ),
+                      //     // );
+                      //   } else {
+                      //     // var resul = await GetIt.I
+                      //     //     .get<EmployeeService>()
+                      //     //     .updateEmployee(
+                      //     //   EmployeeUpdateDto(
+                      //     //     id: _id!,
+                      //     //     roleId: _selectedRole!,
+                      //     //   ),
+                      //     // );
+                      //   }
+                      //
+                      // }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                  child: IconButton(
+                    onPressed: () async {},
+                    color: CustomColors.getSecondaryText(context),
+                    icon: Icon(
+                      Icons.save,
+                      size: Screen.isWeb(context) ? 44 : 22,
+                    ),
+                  ),
+                ),
+                Text(
+                  widget.getName(),
+                  textAlign: TextAlign.start,
+                  style: Screen.isWeb(context)
+                      ? CustomColors.getDisplaySmall(context, null)
+                      : CustomColors.getDisplaySmallButtonIsWeb(context, null),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
+                  child: Row(children: [CustomStatusDoc(status: test.status)]),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+      contents: [
+        (key) => CustomTabView(name: 'Основное', child: main(key)),
+        (key) => CustomTabView(
+          name: 'Вопросы',
+          child: questions(key),
+          label: () => test.questions.length,
+        ),
+            (key) =>
+            CustomTabView(
+              name: 'Сотрудники',
+          child: appointed(key),
+          label: () => test.appointed.length,
+        ),
+      ],
+    );
+  }
+
+  Widget main(GlobalKey<FormState> _formKeyTab) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
+      child: Form(
+        key: _formKeyTab,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                    child: TextFormField(
+                      decoration: CustomColors.getTextFormInputDecoration(
+                        'Название теста *',
+                        null,
+                        context,
+                        true,
+                      ),
+                      style: CustomColors.getBodyMedium(context, null),
+                      maxLines: null,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      initialValue: test.name,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Необходимо ввести название теста';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          test.name = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: CustomColors.getTextFormInputDecoration(
+                              'Время выполнениния в минутах *',
+                              null,
+                              context,
+                              true,
+                            ),
+
+                            style: CustomColors.getBodyMedium(context, null),
+                            maxLines: null,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            initialValue: test.timeLimitMinutes.toString(),
+                            validator: (value) {
+                              if (value != null &&
+                                  (int.tryParse(value) == null ||
+                                      int.tryParse(value)! > 1000)) {
+                                return 'Необходимо ввести число до 1000';
+                              } else if (value == null) {
+                                return 'Необходимо ввести выполнениния в минутах';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                test.timeLimitMinutes =
+                                    int.tryParse(value) ?? 0;
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsGeometry.fromLTRB(10, 0, 0, 0),
+                          child: Row(
+                            children: [
+                              Text('Без ограничений: '),
+                              Checkbox(
+                                value: test.timeLimitMinutes == 0,
+                                activeColor: CustomColors.getPrimary(context),
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value != null) {
+                                      if (value) {
+                                        test.timeLimitMinutes = 0;
+                                      }
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: CustomColors.getTextFormInputDecoration(
+                              'Количество попыток *',
+                              null,
+                              context,
+                              true,
+                            ),
+                            style: CustomColors.getBodyMedium(context, null),
+                            maxLines: null,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            initialValue: test.iteration.toString(),
+                            validator: (value) {
+                              if (value != null &&
+                                  (int.tryParse(value) == null ||
+                                      int.tryParse(value)! > 100)) {
+                                return 'Необходимо ввести число до 100';
+                              } else if (value == null) {
+                                return 'Необходимо ввести количество попыток';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                test.iteration = int.tryParse(value) ?? 0;
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsGeometry.fromLTRB(10, 0, 0, 0),
+                          child: Row(
+                            children: [
+                              Text('Без ограничений: '),
+                              Checkbox(
+                                value: test.iteration == 0,
+                                activeColor: CustomColors.getPrimary(context),
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value != null) {
+                                      if (value) {
+                                        test.iteration = 0;
+                                      }
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                    child: TextFormField(
+                      decoration: CustomColors.getTextFormInputDecoration(
+                        'Необходимое кол-во правильных ответов (из ${test.questions.length} вопросов) *',
+                        null,
+                        context,
+                        true,
+                      ),
+                      style: CustomColors.getBodyMedium(context, null),
+                      maxLines: null,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      initialValue: test.answerCount.toString(),
+                      validator: (value) {
+                        if (value != null &&
+                            (int.tryParse(value) == null ||
+                                int.tryParse(value)! > test.questions.length)) {
+                          return 'Необходимо ввести число до ${test.questions.length}';
+                        } else if (value == null) {
+                          return 'Необходимое кол-во правильных ответов (из ${test.questions.length} вопросов)';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          test.answerCount = int.tryParse(value) ?? 0;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+                    child: TextFormField(
+                      decoration: CustomColors.getTextFormInputDecoration(
+                        'Описание теста',
+                        null,
+                        context,
+                        false,
+                      ),
+                      style: CustomColors.getBodyMedium(context, null),
+                      maxLines: null,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      initialValue: test.description,
+                      validator: (value) {
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          test.description = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget questions(GlobalKey<FormState> _formKeyTab) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
+      child: Form(
+        key: _formKeyTab,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Column(children: [tableQuestions(test.questions)]),
+      ),
+    );
+  }
+
+  Widget tableQuestions(List<QuestionAggregate> questions) {
+    return CustomTable(
+      head: CustomTableHeadRow(
+        cells: [
+          IconButton(
+            onPressed: () async {
+              setState(() {
+                test.questions.clear();
+              });
+            },
+            color: CustomColors.getSecondaryText(context),
+            icon: Icon(Icons.delete),
+          ),
+          if (Screen.isWeb(context))
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+              child: Text(
+                '№',
+                style: CustomColors.getLabelMedium(context, null),
+              ),
+            ),
+          CustomTableHeadRowCell(
+            flex: 3,
+            text: 'Вопрос',
+            textVisibleAlways: true,
+            subText: 'Ответы',
+          ),
+          CustomTableHeadRowCell(
+            flex: 4,
+            text: 'Ответы',
+            textVisibleAlways: false,
+          ),
+        ],
+      ),
+      rows: [
+        for (int i = 0; i < test.questions.length; i++)
+          CustomTableRow(
+            error: test.questions[i].getError(),
+            cells: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    test.questions.removeAt(i);
+                  });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.delete_outline),
+              ),
+              if (Screen.isWeb(context))
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                  child: Text(
+                    (i + 1).toString(),
+                    style: CustomColors.getBodyLarge(context, null),
+                  ),
+                ),
+              CustomTableRowCell(
+                flex: 3,
+                textVisibleAlways: true,
+                body: TextFormField(
+                  decoration: CustomColors.getTextFormInputDecoration(
+                    Screen.isWeb(context)
+                        ? 'Вопрос'
+                        : 'Вопрос №${(i + 1).toString()}',
+                    null,
+                    context,
+                    true,
+                  ),
+                  style: CustomColors.getBodyMedium(context, null),
+                  maxLines: null,
+                  autovalidateMode: AutovalidateMode.always,
+                  initialValue: test.questions[i].text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Необходимо ввести текст вопроса';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      test.questions[i].text = value;
+                    });
+                  },
+                ),
+                subBody: Column(
+                  children: [tableOptions(test.questions[i].options)],
+                ),
+              ),
+              CustomTableRowCell(
+                flex: 4,
+                textVisibleAlways: false,
+                body: Column(
+                  children: [tableOptions(test.questions[i].options)],
+                )),
+            ],
+          ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  setState(() { {
+                    test.questions.add(QuestionAggregate())});
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.add_circle),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget tableOptions(List<OptionAggregate> options) {
+    return CustomTable(
+      head: CustomTableHeadRow(
+        cells: [
+          IconButton(
+            onPressed: () async {
+              setState(() {
+                options.clear();
+              });
+            },
+            color: CustomColors.getSecondaryText(context),
+            icon: Icon(Icons.delete),
+          ),
+          if (Screen.isWeb(context))
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+              child: Text(
+                '№',
+                style: CustomColors.getLabelMedium(context, null),
+              ),
+            ),
+          Padding(
+            padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+            child: SizedBox(
+              width: 55,
+              child: Text('Верный ответ', textAlign: TextAlign.center,
+                style: CustomColors.getLabelMedium(context, null),),
+            ),
+          ),
+          // CustomTableHeadRowCell(text: 'Верный ответ', textVisibleAlways: true),
+          CustomTableHeadRowCell(
+            flex: 5,
+            text: 'Варианты ответов',
+            textVisibleAlways: true,
+          ),
+        ],
+      ),
+      rows: [
+        for (int o = 0; o < options.length; o++)
+          CustomTableRow(
+            cells: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    options.removeAt(o);
+                  });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.delete_outline),
+              ),
+              if (Screen.isWeb(context))
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                  child: Text(
+                    (o + 1).toString(),
+                    style: CustomColors.getLabelMedium(context, null),
+                  ),
+                ),
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                child: SizedBox(
+                  width: 55,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Checkbox(
+                      value: options[o].correct,
+                      activeColor: CustomColors.getPrimary(context),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options[o].correct = !options[o].correct;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              CustomTableRowCell(
+                flex: 5,
+                textVisibleAlways: true,
+                body: TextFormField(
+                  decoration: CustomColors.getTextFormInputDecoration(
+                    Screen.isWeb(context)
+                        ? 'Ответ'
+                        : 'Ответ №${(o + 1).toString()}',
+                    null,
+                    context,
+                    true,
+                  ),
+                  style: CustomColors.getBodyMedium(context, null),
+                  maxLines: null,
+                  autovalidateMode: AutovalidateMode.always,
+                  initialValue: options[o].text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Необходимо ввести текст ответа';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      options[o].text = value;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    options.add(OptionAggregate());
+                  });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.add_circle),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget appointed(GlobalKey<FormState> _formKeyTab) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
+      child: Form(
+        key: _formKeyTab,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Column(children: [tableAppointed(test.appointed)]),
+      ),
+    );
+  }
+
+  Widget tableAppointed(List<AppointedAggregate> appointed) {
+    return CustomTable(
+      head: CustomTableHeadRow(
+        cells: [
+          IconButton(
+            onPressed: () async {
+              // setState(() {
+              //   _questions.clear();
+              // });
+            },
+            color: CustomColors.getSecondaryText(context),
+            icon: Icon(Icons.delete),
+          ),
+          Padding(
+            padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+            child: Text(
+              '№',
+              style: CustomColors.getLabelMedium(context, null),
+            ),
+          ),
+          CustomTableHeadRowCell(
+            flex: 2,
+            text: 'Сотрудник',
+            textVisibleAlways: true,
+            subText: 'Роль',
+            subTextVisibleAlways: true,
+          ),
+          CustomTableHeadRowCell(
+            flex: 1,
+            text: 'Срок тест до',
+            textVisibleAlways: true,
+          ),
+          CustomTableHeadRowCell(
+            flex: 1,
+            text: 'Кол-во попыток',
+            textVisibleAlways: true,
+            subText: 'Осталось попыток',
+            subTextVisibleAlways: true,
+          ),
+          CustomTableHeadRowCell(
+            flex: 1,
+            text: 'Тест пройден',
+            textVisibleAlways: true,
+            subText: 'Тест начат',
+            subTextVisibleAlways: true,
+          ),
+        ],
+      ),
+      rows: [
+        for (int i = 0; i < appointed.length; i++)
+          CustomTableRow(
+            cells: [
+              IconButton(
+                onPressed: () async {
+                  // setState(() {
+                  //   _questions.removeAt(i);
+                  // });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.delete_outline),
+              ),
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                child: Text(
+                  (i + 1).toString(),
+                  style: CustomColors.getBodyLarge(context, null),
+                ),
+              ),
+              CustomTableRowCellText(
+                flex: 3,
+                textVisibleAlways: true,
+                text: '',
+                // text: appointed[i].user.getFullName(),
+              ),
+            ],
+          ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    // _questions.add(QuestionDto(text: '', options: []));
+                  });
+                },
+                color: CustomColors.getSecondaryText(context),
+                icon: Icon(Icons.add_circle),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

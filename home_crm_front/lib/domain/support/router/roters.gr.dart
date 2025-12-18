@@ -17,8 +17,7 @@ import 'package:home_crm_front/domain/sub/authentication/auth_login_page.dart'
     as _i2;
 import 'package:home_crm_front/domain/sub/education/question/question_page.dart'
 as _i11;
-import 'package:home_crm_front/domain/sub/education/test/test_page.dart'
-as _i12;
+import 'package:home_crm_front/domain/sub/education/test_page.dart' as _i12;
 import 'package:home_crm_front/domain/sub/employee/employee_test_page.dart'
     as _i4;
 import 'package:home_crm_front/domain/sub/employee/employee_test_run_page.dart'

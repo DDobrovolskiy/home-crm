@@ -32,7 +32,7 @@ class CustomTableHeadRowCell extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(text, style: CustomColors.getLabelMedium(context, null)),
-          if (subText != null && !flag && !subTextVisibleAlways)
+          if (subText != null && (!flag || subTextVisibleAlways))
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0, 2, 0, 5),
               child: Text(
