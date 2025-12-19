@@ -6,7 +6,7 @@ import 'appointed_aggregate.dart';
 
 class TestAggregate extends Aggregate {
   late int? id;
-  late String? name;
+  late String name;
   late String? description;
   late StatusDoc status;
   late int timeLimitMinutes;
@@ -17,15 +17,16 @@ class TestAggregate extends Aggregate {
 
   TestAggregate({
     this.id,
-    this.name,
+    this.name = 'Новый тест',
     this.description,
     this.status = StatusDoc.DRAFT,
     this.timeLimitMinutes = 0,
     this.iteration = 0,
     this.answerCount = 0,
-    this.questions = const [],
-    this.appointed = const [],
-  });
+    List<QuestionAggregate>? questions,
+    List<AppointedAggregate>? appointed,
+  }) : questions = questions ?? [],
+       appointed = appointed ?? [];
 
   @override
   Map<String, dynamic> toJson() {
@@ -45,7 +46,7 @@ class TestAggregate extends Aggregate {
   factory TestAggregate.fromJson(Map<String, dynamic> json) {
     return TestAggregate(
       id: (json['id'] as num?)?.toInt(),
-      name: json['number'] as String?,
+      name: json['number'] as String,
       description: json['description'] as String?,
       status: StatusDoc.fromJson(json['status'] as String),
       timeLimitMinutes: (json['timeLimitMinutes'] as num?)?.toInt() ?? 0,

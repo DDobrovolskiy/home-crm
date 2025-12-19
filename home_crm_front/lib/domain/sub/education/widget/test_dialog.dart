@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/option_aggregate.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/question_aggregate.dart';
-import 'package:home_crm_front/domain/sub/employee/dto/response/employee_dto.dart';
 import 'package:home_crm_front/domain/support/components/label/label_page.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 
@@ -22,7 +21,6 @@ import '../aggregate/appointed_aggregate.dart';
 import '../aggregate/test_aggregate.dart';
 
 class TestDialog extends SheetPage {
-
   @override
   String getName() {
     return test.getNumber();
@@ -125,9 +123,8 @@ class _TestDialogState extends State<TestDialog> {
           child: questions(key),
           label: () => test.questions.length,
         ),
-            (key) =>
-            CustomTabView(
-              name: 'Сотрудники',
+        (key) => CustomTabView(
+          name: 'Сотрудники',
           child: appointed(key),
           label: () => test.appointed.length,
         ),
@@ -480,7 +477,8 @@ class _TestDialogState extends State<TestDialog> {
                 textVisibleAlways: false,
                 body: Column(
                   children: [tableOptions(test.questions[i].options)],
-                )),
+                ),
+              ),
             ],
           ),
         Padding(
@@ -489,8 +487,9 @@ class _TestDialogState extends State<TestDialog> {
             children: [
               IconButton(
                 onPressed: () async {
-                  setState(() { {
-                    test.questions.add(QuestionAggregate())});
+                  setState(() {
+                    test.questions.add(QuestionAggregate());
+                  });
                 },
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.add_circle),
@@ -527,8 +526,11 @@ class _TestDialogState extends State<TestDialog> {
             padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
             child: SizedBox(
               width: 55,
-              child: Text('Верный ответ', textAlign: TextAlign.center,
-                style: CustomColors.getLabelMedium(context, null),),
+              child: Text(
+                'Верный ответ',
+                textAlign: TextAlign.center,
+                style: CustomColors.getLabelMedium(context, null),
+              ),
             ),
           ),
           // CustomTableHeadRowCell(text: 'Верный ответ', textVisibleAlways: true),
@@ -629,7 +631,6 @@ class _TestDialogState extends State<TestDialog> {
     );
   }
 
-
   Widget appointed(GlobalKey<FormState> _formKeyTab) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
@@ -656,10 +657,7 @@ class _TestDialogState extends State<TestDialog> {
           ),
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-            child: Text(
-              '№',
-              style: CustomColors.getLabelMedium(context, null),
-            ),
+            child: Text('№', style: CustomColors.getLabelMedium(context, null)),
           ),
           CustomTableHeadRowCell(
             flex: 2,

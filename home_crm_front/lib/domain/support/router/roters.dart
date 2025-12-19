@@ -50,11 +50,6 @@ class AppRouter extends RootStackRouter {
     ]),
     AutoRoute(
         page: OrganizationEmployeesRoute.page, path: RoutersApp.employees),
-    AutoRoute(page: EmployeeTestsRoute.page, path: RoutersApp.employeeTests),
-    AutoRoute(page: TestSuitRoute.page, path: RoutersApp.test),
-    AutoRoute(page: QuestionRoute.page, path: RoutersApp.question),
-    AutoRoute(
-        page: EmployeeTestRunRoute.page, path: RoutersApp.employeeTestRun),
   ];
 
   @override

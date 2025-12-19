@@ -7,9 +7,9 @@ import 'package:home_crm_front/domain/support/components/screen/Screen.dart';
 import 'package:home_crm_front/domain/support/components/search/Search.dart';
 
 import '../../../../theme/theme.dart';
+import '../../../sub/education/organization_test_page.dart';
 import '../../../sub/organization/organization_employees_page.dart';
 import '../../../sub/organization/organization_role_page.dart';
-import '../../../sub/organization/organization_test_page.dart';
 import '../../../sub/organization/service/organization_service.dart';
 import '../../../sub/organization/widgets/organization_select.dart';
 import '../../../sub/scope/scope.dart';

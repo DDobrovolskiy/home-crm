@@ -3,9 +3,7 @@ import 'package:home_crm_front/domain/sub/organization/dto/request/organization_
 import 'package:home_crm_front/domain/sub/organization/dto/request/organization_update_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_employee_dto.dart';
-import 'package:home_crm_front/domain/sub/organization/dto/response/organization_employee_test_dto.dart';
 import 'package:home_crm_front/domain/sub/organization/dto/response/organization_role_dto.dart';
-import 'package:home_crm_front/domain/sub/organization/dto/response/organization_test_dto.dart';
 
 import '../../../support/port/port.dart';
 import '../dto/response/organization_selected_dto.dart';
@@ -62,20 +60,6 @@ class OrganizationRepository {
     return Port.get(
       _pathRole,
       (j) => OrganizationRoleDto.fromJson(j as Map<String, dynamic>),
-    );
-  }
-
-  Future<OrganizationTestDto?> organizationTest() {
-    return Port.get(
-      _pathTest,
-      (j) => OrganizationTestDto.fromJson(j as Map<String, dynamic>),
-    );
-  }
-
-  Future<OrganizationEmployeeTestDto?> organizationEmployeeTest() {
-    return Port.get(
-      _pathEmployeeTest,
-      (j) => OrganizationEmployeeTestDto.fromJson(j as Map<String, dynamic>),
     );
   }
 }

@@ -17,8 +17,8 @@ class RoleAggregate extends Aggregate {
     required this.name,
     this.description,
     this.owner = false,
-    this.scopes = const [],
-  });
+    List<ScopeAggregate>? scopes,
+  }) : scopes = scopes ?? [];
 
   @override
   Map<String, dynamic> toJson() {

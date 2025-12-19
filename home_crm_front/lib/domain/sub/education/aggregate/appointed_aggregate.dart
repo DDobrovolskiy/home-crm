@@ -11,9 +11,9 @@ class AppointedAggregate extends Aggregate {
   AppointedAggregate({
     this.id,
     this.deadline,
-    this.sessions = const [],
+    List<SessionAggregate>? sessions,
     required this.employeeId,
-  });
+  }) : sessions = sessions ?? [];
 
   @override
   Map<String, dynamic> toJson() {

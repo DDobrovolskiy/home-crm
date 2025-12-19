@@ -167,7 +167,7 @@ class Stamp {
                           .labelMedium,
                     ),
                     onTap: () {
-                      AutoRouter.of(context).push(EmployeeTestsRoute());
+                      // AutoRouter.of(context).push(EmployeeTestsRoute());
                     },
                   ),
                 ],

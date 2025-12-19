@@ -22,8 +22,6 @@ import 'package:home_crm_front/theme/theme.dart';
 import 'domain/sub/authentication/repository/auth_repository.dart';
 import 'domain/sub/organization/bloc/organization_bloc.dart';
 import 'domain/sub/organization/bloc/organization_edit_bloc.dart';
-import 'domain/sub/organization/bloc/organization_employee_test_bloc.dart';
-import 'domain/sub/organization/bloc/organization_test_bloc.dart';
 import 'domain/sub/organization/repository/organization_repository.dart';
 import 'domain/sub/role/bloc/role_current.dart';
 import 'domain/sub/role/service/role_service.dart';
@@ -58,8 +56,6 @@ void setupLocator() {
   GetIt.I.registerSingleton(OrganizationEditBloc());
   GetIt.I.registerSingleton(OrganizationEmployeeBloc());
   GetIt.I.registerSingleton(OrganizationRoleBloc());
-  GetIt.I.registerSingleton(OrganizationTestBloc());
-  GetIt.I.registerSingleton(OrganizationEmployeeTestBloc());
 
   GetIt.I.registerSingleton(RoleCurrentBloc());
 
@@ -119,12 +115,6 @@ class HomeCrmApp extends StatelessWidget {
         ),
         BlocProvider<OrganizationRoleBloc>.value(
           value: GetIt.I.get<OrganizationRoleBloc>(),
-        ),
-        BlocProvider<OrganizationTestBloc>.value(
-          value: GetIt.I.get<OrganizationTestBloc>(),
-        ),
-        BlocProvider<OrganizationEmployeeTestBloc>.value(
-          value: GetIt.I.get<OrganizationEmployeeTestBloc>(),
         ),
         BlocProvider<RoleCurrentBloc>.value(
           value: GetIt.I.get<RoleCurrentBloc>(),

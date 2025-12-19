@@ -6,7 +6,8 @@ class QuestionAggregate extends Aggregate {
   late String? text;
   late List<OptionAggregate> options;
 
-  QuestionAggregate({this.id, this.text, this.options = const []});
+  QuestionAggregate({this.id, this.text, List<OptionAggregate>? options})
+    : options = options ?? [];
 
   factory QuestionAggregate.fromJson(Map<String, dynamic> json) {
     return QuestionAggregate(
