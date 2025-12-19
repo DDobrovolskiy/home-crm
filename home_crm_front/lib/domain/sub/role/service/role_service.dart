@@ -2,7 +2,6 @@ import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/support/service/loaded.dart';
 
 import '../../organization/service/organization_service.dart';
-import '../../scope/dto/response/scope_dto.dart';
 import '../../scope/repository/scope_repository.dart';
 import '../dto/request/role_create_dto.dart';
 import '../dto/request/role_delete_dto.dart';
@@ -36,7 +35,4 @@ class RoleService {
     return true;
   }
 
-  Future<List<ScopeDTO>?> getAllScopes() async {
-    return await _scopeRepository.scopes();
-  }
 }

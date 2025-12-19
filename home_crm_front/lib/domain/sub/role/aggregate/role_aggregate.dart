@@ -1,4 +1,8 @@
+import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/scope/store/scope_store.dart';
+
 import '../../../support/components/aggregate/aggregate.dart';
+import '../../../support/components/load/custom_load.dart';
 import '../../scope/aggregate/scope_aggregate.dart';
 
 class RoleAggregate extends Aggregate {
@@ -8,7 +12,7 @@ class RoleAggregate extends Aggregate {
   late String name;
   late String? description;
   late bool owner;
-  late List<ScopeAggregate> scopes;
+  late Set<int> scopeIds;
 
   RoleAggregate({
     this.id,
@@ -17,8 +21,12 @@ class RoleAggregate extends Aggregate {
     required this.name,
     this.description,
     this.owner = false,
-    List<ScopeAggregate>? scopes,
-  }) : scopes = scopes ?? [];
+    Set<int>? scopeIds,
+  }) : scopeIds = scopeIds ?? {};
+
+  LoadStore<Set<ScopeAggregate>> getScopes() {
+    return GetIt.I.get<ScopeStore>().gets(scopeIds);
+  }
 
   @override
   Map<String, dynamic> toJson() {
@@ -29,7 +37,7 @@ class RoleAggregate extends Aggregate {
       'name': name,
       'description': description,
       'owner': owner,
-      'scopes': scopes.map((e) => e.toJson()).toList(),
+      'scopeIds': scopeIds.map((e) => e.toString()).toList(),
     };
   }
 
@@ -41,9 +49,9 @@ class RoleAggregate extends Aggregate {
       name: json['name'] as String? ?? '',
       description: json['description'] as String?,
       owner: json['owner'] as bool? ?? false,
-      scopes: (json['scopes'] as List<dynamic>)
-          .map((e) => ScopeAggregate.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      scopeIds: (json['scopeIds'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toSet(),
     );
   }
 

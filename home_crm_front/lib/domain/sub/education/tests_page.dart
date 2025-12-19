@@ -130,7 +130,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                             children: [
                               for (final appoint in test.appointed)
                                 CustomLoad.load(appoint.getEmployee(), (emp) {
-                                  return Text(emp?.userId.toString() ?? '');
+                                  return Text(emp?.user.name ?? '');
                                 }),
 
                               // EmployeeTooltip(employee: employee),

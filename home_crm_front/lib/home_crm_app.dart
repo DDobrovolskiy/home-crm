@@ -10,8 +10,10 @@ import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bl
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 import 'package:home_crm_front/domain/sub/role/cubit/role_current_scopes.dart';
 import 'package:home_crm_front/domain/sub/role/repository/role_repository.dart';
+import 'package:home_crm_front/domain/sub/role/store/role_store.dart';
 import 'package:home_crm_front/domain/sub/scope/bloc/scope_bloc.dart';
 import 'package:home_crm_front/domain/sub/scope/repository/scope_repository.dart';
+import 'package:home_crm_front/domain/sub/scope/store/scope_store.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/bloc/user_organization_bloc.dart';
 import 'package:home_crm_front/domain/sub/user/service/user_service.dart';
@@ -62,6 +64,8 @@ void setupLocator() {
 
   GetIt.I.registerSingleton(ScopeBloc());
 
+  GetIt.I.registerSingleton(ScopeStore());
+  GetIt.I.registerSingleton(RoleStore());
   GetIt.I.registerSingleton(EmployeeStore());
   GetIt.I.registerSingleton(EducationStore());
 
@@ -78,7 +82,6 @@ void setupLocator() {
   GetIt.I.registerLazySingleton(() => SheetElementDeleteCallback());
 
   //pages
-  // GetIt.I.registerLazySingleton(() => SheetBar());
   GetIt.I.registerLazySingleton(() => ContentList());
 }
 

@@ -14,7 +14,7 @@ class ScopeBloc extends Bloc<ScopeEvent, ScopeState> {
     on<ScopeRefreshEvent>((event, emit) async {
       emit.call(ScopeInitState());
       var scope = await _scopeRepository.scopes();
-      emit.call(ScopeLoadedState(scopes: scope));
+      emit.call(ScopeLoadedState(scopes: []));
     });
     on<ScopeErrorEvent>((event, emit) async {
       emit.call(ScopeErrorState(error: event.error));

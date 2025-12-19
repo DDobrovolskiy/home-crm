@@ -1,3 +1,4 @@
+import 'package:home_crm_front/domain/sub/role/aggregate/role_aggregate.dart';
 import 'package:home_crm_front/domain/sub/role/dto/request/role_create_dto.dart';
 import 'package:home_crm_front/domain/sub/role/dto/request/role_delete_dto.dart';
 import 'package:home_crm_front/domain/sub/role/dto/request/role_update_dto.dart';
@@ -10,6 +11,17 @@ import '../../../support/port/port.dart';
 class RoleRepository {
   final String _path = 'role';
   final String _pathScopes = 'role/scopes';
+
+  Future<List<RoleAggregate>?> roles() {
+    return Port.get(
+      _path,
+      (j) =>
+          (j as List)
+              .map((i) => RoleAggregate.fromJson(i as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
 
   Future<RoleDto?> roleCurrent() {
     return Port.get(_path, (j) => RoleDto.fromJson(j as Map<String, dynamic>));
