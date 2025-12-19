@@ -1,6 +1,9 @@
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/session_aggregate.dart';
+import 'package:home_crm_front/domain/sub/employee/aggregate/employee_aggregate.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
+import '../../employee/store/employee_store.dart';
 
 class AppointedAggregate extends Aggregate {
   late int? id;
@@ -61,5 +64,9 @@ class AppointedAggregate extends Aggregate {
 
   int getAttempts() {
     return sessions.length;
+  }
+
+  Future<EmployeeAggregate?> getEmployee() async {
+    return await GetIt.I.get<EmployeeStore>().get(employeeId);
   }
 }

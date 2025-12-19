@@ -5,6 +5,7 @@ import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
 import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
+import 'package:home_crm_front/domain/sub/employee/store/employee_store.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_employee_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/bloc/organization_role_bloc.dart';
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
@@ -60,6 +61,8 @@ void setupLocator() {
   GetIt.I.registerSingleton(RoleCurrentBloc());
 
   GetIt.I.registerSingleton(ScopeBloc());
+
+  GetIt.I.registerSingleton(EmployeeStore());
 
   //Service
   GetIt.I.registerSingleton(UserService());

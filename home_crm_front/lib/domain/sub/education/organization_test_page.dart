@@ -12,6 +12,7 @@ import 'package:home_crm_front/domain/support/components/status/doc.dart';
 import '../../support/components/button/hovered_region.dart';
 import '../../support/components/callback/NavBarCallBack.dart';
 import '../../support/components/label/label_page.dart';
+import '../../support/components/load/custom_load.dart';
 import '../../support/components/scope/check_scope.dart';
 import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
@@ -94,8 +95,8 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
       name: 'Пожарная безопасность',
       description: 'Вопросы по пожарнаой безопасность',
       status: StatusDoc.DRAFT,
-      timeLimitMinutes: 15,
-      iteration: 3,
+      timeLimitMinutes: 0,
+      iteration: 0,
       answerCount: 2,
       questions: [
         QuestionAggregate(
@@ -175,23 +176,38 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                     hover: isHovered,
                     cells: [
                       CustomTableRowCellText(
-                        text: test.name,
+                        text: test.getNumber(),
                         textVisibleAlways: true,
+                        subText: test.name,
+                        subTextVisibleAlways: true,
                       ),
                       CustomTableRowCell(
                         body: CustomStatusDoc(status: test.status),
+                        textVisibleAlways: true,
+                      ),
+                      CustomTableRowCellText(
+                        text: test.questions.length.toString(),
+                        subText: test.answerCount.toString(),
+                        subTextVisibleAlways: true,
                       ),
                       CustomTableRowCellText(
                         text: test.timeLimitMinutes == 0
                             ? 'Нет'
                             : test.timeLimitMinutes.toString(),
+                        subText: test.iteration == 0
+                            ? 'Без ограничений'
+                            : test.iteration.toString(),
+                        subTextVisibleAlways: true,
                       ),
                       CustomTableRowCell(
                         textVisibleAlways: true,
                         body: Column(
                           children: [
                             for (final appoint in test.appointed)
-                              Text(appoint.getNumber()),
+                              CustomLoad.load(appoint.getEmployee(), (emp) {
+                                return Text(emp?.userId.toString() ?? '');
+                              }),
+
                             // EmployeeTooltip(employee: employee),
                             // if (test..sessions.isNotEmpty)
                             //   Padding(
