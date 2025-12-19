@@ -19,6 +19,7 @@ import '../../../support/components/table/table_row.dart';
 import '../../../support/components/table/table_row_cell.dart';
 import '../aggregate/appointed_aggregate.dart';
 import '../aggregate/test_aggregate.dart';
+import '../store/education_store.dart';
 
 class TestDialog extends SheetPage {
   @override
@@ -40,7 +41,7 @@ class _TestDialogState extends State<TestDialog> {
   @override
   void initState() {
     super.initState();
-    test = widget.test;
+    test = widget.test.copy();
   }
 
   @override
@@ -58,6 +59,7 @@ class _TestDialogState extends State<TestDialog> {
                     text: 'Сохранить и закрыть',
                     onPressed: () async {
                       if (validator()) {
+                        GetIt.I.get<EducationStore>().save(test);
                         GetIt.I.get<SheetElementDeleteCallback>().call(
                           widget.getName(),
                         );
@@ -92,7 +94,9 @@ class _TestDialogState extends State<TestDialog> {
                 Padding(
                   padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
                   child: IconButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      GetIt.I.get<EducationStore>().save(test);
+                    },
                     color: CustomColors.getSecondaryText(context),
                     icon: Icon(
                       Icons.save,

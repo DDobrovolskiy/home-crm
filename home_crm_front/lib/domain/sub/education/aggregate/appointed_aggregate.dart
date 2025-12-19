@@ -3,6 +3,7 @@ import 'package:home_crm_front/domain/sub/education/aggregate/session_aggregate.
 import 'package:home_crm_front/domain/sub/employee/aggregate/employee_aggregate.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
+import '../../../support/components/load/custom_load.dart';
 import '../../employee/store/employee_store.dart';
 
 class AppointedAggregate extends Aggregate {
@@ -66,7 +67,7 @@ class AppointedAggregate extends Aggregate {
     return sessions.length;
   }
 
-  Future<EmployeeAggregate?> getEmployee() async {
-    return await GetIt.I.get<EmployeeStore>().get(employeeId);
+  LoadStore<EmployeeAggregate?> getEmployee() {
+    return GetIt.I.get<EmployeeStore>().get(employeeId);
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
-import 'package:home_crm_front/domain/sub/education/test/repository/test_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
 import 'package:home_crm_front/domain/sub/employee/store/employee_store.dart';
@@ -21,6 +20,7 @@ import 'package:home_crm_front/domain/support/token_service.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
 import 'domain/sub/authentication/repository/auth_repository.dart';
+import 'domain/sub/education/store/education_store.dart';
 import 'domain/sub/organization/bloc/organization_bloc.dart';
 import 'domain/sub/organization/bloc/organization_edit_bloc.dart';
 import 'domain/sub/organization/repository/organization_repository.dart';
@@ -43,7 +43,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(EmployeeRepository());
   GetIt.I.registerSingleton(RoleRepository());
   GetIt.I.registerSingleton(ScopeRepository());
-  GetIt.I.registerSingleton(TestRepository());
+
   //Cubits
   GetIt.I.registerSingleton(RoleCurrentScopesCubit());
   //Bloc
@@ -63,6 +63,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(ScopeBloc());
 
   GetIt.I.registerSingleton(EmployeeStore());
+  GetIt.I.registerSingleton(EducationStore());
 
   //Service
   GetIt.I.registerSingleton(UserService());

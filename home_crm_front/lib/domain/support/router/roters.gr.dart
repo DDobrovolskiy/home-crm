@@ -14,8 +14,7 @@ import 'package:home_crm_front/domain/sub/authentication/auth_create_page.dart'
     as _i1;
 import 'package:home_crm_front/domain/sub/authentication/auth_login_page.dart'
     as _i2;
-import 'package:home_crm_front/domain/sub/education/organization_test_page.dart'
-    as _i8;
+import 'package:home_crm_front/domain/sub/education/tests_page.dart' as _i8;
 import 'package:home_crm_front/domain/sub/home/home_page.dart' as _i3;
 import 'package:home_crm_front/domain/sub/news/news_page.dart' as _i4;
 import 'package:home_crm_front/domain/sub/organization/organization_employees_page.dart'

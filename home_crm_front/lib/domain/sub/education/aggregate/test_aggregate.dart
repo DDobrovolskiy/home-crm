@@ -34,7 +34,7 @@ class TestAggregate extends Aggregate {
       'id': id,
       'name': name,
       'description': description,
-      'status': status,
+      'status': status.name,
       'timeLimitMinutes': timeLimitMinutes,
       'iteration': iteration,
       'answerCount': answerCount,
@@ -46,7 +46,7 @@ class TestAggregate extends Aggregate {
   factory TestAggregate.fromJson(Map<String, dynamic> json) {
     return TestAggregate(
       id: (json['id'] as num?)?.toInt(),
-      name: json['number'] as String,
+      name: json['name'] as String,
       description: json['description'] as String?,
       status: StatusDoc.fromJson(json['status'] as String),
       timeLimitMinutes: (json['timeLimitMinutes'] as num?)?.toInt() ?? 0,
@@ -74,5 +74,9 @@ class TestAggregate extends Aggregate {
   @override
   String getAbbreviate() {
     return 'ТЕСТ';
+  }
+
+  TestAggregate copy() {
+    return TestAggregate.fromJson(toJson());
   }
 }
