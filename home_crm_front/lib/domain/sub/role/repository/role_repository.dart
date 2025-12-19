@@ -14,7 +14,7 @@ class RoleRepository {
 
   Future<List<RoleAggregate>?> roles() {
     return Port.get(
-      _path,
+      'role/all',
       (j) =>
           (j as List)
               .map((i) => RoleAggregate.fromJson(i as Map<String, dynamic>))

@@ -4,10 +4,10 @@ import '../../widgets/stamp.dart';
 
 class CustomLoad<T> extends StatefulWidget {
   final LoadStore<T> loader;
-  final Widget Function(T) builder;
+  final Widget Function(BuildContext, T) builder;
 
   static CustomLoad<T> load<T>(LoadStore<T> loader,
-      Widget Function(T) builder) {
+      Widget Function(BuildContext, T) builder) {
     return CustomLoad(builder: builder, loader: loader,);
   }
 
@@ -18,34 +18,34 @@ class CustomLoad<T> extends StatefulWidget {
 }
 
 class _CustomLoadState<T> extends State<CustomLoad<T>> {
-  late Widget result;
+  late Widget Function(BuildContext) result;
 
   @override
   void initState() {
     super.initState();
-    result = Stamp.loadWidget(context);
+    result = (c) => Stamp.loadWidget(c);
     widget.loader.callback.subscribe(hashCode, () {
       widget.loader.value()
           .then((v) {
         setState(() {
-          result = widget.builder(v);
+          result = (c) => widget.builder(c, v);
         });
       })
           .onError((e, stack) {
         setState(() {
-          result = Stamp.errorWidget(context);
+          result = (c) => Stamp.errorWidget(c);
         });
       });
     });
     widget.loader.value()
         .then((v) {
       setState(() {
-        result = widget.builder(v);
+        result = (c) => widget.builder(c, v);
       });
     })
         .onError((e, stack) {
       setState(() {
-        result = Stamp.errorWidget(context);
+        result = (c) => Stamp.errorWidget(c);
       });
     });
   }
@@ -59,7 +59,7 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return result;
+    return result(context);
   }
 }
 

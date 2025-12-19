@@ -4,12 +4,15 @@ import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/sub/organization/service/organization_service.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 import 'package:home_crm_front/domain/support/components/status/doc.dart';
+import 'package:home_crm_front/domain/support/service/loaded.dart';
 
+import '../../../theme/theme.dart';
 import '../../support/components/button/hovered_region.dart';
 import '../../support/components/callback/NavBarCallBack.dart';
 import '../../support/components/label/label_page.dart';
 import '../../support/components/load/custom_load.dart';
 import '../../support/components/scope/check_scope.dart';
+import '../../support/components/screen/Screen.dart';
 import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
@@ -43,18 +46,49 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return CustomLoad.load(GetIt.I.get<EducationStore>().getAll(), (tests) {
-      return Column(
-        children: [
-          LabelPage(
-            text: OrganizationTestsPage.name,
-            onAdd: () async {
-              GetIt.I.get<SheetElementAddCallback>().call(
-                TestDialog(test: TestAggregate()),
-              );
-            },
-          ),
-          CustomTable(
+    return Column(
+      children: [
+        CustomLabelPage(
+          contents: [
+            IconButton(
+              onPressed: () async {
+                GetIt.I.get<SheetElementAddCallback>().call(
+                  TestDialog(test: TestAggregate()),
+                );
+              },
+              color: CustomColors.getPrimary(context),
+              icon: Icon(
+                Icons.add_circle,
+                size: Screen.isWeb(context) ? 44 : 22,
+              ),
+            ),
+            IconButton(
+              onPressed: () async {
+                GetIt.I.get<EducationStore>().refresh(Loaded.force);
+              },
+              color: CustomColors.getSecondaryText(context),
+              icon: Icon(
+                Icons.refresh_sharp,
+                size: Screen.isWeb(context) ? 44 : 22,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+              child: Text(
+                widget.getName(),
+                textAlign: TextAlign.start,
+                style: Screen.isWeb(context)
+                    ? CustomColors.getDisplaySmall(context, null)
+                    : CustomColors.getDisplaySmallButtonIsWeb(context, null),
+              ),
+            ),
+          ],
+        ),
+        CustomLoad.load(GetIt.I.get<EducationStore>().getAll(), (
+          BuildContext context,
+          tests,
+        ) {
+          return CustomTable(
             head: CustomTableHeadRow(
               cells: [
                 CustomTableHeadRowCell(
@@ -129,35 +163,67 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                           body: Column(
                             children: [
                               for (final appoint in test.appointed)
-                                CustomLoad.load(appoint.getEmployee(), (emp) {
-                                  return Text(emp?.user.name ?? '');
-                                }),
-
-                              // EmployeeTooltip(employee: employee),
-                              // if (test..sessions.isNotEmpty)
-                              //   Padding(
-                              //     padding: EdgeInsetsDirectional.fromSTEB(
-                              //       0,
-                              //       2,
-                              //       0,
-                              //       0,
-                              //     ),
-                              //     child: Text(
-                              //       'Проходят тестирование:',
-                              //       style: CustomColors.getLabelSmall(
-                              //         context,
-                              //         null,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // for (final session in test.testSessions.sessions)
-                              //   EmployeeTooltip(
-                              //     employee: session.employee,
-                              //     style: CustomColors.getLabelSmall(
-                              //       context,
-                              //       null,
-                              //     ),
-                              //   ),
+                                Row(
+                                  children: [
+                                    CustomLoad.load(appoint.getEmployee(), (
+                                      context,
+                                      emp,
+                                    ) {
+                                      return Row(
+                                        children: [
+                                          Text(
+                                            '${emp?.user.name}',
+                                            style: CustomColors.getLabelMedium(
+                                              context,
+                                              null,
+                                            ),
+                                          ),
+                                          CustomLoad.load(emp!.getRole(), (
+                                            BuildContext context,
+                                            role,
+                                          ) {
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.symmetric(
+                                                    horizontal: 2,
+                                                  ),
+                                              child: Text(
+                                                '[${role?.name}]',
+                                                style:
+                                                    CustomColors.getLabelSmall(
+                                                      context,
+                                                      null,
+                                                    ),
+                                              ),
+                                            );
+                                          }),
+                                        ],
+                                      );
+                                    }),
+                                    if (appoint.isBegin() &&
+                                        Screen.isWeb(context))
+                                      Padding(
+                                        padding:
+                                            EdgeInsetsDirectional.symmetric(
+                                              horizontal: 2,
+                                            ),
+                                        child: CustomStatusDoc(
+                                          status: StatusDoc.BEGIN,
+                                        ),
+                                      ),
+                                    if (appoint.isDone() &&
+                                        Screen.isWeb(context))
+                                      Padding(
+                                        padding:
+                                            EdgeInsetsDirectional.symmetric(
+                                              horizontal: 2,
+                                            ),
+                                        child: CustomStatusDoc(
+                                          status: StatusDoc.DONE,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                             ],
                           ),
                         ),
@@ -166,9 +232,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                   },
                 ),
             ],
-          ),
-        ],
-      );
-    });
+          );
+        }),
+      ],
+    );
   }
 }

@@ -6,15 +6,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dda.homecrmback.domain.subdomain.organization.OrganizationService;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
+import ru.dda.homecrmback.domain.subdomain.role.dto.RoleAggregateDTO;
 import ru.dda.homecrmback.domain.subdomain.role.repository.RoleRepository;
 import ru.dda.homecrmback.domain.subdomain.scope.ScopeService;
 import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
+import ru.dda.homecrmback.domain.subdomain.user.context.UserContextHolder;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -93,5 +97,18 @@ public class RoleService {
                 .isTrue(roleAggregate -> roleAggregate.roleHasScope(scopeType),
                         onFail -> ResultAggregate.Fails.Default.of(FailEvent.PERMISSION_DENIED.fail(scopeType.getDescription())))
                 .then(r -> supplier.get());
+    }
+
+    @Transactional(readOnly = true)
+    public Result<Set<RoleAggregateDTO>, IFailAggregate> roles() {
+        try {
+            Set<RoleAggregateDTO> collect = roleRepository.findAllByOrganization_Id(UserContextHolder.getCurrentUser().getOrganizationId()).stream()
+                    .map(RoleAggregate::getRoleAggregateDTO)
+                    .collect(Collectors.toSet());
+            return Result.success(collect);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.fail(ResultAggregate.Fails.Default.of(FailEvent.ERROR_ON_SAVE.fail(e.getMessage())));
+        }
     }
 }

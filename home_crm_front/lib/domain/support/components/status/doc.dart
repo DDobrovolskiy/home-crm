@@ -13,6 +13,18 @@ enum StatusDoc {
     ready: true,
     color: Colors.green,
     colorText: Colors.white,
+  ),
+  BEGIN(
+    description: 'НАЧАТ',
+    ready: false,
+    color: Color(0xFF135FD7),
+    colorText: Colors.white,
+  ),
+  DONE(
+    description: 'ВЫПОЛНЕН',
+    ready: true,
+    color: Color(0xFF048178),
+    colorText: Colors.white,
   );
 
   final String description;

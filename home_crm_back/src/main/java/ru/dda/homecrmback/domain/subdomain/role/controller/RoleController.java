@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.dda.homecrmback.domain.subdomain.role.Role;
 import ru.dda.homecrmback.domain.subdomain.role.RoleService;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
+import ru.dda.homecrmback.domain.subdomain.role.dto.RoleAggregateDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.request.RoleCreateDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.request.RoleDeleteDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.request.RoleUpdateDTO;
@@ -15,6 +16,8 @@ import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleScopesDTO;
 import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.response.IResponse;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping(RoleController.PATH)
 @RequiredArgsConstructor
@@ -22,6 +25,12 @@ public class RoleController {
     public static final String PATH = "/role";
 
     private final RoleService roleService;
+
+    @GetMapping(path = "/all")
+    private IResponse<Set<RoleAggregateDTO>> roles() {
+        return roleService.roles()
+                .response(ResultAggregate::getErrorData);
+    }
 
     @GetMapping()
     private IResponse<RoleDTO> current() {

@@ -9,6 +9,7 @@ import org.hibernate.annotations.BatchSize;
 import org.springframework.util.StringUtils;
 import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
+import ru.dda.homecrmback.domain.subdomain.role.dto.RoleAggregateDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleEmployeeDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleFullDTO;
@@ -22,6 +23,7 @@ import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 import ru.dda.homecrmback.domain.support.result.validator.Validator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -46,6 +48,7 @@ public class RoleAggregate implements IAggregate {
     @JoinTable(name = "role_scopes",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "scopes_id"))
+    @BatchSize(size = 20)
     private Set<ScopeAggregate> scopes = new HashSet<>();
     @NotNull
     private boolean owner;
@@ -148,4 +151,16 @@ public class RoleAggregate implements IAggregate {
                 .build();
     }
 
+    public RoleAggregateDTO getRoleAggregateDTO() {
+        return RoleAggregateDTO.builder()
+                .id(id)
+                .active(true)
+                .name(name)
+                .description(description)
+                .owner(owner)
+                .scopeIds(this.scopes.stream()
+                        .map(ScopeAggregate::getId)
+                        .collect(Collectors.toSet()))
+                .build();
+    }
 }
