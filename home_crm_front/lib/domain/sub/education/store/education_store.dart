@@ -142,9 +142,9 @@ class EducationStore extends IsHasError {
   void save(TestAggregate test) {
     if (test.id == null) {
       test.id = 3;
-      tests[test.id!] = test;
+      testList.add(test);
     } else {
-      tests[test.id!] = test;
+      testList.add(test);
     }
     refresh(Loaded.ifLoad);
   }

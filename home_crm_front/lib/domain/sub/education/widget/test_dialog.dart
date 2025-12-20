@@ -67,30 +67,6 @@ class _TestDialogState extends State<TestDialog> {
                           widget.getName(),
                         );
                       }
-                      // if (_formKey.currentState!.validate()) {
-                      //   if (isCreate()) {
-                      //     // var resul = await GetIt.I
-                      //     //     .get<EmployeeService>()
-                      //     //     .addEmployee(
-                      //     //   EmployeeCreateDto(
-                      //     //     name: _name!,
-                      //     //     phone: _phone!,
-                      //     //     password: _password!,
-                      //     //     roleId: _selectedRole!,
-                      //     //   ),
-                      //     // );
-                      //   } else {
-                      //     // var resul = await GetIt.I
-                      //     //     .get<EmployeeService>()
-                      //     //     .updateEmployee(
-                      //     //   EmployeeUpdateDto(
-                      //     //     id: _id!,
-                      //     //     roleId: _selectedRole!,
-                      //     //   ),
-                      //     // );
-                      //   }
-                      //
-                      // }
                     },
                   ),
                 ),
@@ -657,9 +633,9 @@ class _TestDialogState extends State<TestDialog> {
         cells: [
           IconButton(
             onPressed: () async {
-              // setState(() {
-              //   _questions.clear();
-              // });
+              setState(() {
+                appointed.clear();
+              });
             },
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
@@ -724,9 +700,9 @@ class _TestDialogState extends State<TestDialog> {
             cells: [
               IconButton(
                 onPressed: () async {
-                  // setState(() {
-                  //   _questions.removeAt(i);
-                  // });
+                  setState(() {
+                    appointed.removeAt(i);
+                  });
                 },
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
