@@ -66,6 +66,33 @@ class TestAggregate extends Aggregate {
     return id;
   }
 
+  String? doReady() {
+    if (name == null || name.isEmpty) {
+      return 'Пустое название теста';
+    }
+    if (questions.isEmpty) {
+      return 'Количество количество вопросов должено быть больше 0';
+    }
+    if (questions.any((q) => q.getError() != null)) {
+      return questions.firstWhere((q) => q.getError() != null).getError();
+    }
+    if (answerCount == 0) {
+      return 'Количество ответов должено быть больше 0';
+    }
+    status = StatusDoc.READY;
+    return null;
+  }
+
+  String? doDraft() {
+    status = StatusDoc.DRAFT;
+    return null;
+  }
+
+  Map<StatusDoc, String? Function(TestAggregate)> statuses = {
+    StatusDoc.DRAFT: (t) => t.doDraft(),
+    StatusDoc.READY: (t) => t.doReady(),
+  };
+
   @override
   String getNewName() {
     return 'Новый тест';

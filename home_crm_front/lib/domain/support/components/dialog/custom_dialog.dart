@@ -71,11 +71,10 @@ class _DialogPageState extends State<DialogPage>
     // Итерируемся по всем формам, начиная с первой
     for (int i = 0; i < _formKeys.length; i++) {
       final formState = _formKeys[i].currentState;
-
       // Вызываем валидацию для текущей формы
       if (formState != null && !formState.validate()) {
         // *** ОШИБКА ОБНАРУЖЕНА ***
-        print(i);
+
         // 1. Переключаем TabController на нужный индекс
         _tabController.animateTo(i);
 
@@ -89,12 +88,10 @@ class _DialogPageState extends State<DialogPage>
           // Поэтому мы просто гарантируем, что фокус находится где-то на новой вкладке.
           // Если вы используете пакеты вроде focus_detector, можно сделать точнее.
         });
-
         // Прерываем цикл, так как мы нашли первую ошибку
         return false;
       }
     }
-    // Если цикл завершился без return, значит, все формы валидны
     return true;
   }
 
