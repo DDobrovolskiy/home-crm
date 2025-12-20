@@ -39,7 +39,7 @@ class OrganizationTestsPage extends SheetPage {
 class _OrganizationTestsPageState extends State<OrganizationTestsPage>
     with AutomaticKeepAliveClientMixin<OrganizationTestsPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
-  Widget? _sidePanel;
+  SheetPage? _sidePanel;
   bool showSidePanel = true;
 
   @override
@@ -59,12 +59,45 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
       return Row(
         children: [
           Expanded(child: _table(context, tests)),
-          if (showSidePanel && tests.isNotEmpty)
+          if (Screen.isSidePanel(context))
+            Align(
+              alignment: Alignment.topCenter,
+              child: Column(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showSidePanel = !showSidePanel;
+                      });
+                    },
+                    icon: Icon(
+                      showSidePanel
+                          ? Icons.keyboard_double_arrow_right
+                          : Icons.keyboard_double_arrow_left,
+                    ),
+                  ),
+                  if (_sidePanel != null)
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          GetIt.I.get<SheetElementAddCallback>().call(
+                            _sidePanel!,
+                          );
+                        });
+                      },
+                      icon: Icon(Icons.open_in_browser),
+                    ),
+                ],
+              ),
+            ),
+          if (showSidePanel && tests.isNotEmpty && Screen.isSidePanel(context))
             SizedBox(
               width: 700,
-              child:
-                  _sidePanel ??
-                  TestDialog(key: Key(tests[0].name), test: tests[0]),
+              child: _sidePanel ??= TestDialog(
+                key: Key(tests[0].name),
+                test: tests[0],
+              ),
+              // TestDialog(key: Key(tests[0].name), test: tests[0]),
             ),
         ],
       );
@@ -73,6 +106,8 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
 
   Widget _table(BuildContext context, List<TestAggregate> tests) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CustomLabelPage(
           contents: [
@@ -110,8 +145,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
             ),
           ],
         ),
-        CustomTable(
-          head: CustomTableHeadRow(
+        Flexible(
+          child: CustomTable(
+            head: CustomTableHeadRow(
             cells: [
               CustomTableHeadRowCell(
                 flex: 2,
@@ -152,10 +188,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                           test: test,
                         );
                       });
-
-                      // GetIt.I.get<SheetElementAddCallback>().call(
-                      //   TestDialog(test: test),
-                      // );
                     },
                   ).checkScope(ScopeType.TEST_CREATE, context);
                 },
@@ -196,10 +228,13 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                         flex: 2,
                         textVisibleAlways: true,
                         body: Column(
-                          children: [
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
                             for (final appoint in test.appointed)
-                              FittedBox(
-                                child: Row(
+                                Wrap(
+                                  // mainAxisSize: MainAxisSize.max,
+                                  // mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: EdgeInsetsGeometry.symmetric(
@@ -208,7 +243,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                                       child: CustomLoad.load(
                                         appoint.getEmployee(),
                                         (context, emp) {
-                                          return Row(
+                                          return Wrap(
                                             children: [
                                               Text(
                                                 '${emp?.user.name}',
@@ -256,7 +291,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                                       ),
                                   ],
                                 ),
-                              ),
                           ],
                         ),
                       ),
@@ -265,7 +299,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                 },
               ),
           ],
+          ),
         ),
+        Icon(Icons.add),
       ],
     );
   }

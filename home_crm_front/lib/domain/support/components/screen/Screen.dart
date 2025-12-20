@@ -6,6 +6,11 @@ class Screen {
     return screenWidth > getNavBarWidth() + getMaxWidth();
   }
 
+  static bool isSidePanel(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth > getNavBarWidth() + getMaxWidth() + getMaxWidth();
+  }
+
   static bool isHeight(BuildContext context, int height) {
     final screenWidth = MediaQuery.of(context).size.height;
     return screenWidth > height;

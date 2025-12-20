@@ -33,9 +33,14 @@ class CustomTable extends StatelessWidget {
         child: Padding(
           padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 12),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [head, for (final row in rows) row],
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              head,
+              Flexible(child: SingleChildScrollView(
+                child: Column(children: [for (final row in rows) row]),
+              ))
+            ],
           ),
         ),
       ),
