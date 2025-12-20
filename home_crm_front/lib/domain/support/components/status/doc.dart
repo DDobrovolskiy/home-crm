@@ -14,11 +14,23 @@ enum StatusDoc {
     color: Colors.green,
     colorText: Colors.white,
   ),
+  WAIT(
+    description: 'НЕ НАЧАТО',
+    ready: false,
+    color: Color(0xFFD79913),
+    colorText: Colors.black54,
+  ),
   BEGIN(
-    description: 'НАЧАТ',
+    description: 'НАЧАТО',
     ready: false,
     color: Color(0xFF135FD7),
     colorText: Colors.white,
+  ),
+  FAILED(
+    description: 'НЕ ПРОЙДЕН',
+    ready: false,
+    color: Color(0xFFCB3535),
+    colorText: Colors.black54,
   ),
   DONE(
     description: 'ВЫПОЛНЕН',

@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/session_aggregate.dart';
 import 'package:home_crm_front/domain/sub/employee/aggregate/employee_aggregate.dart';
+import 'package:home_crm_front/domain/support/components/status/doc.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 import '../../../support/components/load/custom_load.dart';
@@ -61,6 +62,22 @@ class AppointedAggregate extends Aggregate {
 
   bool isDone() {
     return sessions.any((s) => s.success);
+  }
+
+  StatusDoc isStatus(int iteration) {
+    if (!isBegin()) {
+      return StatusDoc.WAIT;
+    } else {
+      if (isDone()) {
+        return StatusDoc.DONE;
+      } else {
+        if (iteration >= getAttempts()) {
+          return StatusDoc.FAILED;
+        } else {
+          return StatusDoc.BEGIN;
+        }
+      }
+    }
   }
 
   int getAttempts() {

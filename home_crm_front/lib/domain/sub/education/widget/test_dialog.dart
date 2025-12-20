@@ -4,11 +4,14 @@ import 'package:home_crm_front/domain/sub/education/aggregate/option_aggregate.d
 import 'package:home_crm_front/domain/sub/education/aggregate/question_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/label/label_page.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../theme/theme.dart';
 import '../../../support/components/button/button.dart';
+import '../../../support/components/calendar/custom_calendar.dart';
 import '../../../support/components/callback/NavBarCallBack.dart';
 import '../../../support/components/dialog/custom_dialog.dart';
+import '../../../support/components/load/custom_load.dart';
 import '../../../support/components/screen/Screen.dart';
 import '../../../support/components/status/doc.dart';
 import '../../../support/components/tab/custom_tab.dart';
@@ -641,12 +644,14 @@ class _TestDialogState extends State<TestDialog> {
       child: Form(
         key: _formKeyTab,
         autovalidateMode: AutovalidateMode.disabled,
-        child: Column(children: [tableAppointed(test.appointed)]),
+        child: Column(
+          children: [tableAppointed(test.appointed, test.iteration)],
+        ),
       ),
     );
   }
 
-  Widget tableAppointed(List<AppointedAggregate> appointed) {
+  Widget tableAppointed(List<AppointedAggregate> appointed, int iteration) {
     return CustomTable(
       head: CustomTableHeadRow(
         cells: [
@@ -670,24 +675,46 @@ class _TestDialogState extends State<TestDialog> {
             subText: 'Роль',
             subTextVisibleAlways: true,
           ),
-          CustomTableHeadRowCell(
-            flex: 1,
-            text: 'Срок тест до',
-            textVisibleAlways: true,
+          Flexible(
+            flex: 2,
+            child: Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(0, 0, 0, 10),
+              child: Row(
+                children: [
+                  CustomButton(
+                    text: 'Срок тест до',
+                    onPressed: () {
+                      CustomCalendar.showSingleDate(
+                        context,
+                        null,
+                        (arg) {
+                          setState(() {
+                            appointed.forEach(
+                              (i) => i.deadline = arg as DateTime?,
+                            );
+                          });
+                          Navigator.pop(context);
+                        },
+                        () {
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
           CustomTableHeadRowCell(
             flex: 1,
             text: 'Кол-во попыток',
-            textVisibleAlways: true,
             subText: 'Осталось попыток',
             subTextVisibleAlways: true,
           ),
           CustomTableHeadRowCell(
             flex: 1,
-            text: 'Тест пройден',
+            text: 'Статус',
             textVisibleAlways: true,
-            subText: 'Тест начат',
-            subTextVisibleAlways: true,
           ),
         ],
       ),
@@ -711,11 +738,64 @@ class _TestDialogState extends State<TestDialog> {
                   style: CustomColors.getBodyLarge(context, null),
                 ),
               ),
-              CustomTableRowCellText(
-                flex: 3,
+              CustomLoad.load(appointed[i].getEmployee(), (context, emp) {
+                return CustomLoad.load(emp!.getRole(), (
+                  BuildContext context,
+                  role,
+                ) {
+                  return CustomTableRowCellText(
+                    flex: 2,
+                    text: emp.user.name,
+                    textVisibleAlways: true,
+                    subText: role?.name,
+                    subTextVisibleAlways: true,
+                  );
+                });
+              }),
+              CustomTableRowCell(
+                flex: 2,
                 textVisibleAlways: true,
-                text: '',
-                // text: appointed[i].user.getFullName(),
+                body: Row(
+                  children: [
+                    CustomButton(
+                      text: appointed[i].deadline == null
+                          ? 'Нет'
+                          : DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(appointed[i].deadline!),
+                      onPressed: () {
+                        CustomCalendar.showSingleDate(
+                          context,
+                          appointed[i].deadline,
+                          (arg) {
+                            setState(() {
+                              appointed[i].deadline = arg as DateTime?;
+                            });
+                            Navigator.pop(context);
+                          },
+                          () {
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              CustomTableRowCellText(
+                flex: 1,
+                text: appointed[i].getAttempts().toString(),
+                subTextVisibleAlways: true,
+                subText: (iteration - appointed[i].getAttempts()).toString(),
+              ),
+              CustomTableRowCell(
+                flex: 1,
+                textVisibleAlways: true,
+                body: Row(
+                  children: [
+                    CustomStatusDoc(status: appointed[i].isStatus(iteration)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -738,4 +818,19 @@ class _TestDialogState extends State<TestDialog> {
       ],
     );
   }
+
+  // final TextEditingController _dateController = TextEditingController();
+  //
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialDate: DateTime.now(),
+  //       firstDate: DateTime(2020),
+  //       lastDate: DateTime(2025));
+  //   if (picked != null) {
+  //     setState(() {
+  //       _dateController.text = DateFormat('dd.MM.yyyy').format(picked);
+  //     });
+  //   }
+  // }
 }

@@ -109,6 +109,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                   subTextVisibleAlways: true,
                 ),
                 CustomTableHeadRowCell(
+                  flex: 2,
                   text: 'Назначен',
                   textVisibleAlways: true,
                   subText: 'Проходят',
@@ -159,67 +160,64 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                           subTextVisibleAlways: true,
                         ),
                         CustomTableRowCell(
+                          flex: 2,
                           textVisibleAlways: true,
                           body: Column(
                             children: [
                               for (final appoint in test.appointed)
                                 Row(
                                   children: [
-                                    CustomLoad.load(appoint.getEmployee(), (
-                                      context,
-                                      emp,
-                                    ) {
-                                      return Row(
-                                        children: [
-                                          Text(
-                                            '${emp?.user.name}',
-                                            style: CustomColors.getLabelMedium(
-                                              context,
-                                              null,
-                                            ),
-                                          ),
-                                          CustomLoad.load(emp!.getRole(), (
-                                            BuildContext context,
-                                            role,
-                                          ) {
-                                            return Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.symmetric(
-                                                    horizontal: 2,
-                                                  ),
-                                              child: Text(
-                                                '[${role?.name}]',
+                                    Padding(
+                                      padding: EdgeInsetsGeometry.symmetric(
+                                        vertical: 2,
+                                      ),
+                                      child: CustomLoad.load(
+                                        appoint.getEmployee(),
+                                        (context, emp) {
+                                          return Row(
+                                            children: [
+                                              Text(
+                                                '${emp?.user.name}',
                                                 style:
-                                                    CustomColors.getLabelSmall(
+                                                    CustomColors.getLabelMedium(
                                                       context,
                                                       null,
                                                     ),
                                               ),
-                                            );
-                                          }),
-                                        ],
-                                      );
-                                    }),
-                                    if (appoint.isBegin() &&
-                                        Screen.isWeb(context))
-                                      Padding(
-                                        padding:
-                                            EdgeInsetsDirectional.symmetric(
-                                              horizontal: 2,
-                                            ),
-                                        child: CustomStatusDoc(
-                                          status: StatusDoc.BEGIN,
-                                        ),
+                                              CustomLoad.load(emp!.getRole(), (
+                                                BuildContext context,
+                                                role,
+                                              ) {
+                                                return Padding(
+                                                  padding:
+                                                      EdgeInsetsDirectional.symmetric(
+                                                        horizontal: 2,
+                                                      ),
+                                                  child: Text(
+                                                    '[${role?.name}]',
+                                                    style:
+                                                        CustomColors.getLabelSmall(
+                                                          context,
+                                                          null,
+                                                        ),
+                                                  ),
+                                                );
+                                              }),
+                                            ],
+                                          );
+                                        },
                                       ),
-                                    if (appoint.isDone() &&
-                                        Screen.isWeb(context))
+                                    ),
+                                    if (Screen.isWeb(context))
                                       Padding(
                                         padding:
                                             EdgeInsetsDirectional.symmetric(
                                               horizontal: 2,
                                             ),
                                         child: CustomStatusDoc(
-                                          status: StatusDoc.DONE,
+                                          status: appoint.isStatus(
+                                            test.iteration,
+                                          ),
                                         ),
                                       ),
                                   ],
