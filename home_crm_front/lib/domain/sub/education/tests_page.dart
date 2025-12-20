@@ -39,6 +39,8 @@ class OrganizationTestsPage extends SheetPage {
 class _OrganizationTestsPageState extends State<OrganizationTestsPage>
     with AutomaticKeepAliveClientMixin<OrganizationTestsPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
+  Widget? _sidePanel;
+  bool showSidePanel = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -46,6 +48,30 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    return _content(context);
+  }
+
+  Widget _content(BuildContext context) {
+    return CustomLoad.load(GetIt.I.get<EducationStore>().getAll(), (
+      BuildContext context,
+      tests,
+    ) {
+      return Row(
+        children: [
+          Expanded(child: _table(context, tests)),
+          if (showSidePanel && tests.isNotEmpty)
+            SizedBox(
+              width: 700,
+              child:
+                  _sidePanel ??
+                  TestDialog(key: Key(tests[0].name), test: tests[0]),
+            ),
+        ],
+      );
+    });
+  }
+
+  Widget _table(BuildContext context, List<TestAggregate> tests) {
     return Column(
       children: [
         CustomLabelPage(
@@ -84,88 +110,96 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
             ),
           ],
         ),
-        CustomLoad.load(GetIt.I.get<EducationStore>().getAll(), (
-          BuildContext context,
-          tests,
-        ) {
-          return CustomTable(
-            head: CustomTableHeadRow(
-              cells: [
-                CustomTableHeadRowCell(
-                  text: 'Номер',
-                  textVisibleAlways: true,
-                  subText: 'Название',
-                  subTextVisibleAlways: true,
-                ),
-                CustomTableHeadRowCell(text: 'Статус', textVisibleAlways: true),
-                CustomTableHeadRowCell(
-                  text: 'Кол-во вопросов',
-                  subText: 'Необходимое кол-во правильных ответов',
-                  subTextVisibleAlways: true,
-                ),
-                CustomTableHeadRowCell(
-                  text: 'Ограничение по времени (мин.)',
-                  subText: 'Кол-во попыток',
-                  subTextVisibleAlways: true,
-                ),
-                CustomTableHeadRowCell(
-                  flex: 2,
-                  text: 'Назначен',
-                  textVisibleAlways: true,
-                  subText: 'Проходят',
-                  subTextVisibleAlways: true,
-                ),
-              ],
-            ),
-            rows: [
-              for (final test in tests)
-                HoveredRegion(
-                  onTap: () async {
-                    CheckScope(
-                      onTrue: () {
-                        GetIt.I.get<SheetElementAddCallback>().call(
-                          TestDialog(test: test),
+        CustomTable(
+          head: CustomTableHeadRow(
+            cells: [
+              CustomTableHeadRowCell(
+                flex: 2,
+                text: 'Номер',
+                textVisibleAlways: true,
+                subText: 'Название',
+                subTextVisibleAlways: true,
+              ),
+              CustomTableHeadRowCell(text: 'Статус', textVisibleAlways: true),
+              CustomTableHeadRowCell(
+                text: 'Кол-во вопросов',
+                subText: 'Необходимое кол-во правильных ответов',
+                subTextVisibleAlways: true,
+              ),
+              CustomTableHeadRowCell(
+                text: 'Ограничение по времени (мин.)',
+                subText: 'Кол-во попыток',
+                subTextVisibleAlways: true,
+              ),
+              CustomTableHeadRowCell(
+                flex: 2,
+                text: 'Назначен',
+                textVisibleAlways: true,
+                subText: 'Проходят',
+                subTextVisibleAlways: true,
+              ),
+            ],
+          ),
+          rows: [
+            for (final test in tests)
+              HoveredRegion(
+                onTap: () async {
+                  CheckScope(
+                    onTrue: () {
+                      setState(() {
+                        _sidePanel = TestDialog(
+                          key: Key(test.name),
+                          test: test,
                         );
-                      },
-                    ).checkScope(ScopeType.TEST_CREATE, context);
-                  },
-                  child: (isHovered) {
-                    return CustomTableRow(
-                      hover: isHovered,
-                      cells: [
-                        CustomTableRowCellText(
-                          text: test.getNumber(),
-                          textVisibleAlways: true,
-                          subText: test.name,
-                          subTextVisibleAlways: true,
-                        ),
-                        CustomTableRowCell(
-                          body: Row(
+                      });
+
+                      // GetIt.I.get<SheetElementAddCallback>().call(
+                      //   TestDialog(test: test),
+                      // );
+                    },
+                  ).checkScope(ScopeType.TEST_CREATE, context);
+                },
+                child: (isHovered) {
+                  return CustomTableRow(
+                    hover: isHovered,
+                    cells: [
+                      CustomTableRowCellText(
+                        flex: 2,
+                        text: test.getNumber(),
+                        textVisibleAlways: true,
+                        subText: test.name,
+                        subTextVisibleAlways: true,
+                      ),
+                      CustomTableRowCell(
+                        body: FittedBox(
+                          child: Row(
                             children: [CustomStatusDoc(status: test.status)],
                           ),
-                          textVisibleAlways: true,
                         ),
-                        CustomTableRowCellText(
-                          text: test.questions.length.toString(),
-                          subText: test.answerCount.toString(),
-                          subTextVisibleAlways: true,
-                        ),
-                        CustomTableRowCellText(
-                          text: test.timeLimitMinutes == 0
-                              ? 'Нет'
-                              : test.timeLimitMinutes.toString(),
-                          subText: test.iteration == 0
-                              ? 'Без ограничений'
-                              : test.iteration.toString(),
-                          subTextVisibleAlways: true,
-                        ),
-                        CustomTableRowCell(
-                          flex: 2,
-                          textVisibleAlways: true,
-                          body: Column(
-                            children: [
-                              for (final appoint in test.appointed)
-                                Row(
+                        textVisibleAlways: true,
+                      ),
+                      CustomTableRowCellText(
+                        text: test.questions.length.toString(),
+                        subText: test.answerCount.toString(),
+                        subTextVisibleAlways: true,
+                      ),
+                      CustomTableRowCellText(
+                        text: test.timeLimitMinutes == 0
+                            ? 'Нет'
+                            : test.timeLimitMinutes.toString(),
+                        subText: test.iteration == 0
+                            ? 'Без ограничений'
+                            : test.iteration.toString(),
+                        subTextVisibleAlways: true,
+                      ),
+                      CustomTableRowCell(
+                        flex: 2,
+                        textVisibleAlways: true,
+                        body: Column(
+                          children: [
+                            for (final appoint in test.appointed)
+                              FittedBox(
+                                child: Row(
                                   children: [
                                     Padding(
                                       padding: EdgeInsetsGeometry.symmetric(
@@ -222,16 +256,16 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                                       ),
                                   ],
                                 ),
-                            ],
-                          ),
+                              ),
+                          ],
                         ),
-                      ],
-                    );
-                  },
-                ),
-            ],
-          );
-        }),
+                      ),
+                    ],
+                  );
+                },
+              ),
+          ],
+        ),
       ],
     );
   }

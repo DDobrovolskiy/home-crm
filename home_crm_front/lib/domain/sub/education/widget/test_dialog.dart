@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../theme/theme.dart';
 import '../../../support/components/button/button.dart';
+import '../../../support/components/button/hovered_region.dart';
 import '../../../support/components/calendar/custom_calendar.dart';
 import '../../../support/components/callback/NavBarCallBack.dart';
 import '../../../support/components/dialog/custom_dialog.dart';
@@ -698,84 +699,93 @@ class _TestDialogState extends State<TestDialog> {
       ),
       rows: [
         for (int i = 0; i < appointed.length; i++)
-          CustomTableRow(
-            cells: [
-              IconButton(
-                onPressed: () async {
-                  setState(() {
-                    appointed.removeAt(i);
-                  });
-                },
-                color: CustomColors.getSecondaryText(context),
-                icon: Icon(Icons.delete_outline),
-              ),
-              Padding(
-                padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-                child: Text(
-                  (i + 1).toString(),
-                  style: CustomColors.getBodyLarge(context, null),
-                ),
-              ),
-              CustomLoad.load(appointed[i].getEmployee(), (context, emp) {
-                return CustomLoad.load(emp!.getRole(), (
-                  BuildContext context,
-                  role,
-                ) {
-                  return CustomTableRowCellText(
-                    flex: 2,
-                    text: emp.user.name,
-                    textVisibleAlways: true,
-                    subText: role?.name,
-                    subTextVisibleAlways: true,
-                  );
-                });
-              }),
-              CustomTableRowCell(
-                flex: 2,
-                textVisibleAlways: true,
-                body: Row(
-                  children: [
-                    CustomButton(
-                      text: appointed[i].deadline == null
-                          ? 'Нет'
-                          : DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(appointed[i].deadline!),
-                      onPressed: () {
-                        CustomCalendar.showSingleDate(
-                          context,
-                          appointed[i].deadline,
-                          (arg) {
-                            setState(() {
-                              appointed[i].deadline = arg as DateTime?;
-                            });
-                            Navigator.pop(context);
-                          },
-                          () {
-                            Navigator.pop(context);
-                          },
-                        );
-                      },
+          HoveredRegion(
+            onTap: () async {},
+            child: (isHovered) {
+              return CustomTableRow(
+                hover: isHovered,
+                cells: [
+                  IconButton(
+                    onPressed: () async {
+                      setState(() {
+                        appointed.removeAt(i);
+                      });
+                    },
+                    color: CustomColors.getSecondaryText(context),
+                    icon: Icon(Icons.delete_outline),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
+                    child: Text(
+                      (i + 1).toString(),
+                      style: CustomColors.getBodyLarge(context, null),
                     ),
-                  ],
-                ),
-              ),
-              CustomTableRowCellText(
-                flex: 1,
-                text: appointed[i].getAttempts().toString(),
-                subTextVisibleAlways: true,
-                subText: (iteration - appointed[i].getAttempts()).toString(),
-              ),
-              CustomTableRowCell(
-                flex: 1,
-                textVisibleAlways: true,
-                body: Row(
-                  children: [
-                    CustomStatusDoc(status: appointed[i].isStatus(iteration)),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                  CustomLoad.load(appointed[i].getEmployee(), (context, emp) {
+                    return CustomLoad.load(emp!.getRole(), (
+                      BuildContext context,
+                      role,
+                    ) {
+                      return CustomTableRowCellText(
+                        flex: 2,
+                        text: emp.user.name,
+                        textVisibleAlways: true,
+                        subText: role?.name,
+                        subTextVisibleAlways: true,
+                      );
+                    });
+                  }),
+                  CustomTableRowCell(
+                    flex: 2,
+                    textVisibleAlways: true,
+                    body: Row(
+                      children: [
+                        CustomButton(
+                          text: appointed[i].deadline == null
+                              ? 'Нет'
+                              : DateFormat(
+                                  'yyyy-MM-dd',
+                                ).format(appointed[i].deadline!),
+                          onPressed: () {
+                            CustomCalendar.showSingleDate(
+                              context,
+                              appointed[i].deadline,
+                              (arg) {
+                                setState(() {
+                                  appointed[i].deadline = arg as DateTime?;
+                                });
+                                Navigator.pop(context);
+                              },
+                              () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  CustomTableRowCellText(
+                    flex: 1,
+                    text: appointed[i].getAttempts().toString(),
+                    subTextVisibleAlways: true,
+                    subText: (iteration - appointed[i].getAttempts())
+                        .toString(),
+                  ),
+                  CustomTableRowCell(
+                    flex: 1,
+                    textVisibleAlways: true,
+                    body: Row(
+                      children: [
+                        CustomStatusDoc(
+                          status: appointed[i].isStatus(iteration),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
@@ -794,7 +804,8 @@ class _TestDialogState extends State<TestDialog> {
                   print(value);
                   setState(() {
                     test.appointed.add(
-                        AppointedAggregate(employeeId: value!.id));
+                      AppointedAggregate(employeeId: value!.id),
+                    );
                   });
                 },
               ),
@@ -804,5 +815,4 @@ class _TestDialogState extends State<TestDialog> {
       ],
     );
   }
-
 }

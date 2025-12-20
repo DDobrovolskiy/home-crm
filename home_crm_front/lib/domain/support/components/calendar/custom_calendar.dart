@@ -23,6 +23,8 @@ class CustomCalendar {
           showActionButtons: true,
           cancelText: 'Отмена',
           confirmText: 'Установить',
+          monthViewSettings: DateRangePickerMonthViewSettings(
+              firstDayOfWeek: 1, dayFormat: 'EEE'),
           headerStyle: DateRangePickerHeaderStyle(
             backgroundColor: CustomColors.getPrimaryBackground(context),
             textStyle: CustomColors.getBodyLarge(context, null),
