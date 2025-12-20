@@ -20,6 +20,16 @@ class EmployeeStore extends Store<EmployeeAggregate> {
     );
   }
 
+  LoadStore<List<EmployeeAggregate>> getAll() {
+    return LoadStore(
+      value: () async =>
+          (await refresh(
+            Loaded.ifNotLoad,
+          )).entries.map((e) => e.value).toList(),
+      callback: loadCallback,
+    );
+  }
+
   @override
   Future<Map<int, EmployeeAggregate>> loadData() async {
     var organizationEmployee = await _organizationRepository

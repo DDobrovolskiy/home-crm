@@ -16,6 +16,15 @@ class RoleStore extends Store<RoleAggregate> {
     );
   }
 
+  LoadStore<List<RoleAggregate>> getAll() {
+    return LoadStore(
+      value: () async => (await refresh(
+        Loaded.ifNotLoad,
+      )).entries.map((e) => e.value).toList(),
+      callback: loadCallback,
+    );
+  }
+
   @override
   Future<Map<int, RoleAggregate>> loadData() async {
     return {

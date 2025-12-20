@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/option_aggregate.dart';
@@ -20,6 +21,7 @@ import '../../../support/components/table/table_head_row.dart';
 import '../../../support/components/table/table_head_row_cell.dart';
 import '../../../support/components/table/table_row.dart';
 import '../../../support/components/table/table_row_cell.dart';
+import '../../employee/widget/employee_select.dart';
 import '../aggregate/appointed_aggregate.dart';
 import '../aggregate/test_aggregate.dart';
 import '../store/education_store.dart';
@@ -658,7 +660,7 @@ class _TestDialogState extends State<TestDialog> {
               child: Row(
                 children: [
                   CustomButton(
-                    text: 'Срок тест до',
+                    text: 'Выполнить до',
                     onPressed: () {
                       CustomCalendar.showSingleDate(
                         context,
@@ -776,17 +778,25 @@ class _TestDialogState extends State<TestDialog> {
             ],
           ),
         Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+          padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
           child: Row(
             children: [
-              IconButton(
-                onPressed: () async {
+              EmployeeSelect(
+                saveSelected: false,
+                text: 'Добавить сотрудника',
+                excludeId: test.appointed.map((t) => t.employeeId).toSet(),
+                buttonStyleData: const ButtonStyleData(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  height: 60,
+                  width: 250,
+                ),
+                onChanged: (value) {
+                  print(value);
                   setState(() {
-                    // _questions.add(QuestionDto(text: '', options: []));
+                    test.appointed.add(
+                        AppointedAggregate(employeeId: value!.id));
                   });
                 },
-                color: CustomColors.getSecondaryText(context),
-                icon: Icon(Icons.add_circle),
               ),
             ],
           ),
@@ -795,18 +805,4 @@ class _TestDialogState extends State<TestDialog> {
     );
   }
 
-  // final TextEditingController _dateController = TextEditingController();
-  //
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //       context: context,
-  //       initialDate: DateTime.now(),
-  //       firstDate: DateTime(2020),
-  //       lastDate: DateTime(2025));
-  //   if (picked != null) {
-  //     setState(() {
-  //       _dateController.text = DateFormat('dd.MM.yyyy').format(picked);
-  //     });
-  //   }
-  // }
 }
