@@ -81,7 +81,11 @@ class CustomTableRowCell extends StatelessWidget {
       return SizedBox();
     }
     // return Expanded(flex: flex, child: body);
-    return Expanded(flex: flex, child: Column(children: [
+    return Expanded(flex: flex, child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
       body,
       if(subBody != null && !Screen.isWeb(context))
         subBody!

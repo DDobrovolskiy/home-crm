@@ -146,7 +146,7 @@ class _NavBarState extends State<NavBar> {
                 ),
               ),
             ),
-            if (Screen.isHeight(context, 200))
+            if (Screen.isHeight(context, 220))
               Padding(
                 padding: EdgeInsets.all(16),
                 child: Padding(

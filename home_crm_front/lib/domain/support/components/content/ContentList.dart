@@ -112,112 +112,119 @@ class _ContentListState extends State<ContentList>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // 1. Наш динамический TabBar
-        Container(
-          color: CustomColors.getSecondaryBackground(context),
-          child: TabBar(
-            tabAlignment: TabAlignment.start,
-            controller: _tabController,
-            isScrollable: true,
-            // Позволяет вкладкам прокручиваться горизонтально
-            labelColor: CustomColors.getPrimaryText(context),
-            unselectedLabelColor: CustomColors.getSecondaryText(context),
-            labelStyle: CustomColors.getTitleSmall(context, null),
-            // indicatorColor: CustomColors.getPrimary(context),
-            indicatorColor: Colors.transparent,
-            // indicatorSize: TabBarIndicatorSize.tab,
-            // dividerColor: CustomColors.getAlternate(context),
-            dividerColor: CustomColors.getPrimaryBackground(context),
-            labelPadding: const EdgeInsets.symmetric(horizontal: 0),
-            dividerHeight: 2,
-            splashBorderRadius: BorderRadius.circular(12),
-            overlayColor: WidgetStateProperty.all(
-              CustomColors.getSecondaryBackground(context),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxHeight < 100) {
+          return SizedBox.shrink();
+        }
+        return Column(
+          children: [
+            // 1. Наш динамический TabBar
+            Container(
+              color: CustomColors.getSecondaryBackground(context),
+              child: TabBar(
+                tabAlignment: TabAlignment.start,
+                controller: _tabController,
+                isScrollable: true,
+                // Позволяет вкладкам прокручиваться горизонтально
+                labelColor: CustomColors.getPrimaryText(context),
+                unselectedLabelColor: CustomColors.getSecondaryText(context),
+                labelStyle: CustomColors.getTitleSmall(context, null),
+                // indicatorColor: CustomColors.getPrimary(context),
+                indicatorColor: Colors.transparent,
+                // indicatorSize: TabBarIndicatorSize.tab,
+                // dividerColor: CustomColors.getAlternate(context),
+                dividerColor: CustomColors.getPrimaryBackground(context),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+                dividerHeight: 2,
+                splashBorderRadius: BorderRadius.circular(12),
+                overlayColor: WidgetStateProperty.all(
+                  CustomColors.getSecondaryBackground(context),
+                ),
+                tabs: _contents.keys.map((key) {
+                  return Container(
+                    height: 44,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      color: key == select
+                          ? CustomColors.getPrimaryBackground(context)
+                          : CustomColors.getSecondaryBackground(context),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                        bottomLeft: key == select
+                            ? Radius.zero
+                            : Radius.circular(12),
+                        bottomRight: key == select
+                            ? Radius.zero
+                            : Radius.circular(12),
+                      ),
+                      border: Border(
+                        top: BorderSide(
+                          color: CustomColors.getPrimaryBackground(context),
+                          width: 1,
+                        ),
+                        left: BorderSide(
+                          color: CustomColors.getPrimaryBackground(context),
+                          width: 1,
+                        ),
+                        bottom: BorderSide(
+                          color: CustomColors.getPrimaryBackground(context),
+                          width: 1,
+                        ),
+                        right: BorderSide(
+                          color: CustomColors.getPrimaryBackground(context),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsetsGeometry.fromLTRB(8, 3, 8, 3),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // FadeableTab(text: key,),
+                          Expanded(
+                            child: Text(
+                              key,
+                              maxLines: 1, // Ограничиваем одной строкой
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            visualDensity: VisualDensity(
+                              horizontal: -4,
+                              vertical: -4,
+                            ),
+                            onPressed: () => _removeTab(key),
+                            icon: Icon(Icons.close, size: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-            tabs: _contents.keys.map((key) {
-              return Container(
-                height: 44,
-                width: 200,
-                decoration: BoxDecoration(
-                  color: key == select
-                      ? CustomColors.getPrimaryBackground(context)
-                      : CustomColors.getSecondaryBackground(context),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                    bottomLeft: key == select
-                        ? Radius.zero
-                        : Radius.circular(12),
-                    bottomRight: key == select
-                        ? Radius.zero
-                        : Radius.circular(12),
-                  ),
-                  border: Border(
-                    top: BorderSide(
-                      color: CustomColors.getPrimaryBackground(context),
-                      width: 1,
-                    ),
-                    left: BorderSide(
-                      color: CustomColors.getPrimaryBackground(context),
-                      width: 1,
-                    ),
-                    bottom: BorderSide(
-                      color: CustomColors.getPrimaryBackground(context),
-                      width: 1,
-                    ),
-                    right: BorderSide(
-                      color: CustomColors.getPrimaryBackground(context),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsetsGeometry.fromLTRB(8, 3, 8, 3),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // FadeableTab(text: key,),
-                      Expanded(
-                        child: Text(
-                          key,
-                          maxLines: 1, // Ограничиваем одной строкой
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      IconButton(
-                        visualDensity: VisualDensity(
-                          horizontal: -4,
-                          vertical: -4,
-                        ),
-                        onPressed: () => _removeTab(key),
-                        icon: Icon(Icons.close, size: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
 
-        // 2. TabBarView должен быть обернут в Expanded или иметь явные ограничения высоты
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: _contents.values.map((page) {
-              // Создаем контент для каждой вкладки динамически
-              return page;
-            }).toList(),
-            // children: _contents.values.map((page) {
-            //   // Создаем контент для каждой вкладки динамически
-            //   return SingleChildScrollView(primary: true, child: page);
-            // }).toList(),
-          ),
-        ),
-      ],
+            // 2. TabBarView должен быть обернут в Expanded или иметь явные ограничения высоты
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: _contents.values.map((page) {
+                  // Создаем контент для каждой вкладки динамически
+                  return page;
+                }).toList(),
+                // children: _contents.values.map((page) {
+                //   // Создаем контент для каждой вкладки динамически
+                //   return SingleChildScrollView(primary: true, child: page);
+                // }).toList(),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -109,7 +109,12 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CustomLabelPage(
+        LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxHeight < 150) {
+                return SizedBox.shrink();
+              }
+              return CustomLabelPage(
           contents: [
             IconButton(
               onPressed: () async {
@@ -144,7 +149,8 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
               ),
             ),
           ],
-        ),
+              );
+            }),
         Flexible(
           child: CustomTable(
             head: CustomTableHeadRow(
@@ -228,8 +234,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                         flex: 2,
                         textVisibleAlways: true,
                         body: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                             for (final appoint in test.appointed)
                                 Wrap(
@@ -301,7 +308,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
           ],
           ),
         ),
-        Icon(Icons.add),
+
       ],
     );
   }

@@ -36,9 +36,12 @@ class CustomTableRow extends StatelessWidget {
             ? Border.fromBorderSide(
                 BorderSide(color: CustomColors.getError(context), width: 2),
               )
-            : Border.symmetric(horizontal:
-        BorderSide(color: CustomColors.getLineColor(context), width: 1),
-        ),
+            : Border(
+                top: BorderSide(
+                  color: CustomColors.getLineColor(context),
+                  width: 1,
+                ),
+              ),
       ),
       child: Padding(
         padding: EdgeInsets.all(8),
