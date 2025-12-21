@@ -75,70 +75,92 @@ class _TestDialogState extends State<TestDialog> {
           children: [
             CustomLabelPage(
               contents: [
-                Padding(
-                  padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                  child: CustomButtonDisplay(
-                    primary: true,
-                    text: 'Готов и закрыть',
-                    onPressed: () async {
-                      if (validator()) {
-                        var error = test.doReady();
-                        if (error != null) {
-                          Stamp.showTemporarySnackbar(context, error);
-                        } else {
-                          GetIt.I.get<EducationStore>().save([test]);
-                          GetIt.I.get<SheetElementDeleteCallback>().call(
-                            widget.getName(),
-                          );
-                          setState(() {
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.start,
+                      runAlignment: WrapAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                          child: CustomButtonDisplay(
+                            primary: true,
+                            text: 'Готов и закрыть',
+                            onPressed: () async {
+                              if (validator()) {
+                                var error = test.doReady();
+                                if (error != null) {
+                                  Stamp.showTemporarySnackbar(context, error);
+                                } else {
+                                  GetIt.I.get<EducationStore>().save([test]);
+                                  GetIt.I
+                                      .get<SheetElementDeleteCallback>()
+                                      .call(
+                                    widget.getName(),
+                                  );
+                                  setState(() {
 
-                          });
-                        }
-                      }
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                  child: IconButton(
-                    onPressed: () async {
-                      GetIt.I.get<EducationStore>().save([test]);
-                    },
-                    color: CustomColors.getSecondaryText(context),
-                    icon: Icon(
-                      Icons.save,
-                      size: Screen.isWeb(context) ? 44 : 22,
-                    ),
-                  ),
-                ),
-                Text(
-                  widget.getName(),
-                  textAlign: TextAlign.start,
-                  style: Screen.isWeb(context)
-                      ? CustomColors.getDisplaySmall(context, null)
-                      : CustomColors.getDisplaySmallButtonIsWeb(context, null),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-                  child: CustomStatusDocChange<TestAggregate>(
-                    init: test.status,
-                    map: test.statuses,
-                    onChanged:
-                        (
-                          MapEntry<StatusDoc, String? Function(TestAggregate)>?
-                          value,
-                        ) {
-                          var s = value?.value(test);
-                          if (s != null) {
-                            Stamp.showTemporarySnackbar(context, s);
-                          } else {
-                            setState(() {
+                                  });
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                          child: IconButton(
+                            onPressed: () async {
                               GetIt.I.get<EducationStore>().save([test]);
-                            });
-                          }
-                        },
+                            },
+                            color: CustomColors.getSecondaryText(context),
+                            icon: Icon(
+                              Icons.save,
+                              size: Screen.isWeb(context) ? 44 : 22,
+                            ),
+                          ),
+                        ),
+                      ],
                   ),
-                ),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.start,
+                      runAlignment: WrapAlignment.start,
+                      children: [
+                        Text(
+                          widget.getName(),
+                          textAlign: TextAlign.start,
+                          style: Screen.isWeb(context)
+                              ? CustomColors.getDisplaySmall(context, null)
+                              : CustomColors.getDisplaySmallButtonIsWeb(
+                              context, null),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(15, 0, 0, 0),
+                          child: CustomStatusDocChange<TestAggregate>(
+                            init: test.status,
+                            map: test.statuses,
+                            onChanged:
+                                (MapEntry<StatusDoc,
+                                String? Function(TestAggregate)>?
+                            value,) {
+                              var s = value?.value(test);
+                              if (s != null) {
+                                Stamp.showTemporarySnackbar(context, s);
+                              } else {
+                                setState(() {
+                                  GetIt.I.get<EducationStore>().save([test]);
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  ],),
               ],
             ),
           ],
@@ -892,10 +914,15 @@ class _TestDialogState extends State<TestDialog> {
                   CustomTableRowCell(
                     flex: 1,
                     textVisibleAlways: true,
-                    body: Row(
+                    body: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomStatusDoc(
                           status: appointed[i].isStatus(iteration),
+                        ),
+                        const SizedBox(height: 2),
+                        CustomStatusDoc(
+                          status: appointed[i].isActive(),
                         ),
                       ],
                     ),
@@ -920,7 +947,7 @@ class _TestDialogState extends State<TestDialog> {
                 onChanged: (value) {
                   print(value);
                   setState(() {
-                    test.appointed.add(
+                    test.addAppointed(
                       AppointedAggregate(
                           employeeId: value!.id, testId: test.id),
                     );

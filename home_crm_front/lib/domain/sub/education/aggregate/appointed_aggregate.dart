@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/session_aggregate.dart';
+import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dart';
+import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/sub/employee/aggregate/employee_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/status/doc.dart';
 
@@ -9,6 +11,7 @@ import '../../employee/store/employee_store.dart';
 
 class AppointedAggregate extends Aggregate {
   late int? id;
+  late bool active;
   late DateTime? deadline;
   late List<SessionAggregate> sessions;
   final int employeeId;
@@ -16,6 +19,7 @@ class AppointedAggregate extends Aggregate {
 
   AppointedAggregate({
     this.id,
+    this.active = false,
     this.deadline,
     List<SessionAggregate>? sessions,
     required this.employeeId,
@@ -26,6 +30,7 @@ class AppointedAggregate extends Aggregate {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'active': active,
       'deadline': deadline,
       'sessions': sessions.map((q) => q.toJson()).toList(),
       'employeeId': employeeId,
@@ -36,6 +41,7 @@ class AppointedAggregate extends Aggregate {
   factory AppointedAggregate.fromJson(Map<String, dynamic> json) {
     return AppointedAggregate(
       id: (json['id'] as num?)?.toInt(),
+      active: json['active'] as bool,
       deadline: json['deadline'] as DateTime?,
       sessions: (json['sessions'] as List<dynamic>)
           .map((e) => SessionAggregate.fromJson(e as Map<String, dynamic>))
@@ -68,6 +74,10 @@ class AppointedAggregate extends Aggregate {
     return sessions.any((s) => s.success);
   }
 
+  StatusDoc isActive() {
+    return active ? StatusDoc.ACTIVE : StatusDoc.NOT_ACTIVE;
+  }
+
   StatusDoc isStatus(int iteration) {
     if (!isBegin()) {
       return StatusDoc.WAIT;
@@ -90,5 +100,9 @@ class AppointedAggregate extends Aggregate {
 
   LoadStore<EmployeeAggregate?> getEmployee() {
     return GetIt.I.get<EmployeeStore>().get(employeeId);
+  }
+
+  LoadStore<TestAggregate?> getTest() {
+    return GetIt.I.get<EducationStore>().get(testId!);
   }
 }

@@ -98,7 +98,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
             SizedBox(
               width: 700,
               child: _sidePanel ??= TestDialog(
-                key: Key(tests[0].getName()),
+                key: Key('${tests[0].getName()}-${DateTime
+                    .now()
+                    .toIso8601String()}'),
                 test: tests[0],
               ),
               // TestDialog(key: Key(tests[0].name), test: tests[0]),
@@ -291,8 +293,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                       flex: 2,
                       text: 'Назначен',
                       textVisibleAlways: true,
-                      subText: 'Проходят',
-                      subTextVisibleAlways: true,
                     ),
                   ],
                 ),
@@ -308,13 +308,17 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                             setState(() {
                               if (Screen.isSidePanel(context)) {
                                 _sidePanel = TestDialog(
-                                  key: Key(test.getName()),
+                                  key: Key('${test.getName()}-${DateTime
+                                      .now()
+                                      .toIso8601String()}'),
                                   test: test,
                                 );
                               } else {
                                 setState(() {
                                   _sidePanel = TestDialog(
-                                    key: Key(test.getName()),
+                                    key: Key('${test.getName()}-${DateTime
+                                        .now()
+                                        .toIso8601String()}'),
                                     test: test,
                                   );
                                   GetIt.I.get<SheetElementAddCallback>().call(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/question_aggregate.dart';
+import 'package:home_crm_front/domain/sub/event/aggregate/event_aggregate.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 import '../../../support/components/status/doc.dart';
@@ -16,6 +17,7 @@ class TestAggregate extends Aggregate {
   late int answerCount;
   late List<QuestionAggregate> questions;
   late List<AppointedAggregate> appointed;
+  late List<EventAggregate> events;
 
   TestAggregate({
     this.id,
@@ -71,6 +73,13 @@ class TestAggregate extends Aggregate {
     return id;
   }
 
+  void addAppointed(AppointedAggregate appoint) {
+    if (status.ready) {
+      appoint.active = true;
+    }
+    appointed.add(appoint);
+  }
+
   String? doReady() {
     if (name == null || name!.isEmpty) {
       return 'Пустое название теста';
@@ -86,18 +95,27 @@ class TestAggregate extends Aggregate {
     }
     status = StatusDoc.READY;
     active = true;
+    for (var a in appointed) {
+      a.active = true;
+    }
     return null;
   }
 
   String? doDraft() {
     status = StatusDoc.DRAFT;
     active = true;
+    for (var a in appointed) {
+      a.active = false;
+    }
     return null;
   }
 
   String? doArchive() {
     status = StatusDoc.ARCHIVE;
     active = false;
+    for (var a in appointed) {
+      a.active = false;
+    }
     return null;
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/education/appointed_page.dart';
 import 'package:home_crm_front/domain/support/components/logo/Logo.dart';
 import 'package:home_crm_front/domain/support/components/navbar/NavProfile.dart';
 import 'package:home_crm_front/domain/support/components/navbar/NavSubElement.dart';
@@ -137,6 +138,14 @@ class _NavBarState extends State<NavBar> {
                                           .call(const OrganizationTestsPage());
                                     },
                                   ),
+                                NavSubElement(
+                                  label: AppointedPage.name,
+                                  onTap: () {
+                                    GetIt.I
+                                        .get<SheetElementAddCallback>()
+                                        .call(const AppointedPage());
+                                  },
+                                ),
                               ],
                             ),
                           ),

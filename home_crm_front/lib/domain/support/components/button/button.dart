@@ -56,7 +56,7 @@ class CustomButton extends StatelessWidget {
 
 class CustomButtonDisplay extends StatelessWidget {
   final String text;
-  final Function() onPressed;
+  final Function()? onPressed;
   final bool primary;
 
   const CustomButtonDisplay({

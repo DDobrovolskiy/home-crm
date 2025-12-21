@@ -46,6 +46,18 @@ enum StatusDoc {
     ready: true,
     color: Color(0xFF048178),
     colorText: Colors.white,
+  ),
+  ACTIVE(
+    description: 'АКТИВНО',
+    ready: false,
+    color: Color(0xFF1368D7),
+    colorText: Colors.white,
+  ),
+  NOT_ACTIVE(
+    description: 'НЕ АКТИВНО',
+    ready: false,
+    color: Colors.grey,
+    colorText: Colors.black54,
   );
 
   final String description;

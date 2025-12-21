@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/authentication/bloc/auth_bloc.dart';
+import 'package:home_crm_front/domain/sub/education/store/appointed_store.dart';
 import 'package:home_crm_front/domain/sub/employee/repository/employee_repository.dart';
 import 'package:home_crm_front/domain/sub/employee/service/employee_service.dart';
 import 'package:home_crm_front/domain/sub/employee/store/employee_store.dart';
@@ -68,6 +69,7 @@ void setupLocator() {
   GetIt.I.registerSingleton(RoleStore());
   GetIt.I.registerSingleton(EmployeeStore());
   GetIt.I.registerSingleton(EducationStore());
+  GetIt.I.registerSingleton(AppointedStore());
 
   //Service
   GetIt.I.registerSingleton(UserService());
