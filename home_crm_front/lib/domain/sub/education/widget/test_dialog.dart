@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/option_aggregate.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/question_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/label/label_page.dart';
+import 'package:home_crm_front/domain/support/components/pattern/pattern.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 import 'package:home_crm_front/domain/support/widgets/stamp.dart';
 import 'package:intl/intl.dart';
@@ -44,11 +45,26 @@ class TestDialog extends SheetPage {
 
 class _TestDialogState extends State<TestDialog> {
   late TestAggregate test;
+  late TextEditingController _controllerMinute;
+  late TextEditingController _controllerIteration;
 
   @override
   void initState() {
     super.initState();
     test = widget.test.copy();
+    _controllerMinute = TextEditingController(
+      text: test.timeLimitMinutes.toString(),
+    );
+    _controllerIteration = TextEditingController(
+      text: test.iteration.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controllerMinute.dispose();
+    _controllerIteration.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,17 +121,19 @@ class _TestDialogState extends State<TestDialog> {
                     init: test.status,
                     map: test.statuses,
                     onChanged:
-                        (MapEntry<StatusDoc, String? Function(TestAggregate)>?
-                    value,) {
-                      var s = value?.value(test);
-                      if (s != null) {
-                        Stamp.showTemporarySnackbar(context, s);
-                      } else {
-                        setState(() {
-                          GetIt.I.get<EducationStore>().save(test);
-                        });
-                      }
-                    },
+                        (
+                          MapEntry<StatusDoc, String? Function(TestAggregate)>?
+                          value,
+                        ) {
+                          var s = value?.value(test);
+                          if (s != null) {
+                            Stamp.showTemporarySnackbar(context, s);
+                          } else {
+                            setState(() {
+                              GetIt.I.get<EducationStore>().save(test);
+                            });
+                          }
+                        },
                   ),
                 ),
               ],
@@ -159,10 +177,16 @@ class _TestDialogState extends State<TestDialog> {
                         context,
                         true,
                       ),
+                      readOnly: test.status.ready,
+                      onTap: () async {
+                        if (await test.isReady(context)) {
+                          setState(() {});
+                        }
+                      },
                       style: CustomColors.getBodyMedium(context, null),
                       maxLines: null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      initialValue: test.name,
+                      initialValue: test.getName(),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Необходимо ввести название теста';
@@ -194,12 +218,18 @@ class _TestDialogState extends State<TestDialog> {
                               context,
                               true,
                             ),
-
+                            inputFormatters: [Format.numberFormatter3],
+                            controller: _controllerMinute,
+                            readOnly: test.status.ready,
+                            onTap: () async {
+                              if (await test.isReady(context)) {
+                                setState(() {});
+                              }
+                            },
                             style: CustomColors.getBodyMedium(context, null),
                             maxLines: null,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            initialValue: test.timeLimitMinutes.toString(),
                             validator: (value) {
                               if (value != null &&
                                   (int.tryParse(value) == null ||
@@ -226,14 +256,21 @@ class _TestDialogState extends State<TestDialog> {
                               Checkbox(
                                 value: test.timeLimitMinutes == 0,
                                 activeColor: CustomColors.getPrimary(context),
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (value != null) {
-                                      if (value) {
-                                        test.timeLimitMinutes = 0;
+                                onChanged: (bool? value) async {
+                                  if (await test.isReady(context)) {
+                                    setState(() {
+                                      if (value != null) {
+                                        if (value) {
+                                          test.timeLimitMinutes = 0;
+                                          _controllerMinute.value =
+                                              TextEditingValue(
+                                                text: test.timeLimitMinutes
+                                                    .toString(),
+                                              );
+                                        }
                                       }
-                                    }
-                                  });
+                                    });
+                                  }
                                 },
                               ),
                             ],
@@ -260,11 +297,19 @@ class _TestDialogState extends State<TestDialog> {
                               context,
                               true,
                             ),
+                            inputFormatters: [Format.numberFormatter2],
+                            controller: _controllerIteration,
+                            readOnly: test.status.ready,
+                            onTap: () async {
+                              if (await test.isReady(context)) {
+                                setState(() {});
+                              }
+                            },
                             style: CustomColors.getBodyMedium(context, null),
                             maxLines: null,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            initialValue: test.iteration.toString(),
+                            // initialValue: test.iteration.toString(),
                             validator: (value) {
                               if (value != null &&
                                   (int.tryParse(value) == null ||
@@ -290,14 +335,20 @@ class _TestDialogState extends State<TestDialog> {
                               Checkbox(
                                 value: test.iteration == 0,
                                 activeColor: CustomColors.getPrimary(context),
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (value != null) {
-                                      if (value) {
-                                        test.iteration = 0;
+                                onChanged: (bool? value) async {
+                                  if (await test.isReady(context)) {
+                                    setState(() {
+                                      if (value != null) {
+                                        if (value) {
+                                          test.iteration = 0;
+                                          _controllerIteration.value =
+                                              TextEditingValue(
+                                                text: test.iteration.toString(),
+                                              );
+                                        }
                                       }
-                                    }
-                                  });
+                                    });
+                                  }
                                 },
                               ),
                             ],
@@ -321,6 +372,13 @@ class _TestDialogState extends State<TestDialog> {
                         context,
                         true,
                       ),
+                      inputFormatters: [Format.numberFormatter3],
+                      readOnly: test.status.ready,
+                      onTap: () async {
+                        if (await test.isReady(context)) {
+                          setState(() {});
+                        }
+                      },
                       style: CustomColors.getBodyMedium(context, null),
                       maxLines: null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -397,9 +455,11 @@ class _TestDialogState extends State<TestDialog> {
         cells: [
           IconButton(
             onPressed: () async {
-              setState(() {
-                test.questions.clear();
-              });
+              if (await test.isReady(context)) {
+                setState(() {
+                  test.questions.clear();
+                });
+              }
             },
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
@@ -432,9 +492,11 @@ class _TestDialogState extends State<TestDialog> {
             cells: [
               IconButton(
                 onPressed: () async {
-                  setState(() {
-                    test.questions.removeAt(i);
-                  });
+                  if (await test.isReady(context)) {
+                    setState(() {
+                      test.questions.removeAt(i);
+                    });
+                  }
                 },
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
@@ -459,6 +521,12 @@ class _TestDialogState extends State<TestDialog> {
                     context,
                     true,
                   ),
+                  readOnly: test.status.ready,
+                  onTap: () async {
+                    if (await test.isReady(context)) {
+                      setState(() {});
+                    }
+                  },
                   style: CustomColors.getBodyMedium(context, null),
                   maxLines: null,
                   autovalidateMode: AutovalidateMode.always,
@@ -494,9 +562,11 @@ class _TestDialogState extends State<TestDialog> {
             children: [
               IconButton(
                 onPressed: () async {
-                  setState(() {
-                    test.questions.add(QuestionAggregate());
-                  });
+                  if (await test.isReady(context)) {
+                    setState(() {
+                      test.questions.add(QuestionAggregate());
+                    });
+                  }
                 },
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.add_circle),
@@ -514,9 +584,11 @@ class _TestDialogState extends State<TestDialog> {
         cells: [
           IconButton(
             onPressed: () async {
-              setState(() {
-                options.clear();
-              });
+              if (await test.isReady(context)) {
+                setState(() {
+                  options.clear();
+                });
+              }
             },
             color: CustomColors.getSecondaryText(context),
             icon: Icon(Icons.delete),
@@ -554,9 +626,11 @@ class _TestDialogState extends State<TestDialog> {
             cells: [
               IconButton(
                 onPressed: () async {
-                  setState(() {
-                    options.removeAt(o);
-                  });
+                  if (await test.isReady(context)) {
+                    setState(() {
+                      options.removeAt(o);
+                    });
+                  }
                 },
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.delete_outline),
@@ -578,11 +652,13 @@ class _TestDialogState extends State<TestDialog> {
                     child: Checkbox(
                       value: options[o].correct,
                       activeColor: CustomColors.getPrimary(context),
-                      onChanged: (bool? value) {
-                        setState(() {
-                          options[o].correct = !options[o].correct;
-                        });
-                      },
+                      onChanged: test.status.ready
+                          ? null
+                          : (bool? value) {
+                              setState(() {
+                                options[o].correct = !options[o].correct;
+                              });
+                            },
                     ),
                   ),
                 ),
@@ -599,6 +675,21 @@ class _TestDialogState extends State<TestDialog> {
                     context,
                     true,
                   ),
+                  readOnly: test.status.ready,
+                  onTap: () async {
+                    if (test.status.ready) {
+                      if (await showStausAlertDialog(
+                            test.status,
+                            StatusDoc.DRAFT,
+                            context,
+                          ) ??
+                          false) {
+                        setState(() {
+                          test.doDraft();
+                        });
+                      }
+                    }
+                  },
                   style: CustomColors.getBodyMedium(context, null),
                   maxLines: null,
                   autovalidateMode: AutovalidateMode.always,
@@ -624,9 +715,11 @@ class _TestDialogState extends State<TestDialog> {
             children: [
               IconButton(
                 onPressed: () async {
-                  setState(() {
-                    options.add(OptionAggregate());
-                  });
+                  if (await test.isReady(context)) {
+                    setState(() {
+                      options.add(OptionAggregate());
+                    });
+                  }
                 },
                 color: CustomColors.getSecondaryText(context),
                 icon: Icon(Icons.add_circle),
@@ -857,11 +950,11 @@ class CustomStatusDocChange<T> extends StatelessWidget {
         items: map.entries
             .map(
               (entry) =>
-              DropdownMenuItem<MapEntry<StatusDoc, String? Function(T)>>(
-                value: entry,
-                child: CustomStatusDoc(status: entry.key),
-              ),
-        )
+                  DropdownMenuItem<MapEntry<StatusDoc, String? Function(T)>>(
+                    value: entry,
+                    child: CustomStatusDoc(status: entry.key),
+                  ),
+            )
             .toList(),
         onChanged: onChanged,
         buttonStyleData: ButtonStyleData(
@@ -878,13 +971,10 @@ class CustomStatusDocChange<T> extends StatelessWidget {
           offset: const Offset(40, -4),
         ),
         menuItemStyleData: MenuItemStyleData(
-          customHeights: [
-            ...List<double>.filled(map.length, 24),
-          ],
+          customHeights: [...List<double>.filled(map.length, 24)],
           padding: const EdgeInsets.only(left: 16, right: 16),
         ),
       ),
     );
   }
 }
-

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/question_aggregate.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
@@ -6,7 +7,7 @@ import 'appointed_aggregate.dart';
 
 class TestAggregate extends Aggregate {
   late int? id;
-  late String name;
+  late String? name;
   late String? description;
   late StatusDoc status;
   late int timeLimitMinutes;
@@ -67,7 +68,7 @@ class TestAggregate extends Aggregate {
   }
 
   String? doReady() {
-    if (name == null || name.isEmpty) {
+    if (name == null || name!.isEmpty) {
       return 'Пустое название теста';
     }
     if (questions.isEmpty) {
@@ -105,5 +106,20 @@ class TestAggregate extends Aggregate {
 
   TestAggregate copy() {
     return TestAggregate.fromJson(toJson());
+  }
+
+  String getName() {
+    return name ??= getNewName();
+  }
+
+  Future<bool> isReady(BuildContext context) async {
+    if (!status.ready ||
+        (await showStausAlertDialog(status, StatusDoc.DRAFT, context) ??
+            false)) {
+      doDraft();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

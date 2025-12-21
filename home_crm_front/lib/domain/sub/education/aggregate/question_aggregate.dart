@@ -44,8 +44,14 @@ class QuestionAggregate extends Aggregate {
   }
 
   String? getError() {
+    if (text == null || text!.isEmpty) {
+      return 'Пустой текст вопроса';
+    }
     if (options.isEmpty || options.length < 2) {
       return 'Необходимо добавить хотя бы два ответа';
+    }
+    if (options.any((o) => o.getError() != null)) {
+      return options.firstWhere((o) => o.getError() != null).getError();
     }
     if (!options.any((o) => o.correct)) {
       return 'Должен быть хотя бы один правильный ответ';

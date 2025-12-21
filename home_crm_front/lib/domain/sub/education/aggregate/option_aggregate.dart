@@ -34,4 +34,11 @@ class OptionAggregate extends Aggregate {
   String getNewName() {
     return 'Новый ответ';
   }
+
+  String? getError() {
+    if (text == null || text!.isEmpty) {
+      return 'Пустой текст ответа';
+    }
+    return null;
+  }
 }
