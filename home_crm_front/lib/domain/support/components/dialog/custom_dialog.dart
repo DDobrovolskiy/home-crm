@@ -98,21 +98,27 @@ class _DialogPageState extends State<DialogPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      children: [
-        if (widget.label != null) widget.label!(_validateAndSubmit),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
-            child: CustomTab(
-              contents: widget.contents.indexed
-                  .map((c) => c.$2(_formKeys[c.$1]))
-                  .toList(),
-              tabController: _tabController,
-            ),
-          ),
-        ),
-      ],
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if (constraints.maxHeight < 150) {
+            return SizedBox.shrink();
+          }
+          return Column(
+            children: [
+              if (widget.label != null) widget.label!(_validateAndSubmit),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
+                  child: CustomTab(
+                    contents: widget.contents.indexed
+                        .map((c) => c.$2(_formKeys[c.$1]))
+                        .toList(),
+                    tabController: _tabController,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
