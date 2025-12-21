@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
@@ -23,10 +22,10 @@ import '../scope/scope.dart';
 import 'aggregate/test_aggregate.dart';
 import 'widget/test_dialog.dart';
 
-class OrganizationTestsPage extends SheetPage {
+class TestingPage extends SheetPage {
   static String name = 'Тесты';
 
-  const OrganizationTestsPage({super.key});
+  const TestingPage({super.key});
 
   @override
   String getName() {
@@ -34,16 +33,14 @@ class OrganizationTestsPage extends SheetPage {
   }
 
   @override
-  _OrganizationTestsPageState createState() => _OrganizationTestsPageState();
+  _TestingPageState createState() => _TestingPageState();
 }
 
-class _OrganizationTestsPageState extends State<OrganizationTestsPage>
-    with AutomaticKeepAliveClientMixin<OrganizationTestsPage> {
+class _TestingPageState extends State<TestingPage>
+    with AutomaticKeepAliveClientMixin<TestingPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
   SheetPage? _sidePanel;
   bool showSidePanel = true;
-  Set<int> selectIds = {};
-  bool showArchive = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -164,108 +161,10 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                 );
               },
             ),
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                if (constraints.maxHeight < 40) {
-                  return SizedBox.shrink();
-                }
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsetsGeometry.fromLTRB(0, 0, 0, 0),
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              value: showArchive,
-                              activeColor: CustomColors.getPrimary(context),
-                              onChanged: (bool? value) async {
-                                if (value != null) {
-                                  setState(() {
-                                    showArchive = value;
-                                  });
-                                }
-                              },
-                            ),
-                            Text(
-                              'Показать архивные',
-                              style: CustomColors.getTitleMedium(context, null),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: selectIds.isEmpty
-                          ? null
-                          : () {
-                              var list = tests
-                                  .where((t) => selectIds.contains(t.id))
-                                  .map((t) {
-                                    t.doArchive();
-                                    return t;
-                                  })
-                                  .toList();
-                              GetIt.I.get<EducationStore>().save(list);
-                              setState(() {
-                                selectIds.clear();
-                              });
-                            },
-                      tooltip: 'Отправить в архив',
-                      icon: Icon(Icons.archive),
-                    ),
-                    IconButton(
-                      onPressed: selectIds.isEmpty
-                          ? null
-                          : () {
-                              GetIt.I.get<EducationStore>().delete(selectIds);
-                              setState(() {
-                                selectIds.clear();
-                              });
-                            },
-                      tooltip: 'Удалить полностью',
-                      icon: Icon(Icons.delete),
-                    ),
-                  ],
-                );
-              },
-            ),
             Flexible(
               child: CustomTable(
                 head: CustomTableHeadRow(
                   cells: [
-                    Padding(
-                      padding: EdgeInsetsGeometry.fromLTRB(0, 0, 0, 0),
-                      child: Checkbox(
-                        value:
-                            selectIds.length == tests.length &&
-                            selectIds.isNotEmpty,
-                        activeColor: CustomColors.getPrimary(context),
-                        onChanged: (bool? value) async {
-                          if (value != null) {
-                            if (value) {
-                              setState(() {
-                                selectIds.addAll(
-                                  tests.map((t) => t.id!).toList(),
-                                );
-                              });
-                            } else {
-                              setState(() {
-                                selectIds.clear();
-                              });
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.fromLTRB(6, 0, 12, 0),
-                      child: Text(
-                        '№',
-                        style: CustomColors.getLabelMedium(context, null),
-                      ),
-                    ),
                     CustomTableHeadRowCell(
                       flex: 2,
                       text: 'Номер',
@@ -297,11 +196,8 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                   ],
                 ),
                 rows: [
-                  ...tests.where((t) => t.active == true || showArchive).mapIndexed((
-                    index,
-                    test,
-                  ) {
-                    return HoveredRegion(
+                  for (final test in tests)
+                    HoveredRegion(
                       onTap: () async {
                         CheckScope(
                           onTrue: () {
@@ -330,42 +226,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                         return CustomTableRow(
                           hover: isHovered,
                           cells: [
-                            Padding(
-                              padding: EdgeInsetsGeometry.fromLTRB(0, 0, 0, 0),
-                              child: Checkbox(
-                                value: selectIds.contains(test.id),
-                                activeColor: CustomColors.getPrimary(context),
-                                onChanged: (bool? value) async {
-                                  if (value != null) {
-                                    if (value) {
-                                      setState(() {
-                                        selectIds.add(test.id!);
-                                      });
-                                    } else {
-                                      setState(() {
-                                        selectIds.remove(test.id);
-                                      });
-                                    }
-                                  }
-                                },
-                              ),
-                            ),
-                            if (Screen.isWeb(context))
-                              Padding(
-                                padding: EdgeInsetsGeometry.fromLTRB(
-                                  6,
-                                  0,
-                                  12,
-                                  0,
-                                ),
-                                child: Text(
-                                  (index + 1).toString(),
-                                  style: CustomColors.getBodyLarge(
-                                    context,
-                                    null,
-                                  ),
-                                ),
-                              ),
                             CustomTableRowCellText(
                               flex: 2,
                               text: test.getNumber(),
@@ -375,8 +235,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                             ),
                             CustomTableRowCell(
                               body: FittedBox(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
                                   children: [
                                     CustomStatusDoc(status: test.status),
                                   ],
@@ -472,8 +331,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                           ],
                         );
                       },
-                    );
-                  }),
+                    ),
                 ],
               ),
             ),

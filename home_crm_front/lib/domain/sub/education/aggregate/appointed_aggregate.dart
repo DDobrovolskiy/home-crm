@@ -12,12 +12,14 @@ class AppointedAggregate extends Aggregate {
   late DateTime? deadline;
   late List<SessionAggregate> sessions;
   final int employeeId;
+  final int? testId;
 
   AppointedAggregate({
     this.id,
     this.deadline,
     List<SessionAggregate>? sessions,
     required this.employeeId,
+    required this.testId,
   }) : sessions = sessions ?? [];
 
   @override
@@ -27,6 +29,7 @@ class AppointedAggregate extends Aggregate {
       'deadline': deadline,
       'sessions': sessions.map((q) => q.toJson()).toList(),
       'employeeId': employeeId,
+      'testId': testId,
     };
   }
 
@@ -38,6 +41,7 @@ class AppointedAggregate extends Aggregate {
           .map((e) => SessionAggregate.fromJson(e as Map<String, dynamic>))
           .toList(),
       employeeId: (json['employeeId'] as num).toInt(),
+      testId: (json['testId'] as num?)?.toInt(),
     );
   }
 

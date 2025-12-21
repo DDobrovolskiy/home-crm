@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:home_crm_front/theme/theme.dart';
 
@@ -14,6 +15,12 @@ enum StatusDoc {
     description: 'ГОТОВ',
     ready: true,
     color: Colors.green,
+    colorText: Colors.white,
+  ),
+  ARCHIVE(
+    description: 'АРХИВ',
+    ready: false,
+    color: Color(0xFF6C52DC),
     colorText: Colors.white,
   ),
   WAIT(
@@ -128,6 +135,54 @@ class CustomStatusDoc extends StatelessWidget {
         child: Text(
           status.description,
           style: CustomColors.getLabelSmall(context, status.colorText),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomStatusDocChange<T> extends StatelessWidget {
+  final StatusDoc init;
+  final Map<StatusDoc, String? Function(T)> map;
+  final ValueChanged<MapEntry<StatusDoc, String? Function(T)>?> onChanged;
+
+  const CustomStatusDocChange({
+    super.key,
+    required this.init,
+    required this.map,
+    required this.onChanged,
+  });
+
+  Widget build(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        customButton: CustomStatusDoc(status: init),
+        items: map.entries
+            .map(
+              (entry) =>
+                  DropdownMenuItem<MapEntry<StatusDoc, String? Function(T)>>(
+                    value: entry,
+                    child: CustomStatusDoc(status: entry.key),
+                  ),
+            )
+            .toList(),
+        onChanged: onChanged,
+        buttonStyleData: ButtonStyleData(
+          // This is necessary for the ink response to match our customButton radius.
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          width: 120,
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: CustomColors.getPrimaryBackground(context),
+          ),
+          offset: const Offset(40, -4),
+        ),
+        menuItemStyleData: MenuItemStyleData(
+          customHeights: [...List<double>.filled(map.length, 24)],
+          padding: const EdgeInsets.only(left: 16, right: 16),
         ),
       ),
     );

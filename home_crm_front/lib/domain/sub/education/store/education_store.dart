@@ -51,11 +51,13 @@ class EducationStore extends IsHasError {
               answers: 2,
             ),
           ],
+          testId: 1,
         ),
         AppointedAggregate(
           employeeId: 13,
           deadline: DateTime.now(),
           sessions: [],
+          testId: 1,
         ),
       ],
     ),
@@ -98,6 +100,7 @@ class EducationStore extends IsHasError {
       try {
         //тут репа
         load = true;
+        tests.clear();
         testList.forEach((e) {
           tests[e.id!] = e;
         });
@@ -139,13 +142,16 @@ class EducationStore extends IsHasError {
     return load;
   }
 
-  void save(TestAggregate test) {
-    if (test.id == null) {
-      test.id = 3;
-      testList.add(test);
-    } else {
-      testList.add(test);
-    }
+  void save(List<TestAggregate> tests) {
+    tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
+    testList.addAll(tests);
+    refresh(Loaded.ifLoad);
+  }
+
+  void delete(Set<int> ids) {
+    print(ids);
+    testList.removeWhere((t) => ids.contains(t.id));
+    print(testList);
     refresh(Loaded.ifLoad);
   }
 }

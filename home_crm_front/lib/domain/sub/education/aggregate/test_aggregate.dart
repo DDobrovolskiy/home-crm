@@ -7,6 +7,7 @@ import 'appointed_aggregate.dart';
 
 class TestAggregate extends Aggregate {
   late int? id;
+  late bool active;
   late String? name;
   late String? description;
   late StatusDoc status;
@@ -18,6 +19,7 @@ class TestAggregate extends Aggregate {
 
   TestAggregate({
     this.id,
+    this.active = true,
     this.name = 'Новый тест',
     this.description,
     this.status = StatusDoc.DRAFT,
@@ -33,6 +35,7 @@ class TestAggregate extends Aggregate {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'active': active,
       'name': name,
       'description': description,
       'status': status.name,
@@ -47,6 +50,7 @@ class TestAggregate extends Aggregate {
   factory TestAggregate.fromJson(Map<String, dynamic> json) {
     return TestAggregate(
       id: (json['id'] as num?)?.toInt(),
+      active: json['active'] as bool,
       name: json['name'] as String,
       description: json['description'] as String?,
       status: StatusDoc.fromJson(json['status'] as String),
@@ -81,17 +85,26 @@ class TestAggregate extends Aggregate {
       return 'Количество ответов должено быть больше 0';
     }
     status = StatusDoc.READY;
+    active = true;
     return null;
   }
 
   String? doDraft() {
     status = StatusDoc.DRAFT;
+    active = true;
+    return null;
+  }
+
+  String? doArchive() {
+    status = StatusDoc.ARCHIVE;
+    active = false;
     return null;
   }
 
   Map<StatusDoc, String? Function(TestAggregate)> statuses = {
     StatusDoc.DRAFT: (t) => t.doDraft(),
     StatusDoc.READY: (t) => t.doReady(),
+    StatusDoc.ARCHIVE: (t) => t.doArchive(),
   };
 
   @override

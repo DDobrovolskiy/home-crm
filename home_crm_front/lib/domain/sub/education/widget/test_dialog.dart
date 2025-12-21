@@ -86,10 +86,13 @@ class _TestDialogState extends State<TestDialog> {
                         if (error != null) {
                           Stamp.showTemporarySnackbar(context, error);
                         } else {
-                          GetIt.I.get<EducationStore>().save(test);
+                          GetIt.I.get<EducationStore>().save([test]);
                           GetIt.I.get<SheetElementDeleteCallback>().call(
                             widget.getName(),
                           );
+                          setState(() {
+
+                          });
                         }
                       }
                     },
@@ -99,7 +102,7 @@ class _TestDialogState extends State<TestDialog> {
                   padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
                   child: IconButton(
                     onPressed: () async {
-                      GetIt.I.get<EducationStore>().save(test);
+                      GetIt.I.get<EducationStore>().save([test]);
                     },
                     color: CustomColors.getSecondaryText(context),
                     icon: Icon(
@@ -130,7 +133,7 @@ class _TestDialogState extends State<TestDialog> {
                             Stamp.showTemporarySnackbar(context, s);
                           } else {
                             setState(() {
-                              GetIt.I.get<EducationStore>().save(test);
+                              GetIt.I.get<EducationStore>().save([test]);
                             });
                           }
                         },
@@ -918,7 +921,8 @@ class _TestDialogState extends State<TestDialog> {
                   print(value);
                   setState(() {
                     test.appointed.add(
-                      AppointedAggregate(employeeId: value!.id),
+                      AppointedAggregate(
+                          employeeId: value!.id, testId: test.id),
                     );
                   });
                 },
@@ -931,50 +935,4 @@ class _TestDialogState extends State<TestDialog> {
   }
 }
 
-class CustomStatusDocChange<T> extends StatelessWidget {
-  final StatusDoc init;
-  final Map<StatusDoc, String? Function(T)> map;
-  final ValueChanged<MapEntry<StatusDoc, String? Function(T)>?> onChanged;
 
-  const CustomStatusDocChange({
-    super.key,
-    required this.init,
-    required this.map,
-    required this.onChanged,
-  });
-
-  Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton2(
-        customButton: CustomStatusDoc(status: init),
-        items: map.entries
-            .map(
-              (entry) =>
-                  DropdownMenuItem<MapEntry<StatusDoc, String? Function(T)>>(
-                    value: entry,
-                    child: CustomStatusDoc(status: entry.key),
-                  ),
-            )
-            .toList(),
-        onChanged: onChanged,
-        buttonStyleData: ButtonStyleData(
-          // This is necessary for the ink response to match our customButton radius.
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
-        ),
-        dropdownStyleData: DropdownStyleData(
-          width: 120,
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: CustomColors.getPrimaryBackground(context),
-          ),
-          offset: const Offset(40, -4),
-        ),
-        menuItemStyleData: MenuItemStyleData(
-          customHeights: [...List<double>.filled(map.length, 24)],
-          padding: const EdgeInsets.only(left: 16, right: 16),
-        ),
-      ),
-    );
-  }
-}
