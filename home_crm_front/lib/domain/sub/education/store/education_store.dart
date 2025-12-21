@@ -41,7 +41,7 @@ class EducationStore extends IsHasError {
       appointed: [
         AppointedAggregate(
           active: true,
-          employeeId: 11,
+          employeeId: 1,
           deadline: DateTime.now(),
           sessions: [
             SessionAggregate(

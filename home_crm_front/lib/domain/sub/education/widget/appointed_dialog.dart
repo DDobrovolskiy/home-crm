@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/session_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/label/label_page.dart';
@@ -125,9 +126,10 @@ class _TestDialogState extends State<AppointedDialog> {
         contents: appointed.sessions.isEmpty
             ? [(key) => CustomTabView(name: 'Инфо', child: empty())]
             : appointed.sessions
-                  .map(
-                    (s) => ((key) =>
-                        CustomTabView(name: s.getNewName(), child: session(s))),
+            .mapIndexed((index, s) =>
+        ((key) =>
+            CustomTabView(
+                name: '${s.getAbbreviate()}-${index + 1}', child: session(s))),
                   )
                   .toList(),
       );
@@ -160,8 +162,13 @@ class _TestDialogState extends State<AppointedDialog> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
       child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
+          Container(
+            width: double.infinity,
+            constraints: BoxConstraints(maxWidth: Screen.getMaxWidth()),
+            child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,7 +186,7 @@ class _TestDialogState extends State<AppointedDialog> {
                 session.success ? 'Успешный' : 'Неуспешный',
               ),
             ],
-          ),
+            ),),
         ],
       ),
     );
