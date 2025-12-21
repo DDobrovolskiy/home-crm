@@ -40,10 +40,20 @@ class OrganizationTestsPage extends SheetPage {
 class _OrganizationTestsPageState extends State<OrganizationTestsPage>
     with AutomaticKeepAliveClientMixin<OrganizationTestsPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
-  SheetPage? _sidePanel;
   bool showSidePanel = true;
   Set<int> selectIds = {};
   bool showArchive = false;
+  TestAggregate? _testSidePanel;
+
+  TestDialog create(TestAggregate test, {bool isSidePanel = false}) {
+    return TestDialog(
+      key: Key('${test.getName()}-${DateTime
+          .now()
+          .toIso8601String()}'),
+      test: test,
+      isSidePanel: isSidePanel,
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -82,9 +92,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        if (_sidePanel != null) {
+                        if (_testSidePanel != null) {
                           GetIt.I.get<SheetElementAddCallback>().call(
-                            _sidePanel!,
+                            create(_testSidePanel!),
                           );
                         }
                       });
@@ -97,13 +107,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
           if (showSidePanel && tests.isNotEmpty && Screen.isSidePanel(context))
             SizedBox(
               width: 700,
-              child: _sidePanel ??= TestDialog(
-                key: Key('${tests[0].getName()}-${DateTime
-                    .now()
-                    .toIso8601String()}'),
-                test: tests[0],
-              ),
-              // TestDialog(key: Key(tests[0].name), test: tests[0]),
+              child: create(_testSidePanel ??= tests[0], isSidePanel: true),
             ),
         ],
       );
@@ -211,6 +215,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                                   .toList();
                               GetIt.I.get<EducationStore>().save(list);
                               setState(() {
+                                if (selectIds.contains(_testSidePanel?.id)) {
+                                  _testSidePanel = null;
+                                }
                                 selectIds.clear();
                               });
                             },
@@ -223,6 +230,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                           : () {
                               GetIt.I.get<EducationStore>().delete(selectIds);
                               setState(() {
+                                if (selectIds.contains(_testSidePanel?.id)) {
+                                  _testSidePanel = null;
+                                }
                                 selectIds.clear();
                               });
                             },
@@ -306,23 +316,11 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                         CheckScope(
                           onTrue: () {
                             setState(() {
-                              if (Screen.isSidePanel(context)) {
-                                _sidePanel = TestDialog(
-                                  key: Key('${test.getName()}-${DateTime
-                                      .now()
-                                      .toIso8601String()}'),
-                                  test: test,
-                                );
-                              } else {
+                              _testSidePanel = test;
+                              if (!Screen.isSidePanel(context)) {
                                 setState(() {
-                                  _sidePanel = TestDialog(
-                                    key: Key('${test.getName()}-${DateTime
-                                        .now()
-                                        .toIso8601String()}'),
-                                    test: test,
-                                  );
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                    _sidePanel!,
+                                      create(test)
                                   );
                                 });
                               }

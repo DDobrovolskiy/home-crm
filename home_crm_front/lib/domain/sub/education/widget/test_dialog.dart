@@ -36,8 +36,9 @@ class TestDialog extends SheetPage {
   }
 
   final TestAggregate test;
+  final bool isSidePanel;
 
-  const TestDialog({super.key, required this.test});
+  const TestDialog({super.key, required this.test, this.isSidePanel = false});
 
   @override
   _TestDialogState createState() => _TestDialogState();
@@ -80,63 +81,78 @@ class _TestDialogState extends State<TestDialog> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      alignment: WrapAlignment.start,
-                      runAlignment: WrapAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                          child: CustomButtonDisplay(
-                            primary: true,
-                            text: 'Готов и закрыть',
-                            onPressed: () async {
-                              if (validator()) {
-                                var error = test.doReady();
-                                if (error != null) {
-                                  Stamp.showTemporarySnackbar(context, error);
-                                } else {
-                                  GetIt.I.get<EducationStore>().save([test]);
-                                  GetIt.I
-                                      .get<SheetElementDeleteCallback>()
-                                      .call(
-                                    widget.getName(),
-                                  );
-                                  setState(() {
-
-                                  });
+                    if (!widget.isSidePanel)
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.start,
+                        runAlignment: WrapAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                            child: CustomButtonDisplay(
+                              primary: true,
+                              text: 'Утвердить и закрыть',
+                              onPressed: () async {
+                                if (validator()) {
+                                  var error = test.doReady();
+                                  if (error != null) {
+                                    Stamp.showTemporarySnackbar(context, error);
+                                  } else {
+                                    GetIt.I.get<EducationStore>().save([test]);
+                                    GetIt.I
+                                        .get<SheetElementDeleteCallback>()
+                                        .call(widget.getName());
+                                    setState(() {});
+                                  }
                                 }
-                              }
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                          child: IconButton(
-                            onPressed: () async {
-                              GetIt.I.get<EducationStore>().save([test]);
-                            },
-                            color: CustomColors.getSecondaryText(context),
-                            icon: Icon(
-                              Icons.save,
-                              size: Screen.isWeb(context) ? 44 : 22,
+                              },
                             ),
                           ),
-                        ),
-                      ],
-                  ),
+                          Padding(
+                            padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                            child: IconButton(
+                              onPressed: () async {
+                                GetIt.I.get<EducationStore>().save([test]);
+                              },
+                              color: CustomColors.getSecondaryText(context),
+                              tooltip: 'Сохранить',
+                              icon: Icon(
+                                Icons.save,
+                                size: Screen.isWeb(context) ? 44 : 22,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.start,
                       children: [
+                        if (widget.isSidePanel)
+                          Padding(
+                            padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                            child: IconButton(
+                              onPressed: () async {
+                                GetIt.I.get<EducationStore>().save([test]);
+                              },
+                              color: CustomColors.getSecondaryText(context),
+                              tooltip: 'Сохранить',
+                              icon: Icon(
+                                Icons.save,
+                                size: Screen.isWeb(context) ? 44 : 22,
+                              ),
+                            ),
+                          ),
                         Text(
                           widget.getName(),
                           textAlign: TextAlign.start,
                           style: Screen.isWeb(context)
                               ? CustomColors.getDisplaySmall(context, null)
                               : CustomColors.getDisplaySmallButtonIsWeb(
-                              context, null),
+                                  context,
+                                  null,
+                                ),
                         ),
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(15, 0, 0, 0),
@@ -144,23 +160,30 @@ class _TestDialogState extends State<TestDialog> {
                             init: test.status,
                             map: test.statuses,
                             onChanged:
-                                (MapEntry<StatusDoc,
-                                String? Function(TestAggregate)>?
-                            value,) {
-                              var s = value?.value(test);
-                              if (s != null) {
-                                Stamp.showTemporarySnackbar(context, s);
-                              } else {
-                                setState(() {
-                                  GetIt.I.get<EducationStore>().save([test]);
-                                });
-                              }
-                            },
+                                (
+                                  MapEntry<
+                                    StatusDoc,
+                                    String? Function(TestAggregate)
+                                  >?
+                                  value,
+                                ) {
+                                  var s = value?.value(test);
+                                  if (s != null) {
+                                    Stamp.showTemporarySnackbar(context, s);
+                                  } else {
+                                    setState(() {
+                                      GetIt.I.get<EducationStore>().save([
+                                        test,
+                                      ]);
+                                    });
+                                  }
+                                },
                           ),
                         ),
                       ],
-                    )
-                  ],),
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -921,9 +944,7 @@ class _TestDialogState extends State<TestDialog> {
                           status: appointed[i].isStatus(iteration),
                         ),
                         const SizedBox(height: 2),
-                        CustomStatusDoc(
-                          status: appointed[i].isActive(),
-                        ),
+                        CustomStatusDoc(status: appointed[i].isActive()),
                       ],
                     ),
                   ),
@@ -949,7 +970,9 @@ class _TestDialogState extends State<TestDialog> {
                   setState(() {
                     test.addAppointed(
                       AppointedAggregate(
-                          employeeId: value!.id, testId: test.id),
+                        employeeId: value!.id,
+                        testId: test.id,
+                      ),
                     );
                   });
                 },
@@ -961,5 +984,3 @@ class _TestDialogState extends State<TestDialog> {
     );
   }
 }
-
-

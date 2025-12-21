@@ -58,12 +58,12 @@ class AppointedAggregate extends Aggregate {
 
   @override
   String getNewName() {
-    return 'Новое назначение';
+    return 'Новое тестирование';
   }
 
   @override
   String getAbbreviate() {
-    return 'НАЗЧ';
+    return 'ТЕСТИРОВАНИЕ';
   }
 
   bool isBegin() {

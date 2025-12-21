@@ -62,7 +62,7 @@ class _TestDialogState extends State<AppointedDialog> {
                             padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
                             child: CustomButtonDisplay(
                               primary: true,
-                              text: 'Приступить к тестированию',
+                              text: 'Приступить',
                               onPressed: () async {
                                 if (validator()) {
                                   // var error = test.doReady();
@@ -136,16 +136,20 @@ class _TestDialogState extends State<AppointedDialog> {
 
   Widget empty() {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
+      padding: EdgeInsetsDirectional.all(10),
       child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              createLabelRow('Результат тестирования:', 'Не проводилось'),
-            ],
+          Icon(
+            Icons.text_snippet_outlined,
+            size: 44,
+            color: CustomColors.getSecondaryText(context),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Здесь будут результаты тестирования',
+            style: CustomColors.getLabelMedium(context, null),
           ),
         ],
       ),

@@ -26,8 +26,10 @@ class CustomDialog {
 class DialogPage extends StatefulWidget {
   final Widget Function(bool Function())? label;
   final List<CustomTabView Function(GlobalKey<FormState>)> contents;
+  final Widget? footer;
 
-  const DialogPage({super.key, this.label, required this.contents});
+  const DialogPage(
+      {super.key, this.label, required this.contents, this.footer,});
 
   @override
   _DialogPageState createState() => _DialogPageState();
@@ -117,6 +119,7 @@ class _DialogPageState extends State<DialogPage>
                   ),
                 ),
               ),
+              if(widget.footer != null) widget.footer!,
             ],
           );
         });
