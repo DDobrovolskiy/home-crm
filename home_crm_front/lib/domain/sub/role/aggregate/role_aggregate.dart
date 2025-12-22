@@ -43,22 +43,11 @@ class RoleAggregate extends Aggregate {
   }
 
   @override
-  int? getId() {
-    return id;
-  }
-
-  @override
   String getNewName() {
     return 'Новая роль';
   }
 
   @override
-  int getVersion() {
-    return version;
-  }
-
-  @override
-  String getCreatedAt() {
-    return createdAt;
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(super.key, name, description, owner, scopeIds);
 }

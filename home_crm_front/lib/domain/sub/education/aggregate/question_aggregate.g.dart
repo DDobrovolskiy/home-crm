@@ -25,5 +25,5 @@ Map<String, dynamic> _$QuestionAggregateToJson(QuestionAggregate instance) =>
       'version': instance.version,
       'createdAt': instance.createdAt,
       'text': instance.text,
-      'options': instance.options,
+      'options': instance.options.map((e) => e.toJson()).toList(),
     };

@@ -40,6 +40,6 @@ Map<String, dynamic> _$TestAggregateToJson(TestAggregate instance) =>
       'timeLimitMinutes': instance.timeLimitMinutes,
       'iteration': instance.iteration,
       'answerCount': instance.answerCount,
-      'questions': instance.questions,
-      'appointed': instance.appointed,
+      'questions': instance.questions.map((e) => e.toJson()).toList(),
+      'appointed': instance.appointed.map((e) => e.toJson()).toList(),
     };

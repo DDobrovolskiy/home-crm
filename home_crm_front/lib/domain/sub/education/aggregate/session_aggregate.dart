@@ -38,4 +38,8 @@ class SessionAggregate extends Aggregate {
   String getAbbreviate() {
     return 'СЕССИЯ';
   }
+
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(super.key, dateStart, dateEnd, success, answers);
 }

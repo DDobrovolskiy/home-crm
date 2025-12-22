@@ -43,14 +43,23 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
   bool showSidePanel = true;
   Set<int> selectIds = {};
   bool showArchive = false;
-  TestAggregate? _testSidePanel;
+  int? _idSidePanel;
 
-  TestDialog create(TestAggregate test, {bool isSidePanel = false}) {
+  TestDialog create(Map<int, TestAggregate> tests,
+      int? id, {
+        bool isSidePanel = false,
+      }) {
+    if (tests.containsKey(id)) {
+      return TestDialog(
+        key: tests[id]!.getKey(),
+        test: tests[id]!,
+        isSidePanel: isSidePanel,
+      );
+    }
+    var first = tests.keys.first;
     return TestDialog(
-      key: Key('${test.getName()}-${DateTime
-          .now()
-          .toIso8601String()}'),
-      test: test,
+      key: tests[first]!.getKey(),
+      test: tests[first]!,
       isSidePanel: isSidePanel,
     );
   }
@@ -65,14 +74,14 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
   }
 
   Widget _content(BuildContext context) {
-    return CustomLoad.load(GetIt.I.get<EducationStore>().getAll(), (
+    return CustomLoad.load(GetIt.I.get<EducationStore>().getAllMap(), (
       BuildContext context,
       tests,
     ) {
       return Row(
         children: [
           Expanded(child: _table(context, tests)),
-          if (Screen.isSidePanel(context))
+          if (tests.isNotEmpty && Screen.isSidePanel(context))
             Align(
               alignment: Alignment.topCenter,
               child: Column(
@@ -92,11 +101,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        if (_testSidePanel != null) {
-                          GetIt.I.get<SheetElementAddCallback>().call(
-                            create(_testSidePanel!),
-                          );
-                        }
+                        GetIt.I.get<SheetElementAddCallback>().call(
+                          create(tests, _idSidePanel),
+                        );
                       });
                     },
                     icon: Icon(Icons.open_in_browser),
@@ -107,14 +114,14 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
           if (showSidePanel && tests.isNotEmpty && Screen.isSidePanel(context))
             SizedBox(
               width: 700,
-              child: create(_testSidePanel ??= tests[0], isSidePanel: true),
+              child: create(tests, _idSidePanel, isSidePanel: true),
             ),
         ],
       );
     });
   }
 
-  Widget _table(BuildContext context, List<TestAggregate> tests) {
+  Widget _table(BuildContext context, Map<int, TestAggregate> tests) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxHeight < 150) {
@@ -206,17 +213,18 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                       onPressed: selectIds.isEmpty
                           ? null
                           : () {
-                              var list = tests
-                                  .where((t) => selectIds.contains(t.id))
-                                  .map((t) {
-                                    t.doArchive();
+                        var list = selectIds
+                            .map((i) {
+                          var t = tests[i];
+                          t?.doArchive();
                                     return t;
                                   })
+                            .nonNulls
                                   .toList();
                               GetIt.I.get<EducationStore>().save(list);
                               setState(() {
-                                if (selectIds.contains(_testSidePanel?.id)) {
-                                  _testSidePanel = null;
+                                if (selectIds.contains(_idSidePanel)) {
+                                  _idSidePanel = null;
                                 }
                                 selectIds.clear();
                               });
@@ -230,8 +238,8 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                           : () {
                               GetIt.I.get<EducationStore>().delete(selectIds);
                               setState(() {
-                                if (selectIds.contains(_testSidePanel?.id)) {
-                                  _testSidePanel = null;
+                                if (selectIds.contains(_idSidePanel)) {
+                                  _idSidePanel = null;
                                 }
                                 selectIds.clear();
                               });
@@ -259,7 +267,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                             if (value) {
                               setState(() {
                                 selectIds.addAll(
-                                  tests.map((t) => t.id!).toList(),
+                                  tests.keys,
                                 );
                               });
                             } else {
@@ -307,7 +315,9 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                   ],
                 ),
                 rows: [
-                  ...tests.where((t) => t.active == true || showArchive).mapIndexed((
+                  ...tests.values
+                      .where((t) => t.active == true || showArchive)
+                      .mapIndexed((
                     index,
                     test,
                   ) {
@@ -317,11 +327,11 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                         CheckScope(
                           onTrue: () {
                             setState(() {
-                              _testSidePanel = test;
+                              _idSidePanel = test.id!;
                               if (!Screen.isSidePanel(context)) {
                                 setState(() {
                                   GetIt.I.get<SheetElementAddCallback>().call(
-                                      create(test)
+                                    create(tests, _idSidePanel),
                                   );
                                 });
                               }
@@ -406,30 +416,32 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                               textVisibleAlways: true,
                               body: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
+                                mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   for (final appoint in test.appointed)
-                                    Wrap(
-                                      // mainAxisSize: MainAxisSize.max,
-                                      // mainAxisAlignment: MainAxisAlignment.start,
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .start,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsetsGeometry.symmetric(
-                                            vertical: 2,
-                                          ),
+                                          padding: EdgeInsetsGeometry.all(5),
                                           child: CustomLoad.load(
                                             appoint.getEmployee(),
                                             (context, emp) {
-                                              return Wrap(
+                                              return Column(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment
+                                                    .start,
                                                 children: [
                                                   Text(
                                                     '${emp?.user.name}',
-                                                    style:
-                                                        CustomColors.getLabelMedium(
-                                                          context,
-                                                          null,
-                                                        ),
+                                                    style: CustomColors
+                                                        .getBodyLarge(
+                                                        context, null),
                                                   ),
                                                   CustomLoad.load(emp!.getRole(), (
                                                     BuildContext context,
@@ -437,11 +449,11 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                                                   ) {
                                                     return Padding(
                                                       padding:
-                                                          EdgeInsetsDirectional.symmetric(
-                                                            horizontal: 2,
-                                                          ),
+                                                      EdgeInsetsDirectional
+                                                          .symmetric(
+                                                          vertical: 0),
                                                       child: Text(
-                                                        '[${role?.name}]',
+                                                        '${role?.name}',
                                                         style:
                                                             CustomColors.getLabelSmall(
                                                               context,

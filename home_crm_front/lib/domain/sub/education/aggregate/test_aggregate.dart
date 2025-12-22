@@ -128,4 +128,19 @@ class TestAggregate extends Aggregate {
       return false;
     }
   }
+
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(
+    super.key,
+    name,
+    description,
+    status,
+    timeLimitMinutes,
+    iteration,
+    answerCount,
+    questions,
+    appointed,
+    statuses,
+  );
 }

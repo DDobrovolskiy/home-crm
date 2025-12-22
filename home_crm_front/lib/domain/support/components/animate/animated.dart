@@ -22,7 +22,6 @@ class _AnimatedWrapperState extends State<AnimatedWrapper>
   void initState() {
     super.initState();
     animationInfo = widget.animationInfo;
-    print('init');
     animationInfo.initState(this);
 
     // _controller = AnimationController(

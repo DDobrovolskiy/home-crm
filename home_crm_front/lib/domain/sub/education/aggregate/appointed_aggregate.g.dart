@@ -29,7 +29,7 @@ Map<String, dynamic> _$AppointedAggregateToJson(AppointedAggregate instance) =>
       'version': instance.version,
       'createdAt': instance.createdAt,
       'deadline': instance.deadline?.toIso8601String(),
-      'sessions': instance.sessions,
+      'sessions': instance.sessions.map((e) => e.toJson()).toList(),
       'employeeId': instance.employeeId,
       'testId': instance.testId,
     };

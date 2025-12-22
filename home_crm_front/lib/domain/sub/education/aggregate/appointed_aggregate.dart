@@ -86,4 +86,8 @@ class AppointedAggregate extends Aggregate {
   LoadStore<TestAggregate?> getTest() {
     return GetIt.I.get<EducationStore>().get(testId!);
   }
+
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(super.key, deadline, sessions, employeeId, testId);
 }

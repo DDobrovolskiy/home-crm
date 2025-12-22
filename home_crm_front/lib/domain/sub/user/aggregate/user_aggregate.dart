@@ -38,4 +38,8 @@ class UserAggregate extends Aggregate {
   String getNewName() {
     return 'Новый пользователь';
   }
+
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(super.key, name, patronymic, phone);
 }

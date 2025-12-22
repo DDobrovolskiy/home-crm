@@ -265,6 +265,11 @@ class EducationStore extends IsHasError {
     return LoadStore(value: () => _all(), callback: loadCallback);
   }
 
+  LoadStore<Map<int, TestAggregate>> getAllMap() {
+    return LoadStore(value: () async => (await refresh(Loaded.ifNotLoad)),
+        callback: loadCallback);
+  }
+
   Future<TestAggregate?> _id(int id) async {
     var testAggregate = (await refresh(Loaded.ifNotLoad))[id];
     return testAggregate;

@@ -44,4 +44,8 @@ class EmployeeAggregate extends Aggregate {
   String getNewName() {
     return 'Новый сотрудник';
   }
+
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(super.key, user, roleId);
 }

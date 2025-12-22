@@ -25,7 +25,9 @@ abstract class Aggregate {
     }
   }
 
+  int get key => Object.hash(id, active, version, createdAt);
+
   Key getKey() {
-    return Key('${getNumber()}-$createdAt');
+    return ValueKey<int>(key);
   }
 }

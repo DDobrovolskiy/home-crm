@@ -41,4 +41,8 @@ class OptionAggregate extends Aggregate {
     }
     return null;
   }
+
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get key => Object.hash(super.key, text, correct);
 }
