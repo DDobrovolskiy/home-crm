@@ -243,7 +243,7 @@ class _TestDialogState extends State<TestDialog> {
                       },
                       onChanged: (value) {
                         setState(() {
-                          test.name = value;
+                          test.setName(value);
                         });
                       },
                     ),
@@ -862,6 +862,7 @@ class _TestDialogState extends State<TestDialog> {
       rows: [
         for (int i = 0; i < appointed.length; i++)
           HoveredRegion(
+            key: appointed[i].getKey(),
             onTap: () async {},
             child: (isHovered) {
               return CustomTableRow(

@@ -1,33 +1,37 @@
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/role/aggregate/role_aggregate.dart';
 import 'package:home_crm_front/domain/sub/role/store/role_store.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 import '../../../support/components/load/custom_load.dart';
 import '../../user/aggregate/user_aggregate.dart';
 
+part 'employee_aggregate.g.dart';
+
+@JsonSerializable()
 class EmployeeAggregate extends Aggregate {
-  final int? id;
   late UserAggregate user;
   late int roleId;
 
-  EmployeeAggregate({this.id, required this.user, required this.roleId});
+  EmployeeAggregate({
+    super.id,
+    super.active,
+    super.version,
+    super.createdAt,
+    required this.user,
+    required this.roleId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return _$EmployeeAggregateToJson(this);
+  }
+
+  factory EmployeeAggregate.fromJson(Map<String, dynamic> json) =>
+      _$EmployeeAggregateFromJson(json);
 
   LoadStore<RoleAggregate?> getRole() {
     return GetIt.I.get<RoleStore>().get(roleId);
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'user': user.toJson(), 'roleId': roleId};
-  }
-
-  factory EmployeeAggregate.fromJson(Map<String, dynamic> json) {
-    return EmployeeAggregate(
-      id: (json['id'] as num?)?.toInt(),
-      user: UserAggregate.fromJson(json['user'] as Map<String, dynamic>),
-      roleId: (json['roleId'] as num).toInt(),
-    );
   }
 
   @override
@@ -35,10 +39,6 @@ class EmployeeAggregate extends Aggregate {
     return 'СОТРУДНИК';
   }
 
-  @override
-  int? getId() {
-    return id;
-  }
 
   @override
   String getNewName() {

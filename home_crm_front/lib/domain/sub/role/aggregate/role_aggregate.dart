@@ -1,23 +1,25 @@
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/scope/store/scope_store.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 import '../../../support/components/load/custom_load.dart';
 import '../../scope/aggregate/scope_aggregate.dart';
 
+part 'role_aggregate.g.dart';
+
+@JsonSerializable()
 class RoleAggregate extends Aggregate {
-  late int? id;
-  late bool active;
-  late int version;
   late String name;
   late String? description;
   late bool owner;
   late Set<int> scopeIds;
 
   RoleAggregate({
-    this.id,
-    this.active = true,
-    this.version = 0,
+    super.id,
+    super.active,
+    super.version,
+    super.createdAt,
     required this.name,
     this.description,
     this.owner = false,
@@ -28,32 +30,12 @@ class RoleAggregate extends Aggregate {
     return GetIt.I.get<ScopeStore>().gets(scopeIds);
   }
 
-  @override
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'active': active,
-      'version': version,
-      'name': name,
-      'description': description,
-      'owner': owner,
-      'scopeIds': scopeIds.map((e) => e.toString()).toList(),
-    };
+    return _$RoleAggregateToJson(this);
   }
 
-  factory RoleAggregate.fromJson(Map<String, dynamic> json) {
-    return RoleAggregate(
-      id: (json['id'] as num?)?.toInt(),
-      active: json['active'] as bool? ?? true,
-      version: (json['version'] as num?)?.toInt() ?? 0,
-      name: json['name'] as String? ?? '',
-      description: json['description'] as String?,
-      owner: json['owner'] as bool? ?? false,
-      scopeIds: (json['scopeIds'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toSet(),
-    );
-  }
+  factory RoleAggregate.fromJson(Map<String, dynamic> json) =>
+      _$RoleAggregateFromJson(json);
 
   @override
   String getAbbreviate() {
@@ -68,5 +50,15 @@ class RoleAggregate extends Aggregate {
   @override
   String getNewName() {
     return 'Новая роль';
+  }
+
+  @override
+  int getVersion() {
+    return version;
+  }
+
+  @override
+  String getCreatedAt() {
+    return createdAt;
   }
 }

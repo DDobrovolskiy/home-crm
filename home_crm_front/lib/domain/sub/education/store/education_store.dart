@@ -40,6 +40,7 @@ class EducationStore extends IsHasError {
       ],
       appointed: [
         AppointedAggregate(
+          id: 1,
           active: true,
           employeeId: 1,
           deadline: DateTime.now(),
@@ -55,6 +56,7 @@ class EducationStore extends IsHasError {
           testId: 1,
         ),
         AppointedAggregate(
+          id: 2,
           active: true,
           employeeId: 13,
           deadline: DateTime.now(),
@@ -87,6 +89,143 @@ class EducationStore extends IsHasError {
             OptionAggregate(id: 1, text: 'Трогать', correct: false),
             OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
           ],
+        ),
+      ],
+      appointed: [
+        AppointedAggregate(
+          id: 3,
+          active: false,
+          employeeId: 1,
+          deadline: DateTime.now(),
+          sessions: [],
+          testId: 2,
+        ),
+      ],
+    ),
+    TestAggregate(
+      id: 3,
+      name: 'Безопасность',
+      description: 'Вопросы по безопасности',
+      status: StatusDoc.READY,
+      timeLimitMinutes: 20,
+      iteration: 3,
+      answerCount: 2,
+      questions: [
+        QuestionAggregate(
+          id: 1,
+          text: 'Что нельзя делать с проводом?',
+          options: [
+            OptionAggregate(id: 1, text: 'Трогать', correct: false),
+            OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+          ],
+        ),
+        QuestionAggregate(
+          id: 2,
+          text: 'Какие ваши доказательства?',
+          options: [
+            OptionAggregate(id: 1, text: 'Трогать', correct: false),
+            OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+          ],
+        ),
+      ],
+      appointed: [
+        AppointedAggregate(
+          id: 3,
+          active: true,
+          employeeId: 1,
+          deadline: DateTime.now(),
+          sessions: [
+            SessionAggregate(
+              id: 1,
+              dateStart: DateTime.now(),
+              dateEnd: DateTime.now().add(Duration(minutes: 20)),
+              success: false,
+              answers: 2,
+            ),
+          ],
+          testId: 3,
+        ),
+      ],
+    ),
+    TestAggregate(
+      id: 4,
+      name: 'Безопасность',
+      description: 'Вопросы по безопасности',
+      status: StatusDoc.READY,
+      timeLimitMinutes: 20,
+      iteration: 3,
+      answerCount: 2,
+      questions: [
+        QuestionAggregate(
+          id: 1,
+          text: 'Что нельзя делать с проводом?',
+          options: [
+            OptionAggregate(id: 1, text: 'Трогать', correct: false),
+            OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+          ],
+        ),
+        QuestionAggregate(
+          id: 2,
+          text: 'Какие ваши доказательства?',
+          options: [
+            OptionAggregate(id: 1, text: 'Трогать', correct: false),
+            OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+          ],
+        ),
+      ],
+      appointed: [
+        AppointedAggregate(
+          id: 4,
+          active: true,
+          employeeId: 1,
+          deadline: DateTime.tryParse('2025-12-19'),
+          sessions: [],
+          testId: 4,
+        ),
+      ],
+    ),
+    TestAggregate(
+      id: 5,
+      name: 'Охрана труда new',
+      description: 'Вопросы по охране труда',
+      status: StatusDoc.READY,
+      timeLimitMinutes: 20,
+      iteration: 1,
+      answerCount: 2,
+      questions: [
+        QuestionAggregate(
+          id: 1,
+          text: 'Что нельзя делать с проводом?',
+          options: [
+            OptionAggregate(id: 1, text: 'Трогать', correct: false),
+            OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+          ],
+        ),
+        QuestionAggregate(
+          id: 2,
+          text: 'Какие ваши доказательства?',
+          options: [
+            OptionAggregate(id: 1, text: 'Трогать', correct: false),
+            OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+          ],
+        ),
+      ],
+      appointed: [
+        AppointedAggregate(
+          id: 5,
+          active: true,
+          employeeId: 1,
+          deadline: DateTime.now(),
+          sessions: [
+            SessionAggregate(
+              id: 1,
+              dateStart: DateTime.now(),
+              dateEnd: DateTime.now().add(Duration(minutes: 20)),
+              success: false,
+              answers: 2,
+            ),
+          ],
+          testId: 5,
         ),
       ],
     ),
@@ -127,7 +266,8 @@ class EducationStore extends IsHasError {
   }
 
   Future<TestAggregate?> _id(int id) async {
-    return (await refresh(Loaded.ifNotLoad))[id];
+    var testAggregate = (await refresh(Loaded.ifNotLoad))[id];
+    return testAggregate;
   }
 
   LoadStore<TestAggregate?> get(int id) {
@@ -151,9 +291,7 @@ class EducationStore extends IsHasError {
   }
 
   void delete(Set<int> ids) {
-    print(ids);
     testList.removeWhere((t) => ids.contains(t.id));
-    print(testList);
     refresh(Loaded.ifLoad);
   }
 }

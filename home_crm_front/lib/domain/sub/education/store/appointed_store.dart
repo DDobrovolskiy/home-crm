@@ -7,24 +7,18 @@ import '../../../support/service/loaded.dart';
 import '../aggregate/appointed_aggregate.dart';
 
 class AppointedStore extends Store<AppointedAggregate> {
-  final Map<int, AppointedAggregate> tests = {};
-
   @override
   Future<Map<int, AppointedAggregate>> loadData() async {
     await Future.delayed(Duration(seconds: 1));
-    print('loadData');
-    print(tests);
-    tests.clear();
     GetIt.I
         .get<EducationStore>()
         .testList
         .expand((e) => e.appointed)
         .where((a) => a.employeeId == 1)
         .forEach((a) {
-          tests[a.id ??= tests.length + 1] = a;
-          print(a);
+          data[a.id!] = a;
         });
-    return tests;
+    return data;
   }
 
   LoadStore<AppointedAggregate?> get(int id) {

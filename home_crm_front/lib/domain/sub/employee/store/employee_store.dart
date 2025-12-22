@@ -8,7 +8,6 @@ import '../../../support/service/loaded.dart';
 import '../../organization/repository/organization_repository.dart';
 
 class EmployeeStore extends Store<EmployeeAggregate> {
-  final Map<int, EmployeeAggregate> employees = {};
 
   late final OrganizationRepository _organizationRepository = GetIt.I
       .get<OrganizationRepository>();
@@ -35,7 +34,7 @@ class EmployeeStore extends Store<EmployeeAggregate> {
     var organizationEmployee = await _organizationRepository
         .organizationEmployee();
     organizationEmployee?.employees.forEach((e) {
-      employees[e.id] = EmployeeAggregate(
+      data[e.id] = EmployeeAggregate(
         id: e.id,
         user: UserAggregate(
             id: e.user.id, name: e.user.name, phone: e.user.phone),
@@ -43,6 +42,6 @@ class EmployeeStore extends Store<EmployeeAggregate> {
       );
     });
 
-    return employees;
+    return data;
   }
 }

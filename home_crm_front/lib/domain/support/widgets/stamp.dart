@@ -154,7 +154,7 @@ class Stamp {
                           .labelMedium,
                     ),
                     onTap: () {
-                      AutoRouter.of(context).push(OrganizationTestsRoute());
+
                     },
                   ),
                   ListTile(

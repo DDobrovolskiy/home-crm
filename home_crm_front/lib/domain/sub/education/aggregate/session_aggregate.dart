@@ -1,45 +1,33 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import '../../../support/components/aggregate/aggregate.dart';
 
+part 'session_aggregate.g.dart';
+
+@JsonSerializable()
 class SessionAggregate extends Aggregate {
-  final int id;
   final DateTime dateStart;
   final DateTime dateEnd;
   final bool success;
   final int answers;
 
   SessionAggregate({
-    required this.id,
+    super.id,
+    super.active,
+    super.version,
+    super.createdAt,
     required this.dateStart,
     required this.dateEnd,
     required this.success,
     required this.answers,
   });
 
-  @override
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'dateStart': dateStart,
-      'dateEnd': dateEnd,
-      'success': success,
-      'answers': answers,
-    };
+    return _$SessionAggregateToJson(this);
   }
 
-  factory SessionAggregate.fromJson(Map<String, dynamic> json) {
-    return SessionAggregate(
-      id: (json['id'] as num).toInt(),
-      dateStart: json['dateStart'] as DateTime,
-      dateEnd: json['dateEnd'] as DateTime,
-      success: json['success'] as bool,
-      answers: (json['answers'] as num).toInt(),
-    );
-  }
-
-  @override
-  int? getId() {
-    return id;
-  }
+  factory SessionAggregate.fromJson(Map<String, dynamic> json) =>
+      _$SessionAggregateFromJson(json);
 
   @override
   String getNewName() {

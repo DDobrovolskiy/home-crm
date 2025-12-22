@@ -1,41 +1,34 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import '../../../support/components/aggregate/aggregate.dart';
 import 'option_aggregate.dart';
 
+part 'question_aggregate.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class QuestionAggregate extends Aggregate {
-  late int? id;
   late String? text;
   late List<OptionAggregate> options;
 
-  QuestionAggregate({this.id, this.text, List<OptionAggregate>? options})
-    : options = options ?? [];
+  QuestionAggregate({
+    super.id,
+    super.active,
+    super.version,
+    super.createdAt,
+    this.text,
+    List<OptionAggregate>? options,
+  }) : options = options ?? [];
 
-  factory QuestionAggregate.fromJson(Map<String, dynamic> json) {
-    return QuestionAggregate(
-      id: (json['id'] as num?)?.toInt(),
-      text: json['text'] as String?,
-      options: (json['options'] as List<dynamic>)
-          .map((e) => OptionAggregate.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  @override
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text': text,
-      'options': options.map((q) => q.toJson()).toList(),
-    };
+    return _$QuestionAggregateToJson(this);
   }
+
+  factory QuestionAggregate.fromJson(Map<String, dynamic> json) =>
+      _$QuestionAggregateFromJson(json);
 
   @override
   String getAbbreviate() {
     return 'ВОПРОС';
-  }
-
-  @override
-  int? getId() {
-    return id;
   }
 
   @override

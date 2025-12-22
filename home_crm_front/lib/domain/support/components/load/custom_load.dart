@@ -7,8 +7,8 @@ class CustomLoad<T> extends StatefulWidget {
   final Widget Function(BuildContext, T) builder;
 
   static CustomLoad<T> load<T>(LoadStore<T> loader,
-      Widget Function(BuildContext, T) builder) {
-    return CustomLoad(builder: builder, loader: loader,);
+      Widget Function(BuildContext, T) builder, {Key? key}) {
+    return CustomLoad(key: key, builder: builder, loader: loader,);
   }
 
   const CustomLoad({super.key, required this.builder, required this.loader,});

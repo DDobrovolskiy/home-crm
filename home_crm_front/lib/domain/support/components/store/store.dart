@@ -17,6 +17,7 @@ abstract class Store<T> extends IsHasError {
       if (loaded.needLoad(this)) {
         try {
           load = true;
+          data.clear();
           data = await loadData();
           if (loaded != Loaded.ifNotLoad) {
             loadCallback.call();

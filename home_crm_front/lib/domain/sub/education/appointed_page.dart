@@ -267,7 +267,8 @@ class _AppointedPageState extends State<AppointedPage>
                       .where((a) => a.isDone() == false || showDone)
                       .where((a) => a.active || showNotActive)
                       .mapIndexed((index, appoint) {
-                        return CustomLoad.load(appoint.getTest(), (
+                    return CustomLoad.load(
+                        key: appoint.getKey(), appoint.getTest(), (
                           context,
                           test,
                         ) {

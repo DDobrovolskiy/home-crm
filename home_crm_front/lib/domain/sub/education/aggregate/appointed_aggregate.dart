@@ -4,57 +4,38 @@ import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dar
 import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/sub/employee/aggregate/employee_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/status/doc.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 import '../../../support/components/load/custom_load.dart';
 import '../../employee/store/employee_store.dart';
 
+part 'appointed_aggregate.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class AppointedAggregate extends Aggregate {
-  late int? id;
-  late bool active;
   late DateTime? deadline;
   late List<SessionAggregate> sessions;
   final int employeeId;
   final int? testId;
 
   AppointedAggregate({
-    this.id,
-    this.active = false,
+    super.id,
+    super.active,
+    super.version,
+    super.createdAt,
     this.deadline,
     List<SessionAggregate>? sessions,
     required this.employeeId,
     required this.testId,
   }) : sessions = sessions ?? [];
 
-  @override
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'active': active,
-      'deadline': deadline,
-      'sessions': sessions.map((q) => q.toJson()).toList(),
-      'employeeId': employeeId,
-      'testId': testId,
-    };
+    return _$AppointedAggregateToJson(this);
   }
 
-  factory AppointedAggregate.fromJson(Map<String, dynamic> json) {
-    return AppointedAggregate(
-      id: (json['id'] as num?)?.toInt(),
-      active: json['active'] as bool,
-      deadline: json['deadline'] as DateTime?,
-      sessions: (json['sessions'] as List<dynamic>)
-          .map((e) => SessionAggregate.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      employeeId: (json['employeeId'] as num).toInt(),
-      testId: (json['testId'] as num?)?.toInt(),
-    );
-  }
-
-  @override
-  int? getId() {
-    return id;
-  }
+  factory AppointedAggregate.fromJson(Map<String, dynamic> json) =>
+      _$AppointedAggregateFromJson(json);
 
   @override
   String getNewName() {

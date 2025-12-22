@@ -312,6 +312,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                     test,
                   ) {
                     return HoveredRegion(
+                      key: test.getKey(),
                       onTap: () async {
                         CheckScope(
                           onTrue: () {

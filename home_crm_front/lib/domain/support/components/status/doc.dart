@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:home_crm_front/theme/theme.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../button/button.dart';
 
@@ -80,6 +81,21 @@ enum StatusDoc {
     (s) => s.name == json,
     orElse: () => StatusDoc.DRAFT,
   );
+}
+
+class StatusDocConverter implements JsonConverter<StatusDoc, String> {
+  const StatusDocConverter();
+
+  @override
+  StatusDoc fromJson(String json) {
+    return StatusDoc.values.firstWhere(
+      (s) => s.name == json,
+      orElse: () => StatusDoc.DRAFT,
+    );
+  }
+
+  @override
+  String toJson(StatusDoc object) => object.name;
 }
 
 Future<bool?> showStausAlertDialog(

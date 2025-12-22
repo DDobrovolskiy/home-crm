@@ -160,12 +160,14 @@ class _TestDialogState extends State<AppointedDialog> {
 
   Widget session(SessionAggregate session) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(4, 16, 2, 2),
+      padding: EdgeInsetsDirectional.fromSTEB(0, 15, 2, 0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(15, 5, 15, 0),
+            child: Container(
             width: double.infinity,
             constraints: BoxConstraints(maxWidth: Screen.getMaxWidth()),
             child: Row(
@@ -186,7 +188,7 @@ class _TestDialogState extends State<AppointedDialog> {
                 session.success ? 'Успешный' : 'Неуспешный',
               ),
             ],
-            ),),
+            ),),),
         ],
       ),
     );

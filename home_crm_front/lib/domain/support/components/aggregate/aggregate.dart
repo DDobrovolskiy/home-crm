@@ -1,21 +1,31 @@
+import 'package:flutter/cupertino.dart';
+
 abstract class Aggregate {
-  int? getId();
+  late int? id;
+  late bool active;
+  late int version;
+  final String createdAt;
+
+  Aggregate({this.id, this.active = true, this.version = 0, String? createdAt})
+    : createdAt = createdAt ?? DateTime.now().toString();
 
   String getNewName();
 
   String getAbbreviate();
 
   bool isCreate() {
-    return getId() == null;
+    return id == null;
   }
 
   String getNumber() {
-    if (getId() == null) {
+    if (id == null) {
       return getNewName();
     } else {
-      return '${getAbbreviate()}-${getId()}';
+      return '${getAbbreviate()}-$id';
     }
   }
 
-  Map<String, dynamic> toJson();
+  Key getKey() {
+    return Key('${getNumber()}-$createdAt');
+  }
 }

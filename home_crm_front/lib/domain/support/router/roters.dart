@@ -46,7 +46,6 @@ class AppRouter extends RootStackRouter {
           page: NewsRoute.page, path: ''),
       AutoRoute(
           page: OrganizationRolesRoute.page, path: RoutersApp.roles),
-      AutoRoute(page: OrganizationTestsRoute.page, path: RoutersApp.tests),
     ]),
     AutoRoute(
         page: OrganizationEmployeesRoute.page, path: RoutersApp.employees),
