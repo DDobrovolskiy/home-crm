@@ -22,29 +22,27 @@ class CustomTableRow extends StatelessWidget {
         color: hover
             ? CustomColors.getPrimaryBackground(context)
             : CustomColors.getSecondaryBackground(context),
-        boxShadow: [
-          // BoxShadow(
-          //   blurRadius: 4,
-          //   color: CustomColors.getLineColor(context),
-          //   offset: Offset(0, 1),
-          // ),
-        ],
-        // borderRadius: error != null
-        //     ? BorderRadius.all(Radius.circular(8))
-        //     : null,
         border: error != null
             ? Border.fromBorderSide(
                 BorderSide(color: CustomColors.getError(context), width: 2),
               )
             : Border(
-                top: BorderSide(
+                left: BorderSide(
+                  color: CustomColors.getLineColor(context),
+                  width: 1,
+                ),
+                right: BorderSide(
+                  color: CustomColors.getLineColor(context),
+                  width: 1,
+                ),
+                bottom: BorderSide(
                   color: CustomColors.getLineColor(context),
                   width: 1,
                 ),
               ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(vertical: 4),
         child: Column(
           children: [
             Row(mainAxisSize: MainAxisSize.max, children: cells),

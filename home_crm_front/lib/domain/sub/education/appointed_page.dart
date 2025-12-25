@@ -39,11 +39,28 @@ class AppointedPage extends SheetPage {
 class _AppointedPageState extends State<AppointedPage>
     with AutomaticKeepAliveClientMixin<AppointedPage> {
   var organizationCurrentService = GetIt.instance.get<OrganizationService>();
-  SheetPage? _sidePanel;
+  int? _idSidePanel;
   bool showSidePanel = true;
   Set<int> selectIds = {};
   bool showDone = false;
   bool showNotActive = false;
+
+  AppointedDialog create(Map<int, AppointedAggregate> appointedMap,
+      int? id, {
+        bool isSidePanel = false,
+      }) {
+    if (appointedMap.containsKey(id)) {
+      return AppointedDialog(
+          key: appointedMap[id]!.getKey(),
+          appointed: appointedMap[id]!
+      );
+    }
+    var first = appointedMap.keys.first;
+    return AppointedDialog(
+      key: appointedMap[first]!.getKey(),
+      appointed: appointedMap[first]!,
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -55,14 +72,14 @@ class _AppointedPageState extends State<AppointedPage>
   }
 
   Widget _content(BuildContext context) {
-    return CustomLoad.load(GetIt.I.get<AppointedStore>().getAll(), (
+    return CustomLoad.load(GetIt.I.get<AppointedStore>().getAllMap(), (
       BuildContext context,
-      appointed,
+        appointedMap,
     ) {
       return Row(
         children: [
-          Expanded(child: _table(context, appointed)),
-          if (Screen.isSidePanel(context))
+          Expanded(child: _table(context, appointedMap)),
+          if (appointedMap.isNotEmpty && Screen.isSidePanel(context))
             Align(
               alignment: Alignment.topCenter,
               child: Column(
@@ -82,11 +99,9 @@ class _AppointedPageState extends State<AppointedPage>
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        if (_sidePanel != null) {
-                          GetIt.I.get<SheetElementAddCallback>().call(
-                            _sidePanel!,
-                          );
-                        }
+                        GetIt.I.get<SheetElementAddCallback>().call(
+                          create(appointedMap, _idSidePanel),
+                        );
                       });
                     },
                     icon: Icon(Icons.open_in_browser),
@@ -95,22 +110,19 @@ class _AppointedPageState extends State<AppointedPage>
               ),
             ),
           if (showSidePanel &&
-              appointed.isNotEmpty &&
+              appointedMap.isNotEmpty &&
               Screen.isSidePanel(context))
             SizedBox(
               width: 700,
-              child: _sidePanel ??= AppointedDialog(
-                key: Key(appointed[0].getNumber()),
-                appointed: appointed[0],
-              ),
-              // TestDialog(key: Key(tests[0].name), test: tests[0]),
+              child: create(appointedMap, _idSidePanel),
             ),
         ],
       );
     });
   }
 
-  Widget _table(BuildContext context, List<AppointedAggregate> appointed) {
+  Widget _table(BuildContext context,
+      Map<int, AppointedAggregate> appointedMap) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxHeight < 150) {
@@ -263,7 +275,7 @@ class _AppointedPageState extends State<AppointedPage>
                   ],
                 ),
                 rows: [
-                  ...appointed
+                  ...appointedMap.values
                       .where((a) => a.isDone() == false || showDone)
                       .where((a) => a.active || showNotActive)
                       .mapIndexed((index, appoint) {
@@ -272,17 +284,17 @@ class _AppointedPageState extends State<AppointedPage>
                           context,
                           test,
                         ) {
+                      if (test == null) {
+                        return SizedBox.shrink();
+                      }
                           return HoveredRegion(
                             onTap: () async {
                               setState(() {
-                                _sidePanel = AppointedDialog(
-                                  key: Key(appoint.getNumber()),
-                                  appointed: appoint,
-                                );
+                                _idSidePanel = appoint.id;
                                 if (!Screen.isSidePanel(context)) {
                                   setState(() {
                                     GetIt.I.get<SheetElementAddCallback>().call(
-                                      _sidePanel!,
+                                        create(appointedMap, _idSidePanel)
                                     );
                                   });
                                 }
@@ -310,9 +322,9 @@ class _AppointedPageState extends State<AppointedPage>
                                     ),
                                   CustomTableRowCellText(
                                     flex: 2,
-                                    text: test!.getNumber(),
+                                    text: test.getNumber(),
                                     textVisibleAlways: true,
-                                    subText: test!.getName(),
+                                    subText: test.getName(),
                                     subTextVisibleAlways: true,
                                   ),
                                   CustomTableRowCell(

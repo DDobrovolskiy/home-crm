@@ -37,6 +37,11 @@ class AppointedStore extends Store<AppointedAggregate> {
     );
   }
 
+  LoadStore<Map<int, AppointedAggregate>> getAllMap() {
+    return LoadStore(value: () async => (await refresh(Loaded.ifNotLoad)),
+        callback: loadCallback);
+  }
+
   void save(List<AppointedAggregate> tests) {
     // tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
     // testList.addAll(tests);

@@ -68,7 +68,7 @@ class _CustomTabState extends State<CustomTab> with TickerProviderStateMixin {
               // Создаем контент для каждой вкладки динамически
               return Container(
                 color: CustomColors.getSecondaryBackground(context),
-                child: SingleChildScrollView(child: page),
+                child: page, //SingleChildScrollView(child: page),
               );
             }).toList(),
           ),

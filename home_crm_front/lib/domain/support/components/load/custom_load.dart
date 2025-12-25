@@ -1,17 +1,26 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../widgets/stamp.dart';
 
 class CustomLoad<T> extends StatefulWidget {
   final LoadStore<T> loader;
   final Widget Function(BuildContext, T) builder;
+  final Widget? skeleton;
+  final Widget? skeletonError;
 
   static CustomLoad<T> load<T>(LoadStore<T> loader,
-      Widget Function(BuildContext, T) builder, {Key? key}) {
-    return CustomLoad(key: key, builder: builder, loader: loader,);
+      Widget Function(BuildContext, T) builder,
+      {Key? key, Widget? skeleton, Widget? skeletonError}) {
+    return CustomLoad(key: key,
+        builder: builder,
+        loader: loader,
+        skeleton: skeleton,
+        skeletonError: skeletonError);
   }
 
-  const CustomLoad({super.key, required this.builder, required this.loader,});
+  const CustomLoad(
+      {super.key, required this.builder, required this.loader, this.skeleton, this.skeletonError,});
 
   @override
   _CustomLoadState<T> createState() => _CustomLoadState();
@@ -23,38 +32,44 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
   @override
   void initState() {
     super.initState();
-    result = (c) => Stamp.loadWidget(c);
-    widget.loader.callback.subscribe(hashCode, () {
+    if (mounted) {
+      result = (c) => widget.skeleton ?? Stamp.loadWidget(c);
+      widget.loader.callback.subscribe(hashCode, () {
+        widget.loader.value()
+            .then((v) {
+          if (!mounted) return;
+          setState(() {
+            result = (c) => widget.builder(c, v);
+          });
+        })
+            .onError((e, stack) {
+          if (!mounted) return;
+          setState(() {
+            result = (c) => widget.skeletonError ?? Stamp.errorWidget(c);
+          });
+        });
+      });
       widget.loader.value()
           .then((v) {
+        if (!mounted) return;
         setState(() {
           result = (c) => widget.builder(c, v);
         });
       })
           .onError((e, stack) {
+        if (!mounted) return;
         setState(() {
-          result = (c) => Stamp.errorWidget(c);
+          result = (c) => widget.skeletonError ?? Stamp.errorWidget(c);
         });
       });
-    });
-    widget.loader.value()
-        .then((v) {
-      setState(() {
-        result = (c) => widget.builder(c, v);
-      });
-    })
-        .onError((e, stack) {
-      setState(() {
-        result = (c) => Stamp.errorWidget(c);
-      });
-    });
+    }
   }
 
 
   @override
   void dispose() {
-    super.dispose();
     widget.loader.callback.unSubscribe(hashCode);
+    super.dispose();
   }
 
   @override

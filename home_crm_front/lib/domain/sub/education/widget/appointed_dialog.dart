@@ -45,6 +45,9 @@ class _TestDialogState extends State<AppointedDialog> {
   @override
   Widget build(BuildContext context) {
     return CustomLoad.load(appointed.getTest(), (context, test) {
+      if (test == null) {
+        return SizedBox.shrink();
+      }
       return DialogPage(
         label: (validator) {
           return Column(

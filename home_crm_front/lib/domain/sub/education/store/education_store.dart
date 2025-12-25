@@ -11,6 +11,53 @@ import '../aggregate/question_aggregate.dart';
 import '../aggregate/session_aggregate.dart';
 
 class EducationStore extends IsHasError {
+  List<TestAggregate> testList1 = List.generate(3000, (id) =>
+      TestAggregate(
+        id: id,
+        name: 'Охрана труда',
+        description: 'Вопросы по охране труда',
+        status: StatusDoc.READY,
+        timeLimitMinutes: 20,
+        iteration: 3,
+        answerCount: 2,
+        questions: [
+          QuestionAggregate(
+            id: 1,
+            text: 'Что нельзя делать с проводом?',
+            options: [
+              OptionAggregate(id: 1, text: 'Трогать', correct: false),
+              OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+            ],
+          ),
+          QuestionAggregate(
+            id: 2,
+            text: 'Какие ваши доказательства?',
+            options: [
+              OptionAggregate(id: 1, text: 'Трогать', correct: false),
+              OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+            ],
+          ),
+        ],
+        appointed: [
+          AppointedAggregate(
+            id: id,
+            active: true,
+            employeeId: 1,
+            deadline: DateTime.now(),
+            sessions: [
+              SessionAggregate(
+                id: id,
+                dateStart: DateTime.now(),
+                dateEnd: DateTime.now().add(Duration(minutes: 20)),
+                success: true,
+                answers: 2,
+              ),
+            ],
+            testId: id,
+          ),
+        ],
+      ));
+
   List<TestAggregate> testList = [
     TestAggregate(
       id: 1,
@@ -235,6 +282,7 @@ class EducationStore extends IsHasError {
   PortException? error;
   LoadCallback loadCallback = LoadCallback();
   final Map<int, TestAggregate> tests = {};
+  final bool showArchive = false;
 
   Future<Map<int, TestAggregate>> refresh(Loaded loaded) async {
     if (loaded.needLoad(this)) {
@@ -255,14 +303,15 @@ class EducationStore extends IsHasError {
     return tests;
   }
 
-  Future<List<TestAggregate>> _all() async {
-    var list = (await refresh(Loaded.ifNotLoad)).values.toList();
+  Future<List<TestAggregate>> _all(bool showArchive) async {
+    var list = (await refresh(Loaded.ifNotLoad)).values.where((t) =>
+    t.active == true || showArchive).toList();
     list.sort((a, b) => b.id!.compareTo(a.id!));
     return list;
   }
 
-  LoadStore<List<TestAggregate>> getAll() {
-    return LoadStore(value: () => _all(), callback: loadCallback);
+  LoadStore<List<TestAggregate>> getAll(bool showArchive) {
+    return LoadStore(value: () => _all(showArchive), callback: loadCallback);
   }
 
   LoadStore<Map<int, TestAggregate>> getAllMap() {
@@ -289,9 +338,15 @@ class EducationStore extends IsHasError {
     return load;
   }
 
+
   void save(List<TestAggregate> tests) {
     tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
     testList.addAll(tests);
+    refresh(Loaded.ifLoad);
+  }
+
+  void toArchive(Set<int> ids) {
+    testList.where((t) => ids.contains(t.id)).forEach((t) => t.doArchive());
     refresh(Loaded.ifLoad);
   }
 

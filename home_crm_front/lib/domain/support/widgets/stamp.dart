@@ -35,7 +35,7 @@ class Stamp {
   }
 
   static Widget loadWidget(BuildContext context) {
-    return Center(
+    return const Center(
       child: CircularProgressIndicator(), // Стандартное кольцо загрузки
     );
   }
