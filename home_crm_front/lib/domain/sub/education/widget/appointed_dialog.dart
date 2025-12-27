@@ -47,6 +47,7 @@ class _TestDialogState extends State<AppointedDialog> {
   @override
   Widget build(BuildContext context) {
     return CustomLoad.load(
+        key: appointed.getKey(),
         loader: appointed.getTest(),
         skeleton: SizedBox.shrink(),
         builder: (context, test) {

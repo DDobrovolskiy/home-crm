@@ -192,11 +192,13 @@ class _AppointedPageState
       ),
       builder: (context, index, appoint) {
         return CustomLoad.load(
+          key: appoint.getKey(),
           loader: appoint.getTest(),
-          skeleton: CustomSkeleton(child: CustomSkeleton.panel(height: 80)),
+          skeleton: CustomSkeleton(
+              key: appoint.getKey(), child: CustomSkeleton.panel(height: 80)),
           builder: (BuildContext context, test) {
             return HoveredRegion(
-              key: appoint.getKey(),
+              key: Key('${appoint.key}-${test.key}'),
               onTap: () async {
                 setState(() {
                   selected = appoint;

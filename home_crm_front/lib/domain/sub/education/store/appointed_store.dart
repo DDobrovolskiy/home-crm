@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
@@ -17,27 +16,24 @@ class AppointedStore extends Store<AppointedAggregate> {
         .expand((e) => e.appointed)
         .where((a) => a.employeeId == 1)
         .forEach((a) {
+          print(a.id);
           data[a.id!] = a;
         });
+    print(data);
   }
 
   @override
-  Future<AppointedAggregate?> loadDataId(int id) async {
-    //TODO
+  Future<List<AppointedAggregate>?> loadDataIds(Set<int> ids) async {
+    if (ids.isEmpty) {
+      return [];
+    }
     return GetIt.I
         .get<EducationStore>()
         .testList
         .expand((e) => e.appointed)
         .where((a) => a.employeeId == 1)
-        .firstWhereOrNull((a) => a.id == id);
-  }
-
-  LoadStore<AppointedAggregate?> get(int id) {
-    return LoadStore(
-      value: () async => (await refresh(Loaded.ifNotLoad))[id],
-      callback: loadCallback,
-      refreshSource: () => refreshOnId(id),
-    );
+        .where((a) => ids.contains(a.id))
+        .toList();
   }
 
   LoadStore<List<AppointedAggregate>> getAll({
@@ -45,11 +41,15 @@ class AppointedStore extends Store<AppointedAggregate> {
     bool showNotActive = false,
   }) {
     return LoadStore(
-      value: () async => (await refresh(
-        Loaded.ifNotLoad,
-      )).entries.map((e) => e.value).toList(),
+      value: () async => (await refresh(Loaded.ifNotLoad)).entries
+          .map((e) => e.value)
+          .where(
+            (a) =>
+                (a.active == true || showNotActive) &&
+                (!a.isDone() || showDone),
+          )
+          .toList(),
       callback: loadCallback,
-      refreshSource: () => {},
     );
   }
 
@@ -57,7 +57,6 @@ class AppointedStore extends Store<AppointedAggregate> {
     return LoadStore(
       value: () async => (await refresh(Loaded.ifNotLoad)),
       callback: loadCallback,
-      refreshSource: () {},
     );
   }
 

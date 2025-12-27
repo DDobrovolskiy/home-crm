@@ -11,21 +11,12 @@ class EmployeeStore extends Store<EmployeeAggregate> {
   late final OrganizationRepository _organizationRepository = GetIt.I
       .get<OrganizationRepository>();
 
-  LoadStore<EmployeeAggregate?> get(int id) {
-    return LoadStore(
-      value: () async => (await refresh(Loaded.ifNotLoad))[id],
-      callback: loadCallback,
-      refreshSource: () => refreshOnId(id),
-    );
-  }
-
   LoadStore<List<EmployeeAggregate>> getAll() {
     return LoadStore(
       value: () async => (await refresh(
         Loaded.ifNotLoad,
       )).entries.map((e) => e.value).toList(),
       callback: loadCallback,
-      refreshSource: () {},
     );
   }
 
@@ -47,7 +38,7 @@ class EmployeeStore extends Store<EmployeeAggregate> {
   }
 
   @override
-  Future<EmployeeAggregate?> loadDataId(int id) {
+  Future<List<EmployeeAggregate>?> loadDataIds(Set<int> ids) {
     // TODO: implement loadDataIds
     throw UnimplementedError();
   }

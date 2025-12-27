@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/session_aggregate.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dart';
+import 'package:home_crm_front/domain/sub/education/store/appointed_store.dart';
 import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/sub/employee/aggregate/employee_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/status/doc.dart';
@@ -79,15 +80,25 @@ class AppointedAggregate extends Aggregate {
     return sessions.length;
   }
 
-  LoadStore<EmployeeAggregate?> getEmployee() {
-    return GetIt.I.get<EmployeeStore>().get(employeeId);
+  LoadStore<EmployeeAggregate?>? getEmployee() {
+    return GetIt.I.get<EmployeeStore>().get(
+        employeeId, () => GetIt.I.get<AppointedStore>().refreshOnIds({id}));
   }
 
-  LoadStore<TestAggregate?> getTest() {
-    return GetIt.I.get<EducationStore>().get(testId!);
+  LoadStore<TestAggregate?>? getTest() {
+    return GetIt.I.get<EducationStore>().
+    get(testId!, () => GetIt.I.get<AppointedStore>().refreshOnIds({id}));
   }
 
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get key => Object.hash(super.key, deadline, sessions, employeeId, testId);
+
+  @override
+  String toString() {
+    return 'AppointedAggregate{super: ${super
+        .toString()}, deadline: $deadline, sessions: $sessions, employeeId: $employeeId, testId: $testId}';
+  }
+
+
 }

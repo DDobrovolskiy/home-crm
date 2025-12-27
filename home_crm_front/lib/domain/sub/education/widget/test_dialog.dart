@@ -886,6 +886,7 @@ class _TestDialogState extends State<TestDialog> {
                     ),
                   ),
                   CustomLoad.load(
+                    key: appointed[i].getKey(),
                     loader: appointed[i].getEmployee(),
                     skeleton: CustomSkeleton(
                       child: Column(
@@ -898,6 +899,7 @@ class _TestDialogState extends State<TestDialog> {
                     ),
                     builder: (context, emp) {
                       return CustomLoad.load(
+                        key: emp.getKey(),
                         loader: emp.getRole(),
                         skeleton: CustomSkeleton.panel(width: 80, height: 12),
                         builder: (BuildContext context, role) {

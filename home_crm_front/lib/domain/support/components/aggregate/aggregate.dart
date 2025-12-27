@@ -29,6 +29,11 @@ abstract class Aggregate extends Id {
   Key getKey() {
     return ValueKey<int>(key);
   }
+
+  @override
+  String toString() {
+    return 'Aggregate{super: ${super.toString()}, active: $active, version: $version, createdAt: $createdAt}';
+  }
 }
 
 abstract class Id {
@@ -40,5 +45,10 @@ abstract class Id {
 
   Key getKey() {
     return ValueKey<int>(key);
+  }
+
+  @override
+  String toString() {
+    return 'Id{id: $id}';
   }
 }

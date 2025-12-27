@@ -51,7 +51,9 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO
     return CustomLoad.load(
+        key: Key('todo'),
         loader: GetIt.I.get<EmployeeStore>().getAll(),
         skeleton: CustomSkeleton(
           child: Column(
@@ -73,7 +75,9 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
       BuildContext context,
       employees,
     ) {
+          //TODO
           return CustomLoad.load(
+              key: Key(''),
               loader: GetIt.I.get<RoleStore>().getAll(),
               skeleton: CustomSkeleton(
                 child: CustomSkeleton.panel(
@@ -103,7 +107,9 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
                   );
                   return DropdownMenuItem<Pair>(
                     value: pair,
-                    child: CustomLoad.load(loader: empl.getRole(),
+                    child: CustomLoad.load(
+                        key: empl.getKey(),
+                        loader: empl.getRole(),
                         skeleton: CustomSkeleton(
                           child: CustomSkeleton.panel(
                             width: 80,

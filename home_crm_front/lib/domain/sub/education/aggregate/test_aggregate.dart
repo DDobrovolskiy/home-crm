@@ -143,4 +143,9 @@ class TestAggregate extends Aggregate {
     appointed,
     statuses,
   );
+
+  @override
+  String toString() {
+    return 'TestAggregate{super: ${super.toString()}, name: $name, description: $description, status: $status, timeLimitMinutes: $timeLimitMinutes, iteration: $iteration, answerCount: $answerCount, questions: $questions, appointed: $appointed, statuses: $statuses}';
+  }
 }

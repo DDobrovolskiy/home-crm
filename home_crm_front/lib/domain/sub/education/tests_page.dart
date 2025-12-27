@@ -404,6 +404,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                             Padding(
                               padding: EdgeInsetsGeometry.all(5),
                               child: CustomLoad.load(
+                                key: appoint.getKey(),
                                 loader: appoint.getEmployee(),
                                 skeleton: CustomSkeleton(
                                   child: Column(
@@ -436,6 +437,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                                         ),
                                       ),
                                       CustomLoad.load(
+                                        key: emp.getKey(),
                                         loader: emp.getRole(),
                                         skeleton: CustomSkeleton(
                                           child: CustomSkeleton.panel(

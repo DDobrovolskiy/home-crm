@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
 
@@ -11,52 +10,55 @@ import '../aggregate/question_aggregate.dart';
 import '../aggregate/session_aggregate.dart';
 
 class EducationStore extends Store<TestAggregate> {
-  List<TestAggregate> testList1 = List.generate(3000, (id) =>
-      TestAggregate(
-        id: id,
-        name: 'Охрана труда',
-        description: 'Вопросы по охране труда',
-        status: StatusDoc.READY,
-        timeLimitMinutes: 20,
-        iteration: 3,
-        answerCount: 2,
-        questions: [
-          QuestionAggregate(
-            id: 1,
-            text: 'Что нельзя делать с проводом?',
-            options: [
-              OptionAggregate(id: 1, text: 'Трогать', correct: false),
-              OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
-            ],
-          ),
-          QuestionAggregate(
-            id: 2,
-            text: 'Какие ваши доказательства?',
-            options: [
-              OptionAggregate(id: 1, text: 'Трогать', correct: false),
-              OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
-            ],
-          ),
-        ],
-        appointed: [
-          AppointedAggregate(
-            id: id,
-            active: true,
-            employeeId: 1,
-            deadline: DateTime.now(),
-            sessions: [
-              SessionAggregate(
-                id: id,
-                dateStart: DateTime.now(),
-                dateEnd: DateTime.now().add(Duration(minutes: 20)),
-                success: true,
-                answers: 2,
-              ),
-            ],
-            testId: id,
-          ),
-        ],
-      ));
+  List<TestAggregate> testList1 = List.generate(
+    3000,
+        (id) =>
+        TestAggregate(
+          id: id,
+          name: 'Охрана труда',
+          description: 'Вопросы по охране труда',
+          status: StatusDoc.READY,
+          timeLimitMinutes: 20,
+          iteration: 3,
+          answerCount: 2,
+          questions: [
+            QuestionAggregate(
+              id: 1,
+              text: 'Что нельзя делать с проводом?',
+              options: [
+                OptionAggregate(id: 1, text: 'Трогать', correct: false),
+                OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+              ],
+            ),
+            QuestionAggregate(
+              id: 2,
+              text: 'Какие ваши доказательства?',
+              options: [
+                OptionAggregate(id: 1, text: 'Трогать', correct: false),
+                OptionAggregate(id: 1, text: 'Думать о нем', correct: true),
+              ],
+            ),
+          ],
+          appointed: [
+            AppointedAggregate(
+              id: id,
+              active: true,
+              employeeId: 1,
+              deadline: DateTime.now(),
+              sessions: [
+                SessionAggregate(
+                  id: id,
+                  dateStart: DateTime.now(),
+                  dateEnd: DateTime.now().add(Duration(minutes: 20)),
+                  success: true,
+                  answers: 2,
+                ),
+              ],
+              testId: id,
+            ),
+          ],
+        ),
+  );
 
   List<TestAggregate> testList = [
     TestAggregate(
@@ -140,7 +142,7 @@ class EducationStore extends Store<TestAggregate> {
       ],
       appointed: [
         AppointedAggregate(
-          id: 3,
+          id: 2,
           active: false,
           employeeId: 1,
           deadline: DateTime.now(),
@@ -279,27 +281,25 @@ class EducationStore extends Store<TestAggregate> {
   ];
 
   Future<List<TestAggregate>> _all(bool showArchive) async {
-    var list = (await refresh(Loaded.ifNotLoad)).values.where((t) =>
-    t.active == true || showArchive).toList();
+    var list = (await refresh(
+      Loaded.ifNotLoad,
+    )).values.where((t) => t.active == true || showArchive).toList();
     list.sort((a, b) => b.id!.compareTo(a.id!));
     return list;
   }
 
   LoadStore<List<TestAggregate>> getAll(bool showArchive) {
-    return LoadStore(value: () => _all(showArchive),
-        callback: loadCallback,
-        refreshSource: () {});
+    return LoadStore(
+      value: () => _all(showArchive),
+      callback: loadCallback,
+    );
   }
 
   LoadStore<Map<int, TestAggregate>> getAllMap() {
-    return LoadStore(value: () async => (await refresh(Loaded.ifNotLoad)),
-        callback: loadCallback, refreshSource: () {});
-  }
-
-  LoadStore<TestAggregate?> get(int id) {
-    return LoadStore(value: () async => (await refresh(Loaded.ifNotLoad))[id],
+    return LoadStore(
+      value: () async => (await refresh(Loaded.ifNotLoad)),
       callback: loadCallback,
-      refreshSource: () => refreshOnId(id),);
+    );
   }
 
   void save(List<TestAggregate> tests) {
@@ -312,13 +312,13 @@ class EducationStore extends Store<TestAggregate> {
   void toArchive(Set<int> ids) {
     //TODO
     testList.where((t) => ids.contains(t.id)).forEach((t) => t.doArchive());
-    refresh(Loaded.ifLoad);
+    refreshOnIds(ids);
   }
 
   void delete(Set<int> ids) {
     //TODO
     testList.removeWhere((t) => ids.contains(t.id));
-    refresh(Loaded.ifLoad);
+    refreshOnIds(ids);
   }
 
   @override
@@ -330,8 +330,7 @@ class EducationStore extends Store<TestAggregate> {
   }
 
   @override
-  Future<TestAggregate?> loadDataId(int id) async {
-    //TODO
-    return testList.firstWhereOrNull((t) => t.id == id);
+  Future<List<TestAggregate>?> loadDataIds(Set<int> ids) async {
+    return testList.where((t) => ids.contains(t.id)).toList();
   }
 }

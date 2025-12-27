@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/sub/role/aggregate/role_aggregate.dart';
 import 'package:home_crm_front/domain/sub/role/store/role_store.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -31,7 +32,8 @@ class EmployeeAggregate extends Aggregate {
       _$EmployeeAggregateFromJson(json);
 
   LoadStore<RoleAggregate?> getRole() {
-    return GetIt.I.get<RoleStore>().get(roleId);
+    return GetIt.I.get<RoleStore>().get(
+        roleId, () => GetIt.I.get<EducationStore>().refreshOnIds({id}));
   }
 
   @override

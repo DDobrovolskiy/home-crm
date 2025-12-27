@@ -9,21 +9,12 @@ import '../repository/role_repository.dart';
 class RoleStore extends Store<RoleAggregate> {
   late final RoleRepository _roleRepository = GetIt.I.get<RoleRepository>();
 
-  LoadStore<RoleAggregate?> get(int id) {
-    return LoadStore(
-      value: () async => (await refresh(Loaded.ifNotLoad))[id],
-      callback: loadCallback,
-      refreshSource: () => refreshOnId(id),
-    );
-  }
-
   LoadStore<List<RoleAggregate>> getAll() {
     return LoadStore(
       value: () async => (await refresh(
         Loaded.ifNotLoad,
       )).entries.map((e) => e.value).toList(),
       callback: loadCallback,
-      refreshSource: () {},
     );
   }
 
@@ -33,7 +24,7 @@ class RoleStore extends Store<RoleAggregate> {
   }
 
   @override
-  Future<RoleAggregate?> loadDataId(int id) {
+  Future<List<RoleAggregate>?> loadDataIds(Set<int> ids) {
     // TODO: implement loadDataIds
     throw UnimplementedError();
   }

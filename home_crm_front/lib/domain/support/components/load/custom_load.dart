@@ -1,16 +1,17 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/stamp.dart';
 
 class CustomLoad<T> extends StatefulWidget {
-  final LoadStore<T?> loader;
+  final LoadStore<T?>? loader;
   final Widget Function(BuildContext, T) builder;
   final Widget skeleton;
   final Widget? skeletonError;
 
-  static CustomLoad<T> load<T>({required LoadStore<T?> loader,
-    required Widget Function(BuildContext, T) builder, Key? key, required Widget skeleton, Widget? skeletonError}) {
+  static CustomLoad<T> load<T>({required LoadStore<T?>? loader,
+    required Widget Function(BuildContext, T) builder, required Key key, required Widget skeleton, Widget? skeletonError}) {
     return CustomLoad(key: key,
         builder: builder,
         loader: loader,
@@ -31,19 +32,17 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
   @override
   void initState() {
     super.initState();
-    if (mounted) {
+    if (mounted && widget.loader != null) {
       result = (c) => widget.skeleton;
-      widget.loader.callback.subscribe(hashCode, () {
-        widget.loader.value()
+      widget.loader?.callback.subscribe(hashCode, () {
+        widget.loader?.value()
             .then((v) {
           if (!mounted) return;
           setState(() {
+            print('callback - ${v}');
             if (v == null) {
-              print('loader callback - null');
               result = (c) => widget.skeleton;
-              widget.loader.refreshSource();
             } else {
-              print('loader callback - $v');
               result = (c) => widget.builder(c, v as T);
             }
           });
@@ -55,16 +54,14 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
           });
         });
       });
-      widget.loader.value()
+      widget.loader?.value()
           .then((v) {
         if (!mounted) return;
         setState(() {
+          print('loader - $v');
           if (v == null) {
-            print('loader - null');
             result = (c) => widget.skeleton;
-            widget.loader.refreshSource();
           } else {
-            print('loader - $v');
             result = (c) => widget.builder(c, v as T);
           }
         });
@@ -81,12 +78,15 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
 
   @override
   void dispose() {
-    widget.loader.callback.unSubscribe(hashCode);
+    widget.loader?.callback.unSubscribe(hashCode);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.loader == null) {
+      return SizedBox.shrink();
+    }
     return result(context);
   }
 }
@@ -94,12 +94,10 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
 class LoadStore<T> {
   final Future<T> Function() value;
   final LoadCallback callback;
-  final Function() refreshSource;
 
   const LoadStore({
     required this.value,
     required this.callback,
-    required this.refreshSource,
   });
 
 }

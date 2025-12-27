@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:home_crm_front/domain/sub/role/store/role_store.dart';
 import 'package:home_crm_front/domain/sub/scope/store/scope_store.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -26,8 +27,9 @@ class RoleAggregate extends Aggregate {
     Set<int>? scopeIds,
   }) : scopeIds = scopeIds ?? {};
 
-  LoadStore<Set<ScopeAggregate>> getScopes() {
-    return GetIt.I.get<ScopeStore>().gets(scopeIds);
+  LoadStore<Set<ScopeAggregate?>> getScopes() {
+    return GetIt.I.get<ScopeStore>().gets(
+        scopeIds, () => GetIt.I.get<RoleStore>().refreshOnIds({id}));
   }
 
   Map<String, dynamic> toJson() {
