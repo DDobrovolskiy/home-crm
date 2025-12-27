@@ -28,8 +28,12 @@ class DialogPage extends StatefulWidget {
   final List<CustomTabView Function(GlobalKey<FormState>)> contents;
   final Widget? footer;
 
-  const DialogPage(
-      {super.key, this.label, required this.contents, this.footer,});
+  const DialogPage({
+    super.key,
+    this.label,
+    required this.contents,
+    this.footer,
+  });
 
   @override
   _DialogPageState createState() => _DialogPageState();
@@ -101,27 +105,175 @@ class _DialogPageState extends State<DialogPage>
   Widget build(BuildContext context) {
     super.build(context);
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxHeight < 150) {
-            return SizedBox.shrink();
-          }
-          return Column(
-            children: [
-              if (widget.label != null) widget.label!(_validateAndSubmit),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
-                  child: CustomTab(
-                    contents: widget.contents.indexed
-                        .map((c) => c.$2(_formKeys[c.$1]))
-                        .toList(),
-                    tabController: _tabController,
-                  ),
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxHeight < 150) {
+          return SizedBox.shrink();
+        }
+        return Column(
+          children: [
+            if (widget.label != null) widget.label!(_validateAndSubmit),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
+                child: CustomTab(
+                  contents: widget.contents.indexed
+                      .map((c) => c.$2(_formKeys[c.$1]))
+                      .toList(),
+                  tabController: _tabController,
                 ),
               ),
-              if(widget.footer != null) widget.footer!,
-            ],
-          );
+            ),
+            if (widget.footer != null) widget.footer!,
+          ],
+        );
+      },
+    );
+  }
+}
+
+class SliverDialogPage extends StatefulWidget {
+  final Widget Function(bool Function())? label;
+  final List<CustomTabView Function(GlobalKey<FormState>)> contents;
+  final Widget? footer;
+
+  const SliverDialogPage({
+    super.key,
+    this.label,
+    required this.contents,
+    this.footer,
+  });
+
+  @override
+  _SliverDialogPageState createState() => _SliverDialogPageState();
+}
+
+class _SliverDialogPageState extends State<SliverDialogPage>
+    with
+        AutomaticKeepAliveClientMixin<SliverDialogPage>,
+        SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  // Список ключей для удобной итерации
+  final List<GlobalKey<FormState>> _formKeys = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: widget.contents.length, vsync: this);
+    widget.contents.forEach((w) {
+      _addKey();
+    });
+  }
+
+  GlobalKey<FormState> _addKey() {
+    GlobalKey<FormState> key = GlobalKey<FormState>();
+    _formKeys.add(key);
+    return key;
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  // --- ГЛАВНАЯ ФУНКЦИЯ ВАЛИДАЦИИ И ПЕРЕКЛЮЧЕНИЯ ---
+  bool _validateAndSubmit() {
+    // Итерируемся по всем формам, начиная с первой
+    for (int i = 0; i < _formKeys.length; i++) {
+      final formState = _formKeys[i].currentState;
+      // Вызываем валидацию для текущей формы
+      if (formState != null && !formState.validate()) {
+        // *** ОШИБКА ОБНАРУЖЕНА ***
+
+        // 1. Переключаем TabController на нужный индекс
+        _tabController.animateTo(i);
+
+        // 2. Добавляем небольшую задержку, чтобы анимация смены вкладки завершилась,
+        //    прежде чем пытаться сфокусироваться на поле.
+        Future.delayed(const Duration(milliseconds: 300), () {
+          // 3. Программно фокусируемся на первом невалидном поле
+          // FocusScope.of(context).requestFocus(FocusNode());
+          // К сожалению, Flutter не предоставляет простого публичного API
+          // для получения *первого* ошибочного FocusNode() из FormState.
+          // Поэтому мы просто гарантируем, что фокус находится где-то на новой вкладке.
+          // Если вы используете пакеты вроде focus_detector, можно сделать точнее.
         });
+        // Прерываем цикл, так как мы нашли первую ошибку
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    // return CustomScrollView(
+    //   slivers: [
+    //     if (widget.label != null)
+    //       SliverPinnedHeader(child: widget.label!(_validateAndSubmit)),
+    //     SliverFillRemaining(
+    //       child: CustomSliverTab(
+    //         contents: widget.contents.indexed
+    //             .map((c) => c.$2(_formKeys[c.$1]))
+    //             .toList(),
+    //         tabController: _tabController,
+    //       ),
+    //     ),
+    //     if (widget.footer != null) SliverToBoxAdapter(child: widget.footer!),
+    //   ],
+    // );
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxHeight < 150) {
+          return SizedBox.shrink();
+        }
+        return Column(
+          children: [
+            if (widget.label != null) widget.label!(_validateAndSubmit),
+            Expanded(
+              child: CustomSliverTab(
+                contents: widget.contents.indexed
+                    .map((c) => c.$2(_formKeys[c.$1]))
+                    .toList(),
+                tabController: _tabController,
+              ),
+            ),
+            if (widget.footer != null) widget.footer!,
+          ],
+        );
+      },
+    );
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxHeight < 150) {
+          return SizedBox.shrink();
+        }
+        return Column(
+          children: [
+            if (widget.label != null) widget.label!(_validateAndSubmit),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(12, 12, 12, 12),
+                child: CustomTab(
+                  contents: widget.contents.indexed
+                      .map((c) => c.$2(_formKeys[c.$1]))
+                      .toList(),
+                  tabController: _tabController,
+                ),
+              ),
+            ),
+            if (widget.footer != null) widget.footer!,
+          ],
+        );
+      },
+    );
   }
 }

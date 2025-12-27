@@ -67,7 +67,7 @@ class CustomTable extends StatelessWidget {
   }
 }
 
-class CustomTableSliver<T> extends StatefulWidget {
+class CustomTableLoadSliver<T> extends StatefulWidget {
   final Widget Function(BuildContext, List<T>) head;
   final LoadStore<List<T>> loader;
   final Widget Function(BuildContext, int, T) builder;
@@ -76,7 +76,7 @@ class CustomTableSliver<T> extends StatefulWidget {
   final Widget? footer;
   final Function(List<T>)? onLoad;
 
-  const CustomTableSliver({
+  const CustomTableLoadSliver({
     super.key,
     required this.head,
     required this.loader,
@@ -88,10 +88,11 @@ class CustomTableSliver<T> extends StatefulWidget {
   });
 
   @override
-  State<CustomTableSliver<T>> createState() => _CustomTableSliverState<T>();
+  State<CustomTableLoadSliver<T>> createState() =>
+      _CustomTableLoadSliverState<T>();
 }
 
-class _CustomTableSliverState<T> extends State<CustomTableSliver<T>> {
+class _CustomTableLoadSliverState<T> extends State<CustomTableLoadSliver<T>> {
   bool _isLoading = true;
   List<T> _items = [];
 
@@ -193,3 +194,43 @@ class _CustomTableSliverState<T> extends State<CustomTableSliver<T>> {
     );
   }
 }
+
+
+class CustomTableSliver extends StatelessWidget {
+  final Widget head;
+  final List<Widget> rows;
+
+  const CustomTableSliver({super.key, required this.head, required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverStickyHeader(
+      header: head,
+      sliver: MultiSliver(
+        children: [
+          _table(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _table(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        if (index > 20) {
+          return rows[index];
+        }
+        return AnimationConfiguration.staggeredList(
+          position: index,
+          child: SlideAnimation(
+            verticalOffset: 50.0, // Вылет снизу
+            child: FadeInAnimation(
+              child: rows[index],
+            ),
+          ),
+        );
+      }, childCount: rows.length),
+    );
+  }
+}
+

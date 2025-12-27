@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import '../../widgets/stamp.dart';
 
 class CustomLoad<T> extends StatefulWidget {
-  final LoadStore<T> loader;
+  final LoadStore<T?> loader;
   final Widget Function(BuildContext, T) builder;
-  final Widget? skeleton;
+  final Widget skeleton;
   final Widget? skeletonError;
 
-  static CustomLoad<T> load<T>(LoadStore<T> loader,
-      Widget Function(BuildContext, T) builder,
-      {Key? key, Widget? skeleton, Widget? skeletonError}) {
+  static CustomLoad<T> load<T>({required LoadStore<T?> loader,
+    required Widget Function(BuildContext, T) builder, Key? key, required Widget skeleton, Widget? skeletonError}) {
     return CustomLoad(key: key,
         builder: builder,
         loader: loader,
@@ -20,7 +19,7 @@ class CustomLoad<T> extends StatefulWidget {
   }
 
   const CustomLoad(
-      {super.key, required this.builder, required this.loader, this.skeleton, this.skeletonError,});
+      {super.key, required this.builder, required this.loader, required this.skeleton, this.skeletonError,});
 
   @override
   _CustomLoadState<T> createState() => _CustomLoadState();
@@ -33,13 +32,17 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
   void initState() {
     super.initState();
     if (mounted) {
-      result = (c) => widget.skeleton ?? Stamp.loadWidget(c);
+      result = (c) => widget.skeleton;
       widget.loader.callback.subscribe(hashCode, () {
         widget.loader.value()
             .then((v) {
           if (!mounted) return;
           setState(() {
-            result = (c) => widget.builder(c, v);
+            if (v == null) {
+              result = (c) => widget.skeleton;
+            } else {
+              result = (c) => widget.builder(c, v as T);
+            }
           });
         })
             .onError((e, stack) {
@@ -53,7 +56,11 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
           .then((v) {
         if (!mounted) return;
         setState(() {
-          result = (c) => widget.builder(c, v);
+          if (v == null) {
+            result = (c) => widget.skeleton;
+          } else {
+            result = (c) => widget.builder(c, v as T);
+          }
         });
       })
           .onError((e, stack) {

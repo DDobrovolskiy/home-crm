@@ -17,6 +17,7 @@ import '../../../support/components/callback/NavBarCallBack.dart';
 import '../../../support/components/dialog/custom_dialog.dart';
 import '../../../support/components/load/custom_load.dart';
 import '../../../support/components/screen/Screen.dart';
+import '../../../support/components/skeleton/custom_skeleton.dart';
 import '../../../support/components/status/doc.dart';
 import '../../../support/components/tab/custom_tab.dart';
 import '../../../support/components/table/table.dart';
@@ -70,7 +71,7 @@ class _TestDialogState extends State<TestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return DialogPage(
+    return SliverDialogPage(
       label: (validator) {
         return Column(
           children: [
@@ -884,20 +885,33 @@ class _TestDialogState extends State<TestDialog> {
                       style: CustomColors.getBodyLarge(context, null),
                     ),
                   ),
-                  CustomLoad.load(appointed[i].getEmployee(), (context, emp) {
-                    return CustomLoad.load(emp!.getRole(), (
-                      BuildContext context,
-                      role,
-                    ) {
-                      return CustomTableRowCellText(
-                        flex: 2,
-                        text: emp.user.name,
-                        textVisibleAlways: true,
-                        subText: role?.name,
-                        subTextVisibleAlways: true,
+                  CustomLoad.load(
+                    loader: appointed[i].getEmployee(),
+                    skeleton: CustomSkeleton(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomSkeleton.panel(width: 100, height: 16),
+                          CustomSkeleton.panel(width: 80, height: 12),
+                        ],
+                      ),
+                    ),
+                    builder: (context, emp) {
+                      return CustomLoad.load(
+                        loader: emp.getRole(),
+                        skeleton: CustomSkeleton.panel(width: 80, height: 12),
+                        builder: (BuildContext context, role) {
+                          return CustomTableRowCellText(
+                            flex: 2,
+                            text: emp.user.name,
+                            textVisibleAlways: true,
+                            subText: role.name,
+                            subTextVisibleAlways: true,
+                          );
+                        },
                       );
-                    });
-                  }),
+                    },
+                  ),
                   CustomTableRowCell(
                     flex: 2,
                     textVisibleAlways: true,

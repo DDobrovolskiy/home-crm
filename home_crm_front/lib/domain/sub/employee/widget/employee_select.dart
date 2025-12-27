@@ -6,6 +6,7 @@ import 'package:home_crm_front/domain/sub/role/store/role_store.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
 
 import '../../../../theme/theme.dart';
+import '../../../support/components/skeleton/custom_skeleton.dart';
 
 class EmployeeSelect extends StatefulWidget {
   final Pair? selected;
@@ -50,11 +51,37 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomLoad.load(GetIt.I.get<EmployeeStore>().getAll(), (
+    return CustomLoad.load(
+        loader: GetIt.I.get<EmployeeStore>().getAll(),
+        skeleton: CustomSkeleton(
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+            children: [
+              CustomSkeleton.panel(
+                width: 100,
+                height: 16,
+              ),
+              CustomSkeleton.panel(
+                width: 80,
+                height: 12,
+              ),
+            ],
+          ),
+        ),
+        builder: (
       BuildContext context,
       employees,
     ) {
-      return CustomLoad.load(GetIt.I.get<RoleStore>().getAll(), (
+          return CustomLoad.load(
+              loader: GetIt.I.get<RoleStore>().getAll(),
+              skeleton: CustomSkeleton(
+                child: CustomSkeleton.panel(
+                  width: 80,
+                  height: 12,
+                ),
+              ),
+              builder: (
         BuildContext context,
         roles,
       ) {
@@ -76,7 +103,14 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
                   );
                   return DropdownMenuItem<Pair>(
                     value: pair,
-                    child: CustomLoad.load(empl.getRole(), (
+                    child: CustomLoad.load(loader: empl.getRole(),
+                        skeleton: CustomSkeleton(
+                          child: CustomSkeleton.panel(
+                            width: 80,
+                            height: 12,
+                          ),
+                        ),
+                        builder: (
                       BuildContext context,
                       role,
                     ) {

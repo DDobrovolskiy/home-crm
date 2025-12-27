@@ -83,8 +83,12 @@ class CustomTabView extends StatefulWidget {
   final Widget child;
   final int Function()? label;
 
-  const CustomTabView(
-      {super.key, required this.name, required this.child, this.label});
+  const CustomTabView({
+    super.key,
+    required this.name,
+    required this.child,
+    this.label,
+  });
 
   @override
   _CustomTabViewState createState() => _CustomTabViewState();
@@ -99,5 +103,80 @@ class _CustomTabViewState extends State<CustomTabView>
   Widget build(BuildContext context) {
     super.build(context);
     return widget.child;
+  }
+}
+
+class CustomSliverTab extends StatefulWidget {
+  final List<CustomTabView> contents;
+  final TabController tabController;
+
+  const CustomSliverTab({
+    super.key,
+    required this.contents,
+    required this.tabController,
+  });
+
+  @override
+  _CustomSliverTabState createState() => _CustomSliverTabState();
+}
+
+class _CustomSliverTabState extends State<CustomSliverTab>
+    with TickerProviderStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: CustomColors.getSecondaryBackground(context),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          ),
+          child: TabBar(
+            tabAlignment: TabAlignment.startOffset,
+            controller: widget.tabController,
+            isScrollable: true,
+            labelColor: CustomColors.getPrimaryText(context),
+            unselectedLabelColor: CustomColors.getSecondaryText(context),
+            labelStyle: CustomColors.getTitleMedium(context, null),
+            indicatorColor: CustomColors.getPrimary(context),
+            indicatorSize: TabBarIndicatorSize.label,
+            dividerColor: CustomColors.getAlternate(context),
+            dividerHeight: 2,
+            splashBorderRadius: BorderRadius.circular(12),
+            overlayColor: WidgetStateProperty.all(
+              CustomColors.getPrimaryBackground(context),
+            ),
+            tabs: widget.contents
+                .map(
+                  (title) =>
+                  Tab(
+                    child: Row(
+                      children: [
+                        CustomLabelCircleText(
+                          text: Text(title.name),
+                          number: title.label != null ? title.label!() : null,
+                        ),
+                      ],
+                    ),
+                  ),
+            )
+                .toList(),
+          ),
+        ),
+        Expanded(child: TabBarView(
+          controller: widget.tabController,
+          children: widget.contents.map((page) {
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(child: Container(
+                  color: CustomColors.getSecondaryBackground(context),
+                  child: page, //SingleChildScrollView(child: page),
+                ),)
+              ],
+            );
+          }).toList(),
+        ),),
+      ],
+    );
   }
 }

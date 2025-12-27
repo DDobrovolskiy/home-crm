@@ -28,7 +28,8 @@ class AppointedStore extends Store<AppointedAggregate> {
     );
   }
 
-  LoadStore<List<AppointedAggregate>> getAll() {
+  LoadStore<List<AppointedAggregate>> getAll(
+      {bool showDone = false, bool showNotActive = false}) {
     return LoadStore(
       value: () async => (await refresh(
         Loaded.ifNotLoad,

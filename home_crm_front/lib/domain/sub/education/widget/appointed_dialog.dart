@@ -21,8 +21,10 @@ class AppointedDialog extends SheetPage {
   }
 
   final AppointedAggregate appointed;
+  final bool isSidePanel;
 
-  const AppointedDialog({super.key, required this.appointed});
+  const AppointedDialog(
+      {super.key, required this.appointed, this.isSidePanel = false});
 
   @override
   _TestDialogState createState() => _TestDialogState();
@@ -44,10 +46,10 @@ class _TestDialogState extends State<AppointedDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomLoad.load(appointed.getTest(), (context, test) {
-      if (test == null) {
-        return SizedBox.shrink();
-      }
+    return CustomLoad.load(
+        loader: appointed.getTest(),
+        skeleton: SizedBox.shrink(),
+        builder: (context, test) {
       return DialogPage(
         label: (validator) {
           return Column(
