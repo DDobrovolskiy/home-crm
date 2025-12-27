@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
-abstract class Aggregate {
-  late int? id;
+abstract class Aggregate extends Id {
   late bool active;
   late int version;
   final String createdAt;
 
-  Aggregate({this.id, this.active = true, this.version = 0, String? createdAt})
+  Aggregate({super.id, this.active = true, this.version = 0, String? createdAt})
     : createdAt = createdAt ?? DateTime.now().toString();
 
   String getNewName();
@@ -25,7 +24,19 @@ abstract class Aggregate {
     }
   }
 
-  int get key => Object.hash(id, active, version, createdAt);
+  int get key => Object.hash(super.key, active, version, createdAt);
+
+  Key getKey() {
+    return ValueKey<int>(key);
+  }
+}
+
+abstract class Id {
+  late int? id;
+
+  Id({this.id});
+
+  int get key => id ?? 0;
 
   Key getKey() {
     return ValueKey<int>(key);

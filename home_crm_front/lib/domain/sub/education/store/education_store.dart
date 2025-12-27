@@ -1,16 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
-import 'package:home_crm_front/domain/support/exceptions/exceptions.dart';
 
 import '../../../support/components/status/doc.dart';
-import '../../../support/port/port.dart';
+import '../../../support/components/store/store.dart';
 import '../../../support/service/loaded.dart';
 import '../aggregate/appointed_aggregate.dart';
 import '../aggregate/option_aggregate.dart';
 import '../aggregate/question_aggregate.dart';
 import '../aggregate/session_aggregate.dart';
 
-class EducationStore extends IsHasError {
+class EducationStore extends Store<TestAggregate> {
   List<TestAggregate> testList1 = List.generate(3000, (id) =>
       TestAggregate(
         id: id,
@@ -278,31 +278,6 @@ class EducationStore extends IsHasError {
     ),
   ];
 
-  bool load = false;
-  PortException? error;
-  LoadCallback loadCallback = LoadCallback();
-  final Map<int, TestAggregate> tests = {};
-  final bool showArchive = false;
-
-  Future<Map<int, TestAggregate>> refresh(Loaded loaded) async {
-    if (loaded.needLoad(this)) {
-      try {
-        //тут репа
-        load = true;
-        tests.clear();
-        testList.forEach((e) {
-          tests[e.id!] = e;
-        });
-        if (loaded != Loaded.ifNotLoad) {
-          loadCallback.call();
-        }
-      } catch (e) {
-        error = Port.errorHandler(e);
-      }
-    }
-    return tests;
-  }
-
   Future<List<TestAggregate>> _all(bool showArchive) async {
     var list = (await refresh(Loaded.ifNotLoad)).values.where((t) =>
     t.active == true || showArchive).toList();
@@ -311,47 +286,52 @@ class EducationStore extends IsHasError {
   }
 
   LoadStore<List<TestAggregate>> getAll(bool showArchive) {
-    return LoadStore(value: () => _all(showArchive), callback: loadCallback);
+    return LoadStore(value: () => _all(showArchive),
+        callback: loadCallback,
+        refreshSource: () {});
   }
 
   LoadStore<Map<int, TestAggregate>> getAllMap() {
     return LoadStore(value: () async => (await refresh(Loaded.ifNotLoad)),
-        callback: loadCallback);
-  }
-
-  Future<TestAggregate?> _id(int id) async {
-    var testAggregate = (await refresh(Loaded.ifNotLoad))[id];
-    return testAggregate;
+        callback: loadCallback, refreshSource: () {});
   }
 
   LoadStore<TestAggregate?> get(int id) {
-    return LoadStore(value: () => _id(id), callback: loadCallback);
+    return LoadStore(value: () async => (await refresh(Loaded.ifNotLoad))[id],
+      callback: loadCallback,
+      refreshSource: () => refreshOnId(id),);
   }
-
-  @override
-  PortException? getError() {
-    return error;
-  }
-
-  @override
-  bool loaded() {
-    return load;
-  }
-
 
   void save(List<TestAggregate> tests) {
+    //TODO
     tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
     testList.addAll(tests);
     refresh(Loaded.ifLoad);
   }
 
   void toArchive(Set<int> ids) {
+    //TODO
     testList.where((t) => ids.contains(t.id)).forEach((t) => t.doArchive());
     refresh(Loaded.ifLoad);
   }
 
   void delete(Set<int> ids) {
+    //TODO
     testList.removeWhere((t) => ids.contains(t.id));
     refresh(Loaded.ifLoad);
+  }
+
+  @override
+  Future<void> loadData() async {
+    //TODO
+    testList.forEach((e) {
+      data[e.id!] = e;
+    });
+  }
+
+  @override
+  Future<TestAggregate?> loadDataId(int id) async {
+    //TODO
+    return testList.firstWhereOrNull((t) => t.id == id);
   }
 }

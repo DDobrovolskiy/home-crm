@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/aggregate/appointed_aggregate.dart';
 import 'package:home_crm_front/domain/sub/education/store/appointed_store.dart';
-import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/sub/education/widget/appointed_dialog.dart';
 import 'package:home_crm_front/domain/support/components/sheetbar/sheet_bar_page.dart';
 import 'package:home_crm_front/domain/support/components/status/doc.dart';
@@ -192,11 +191,8 @@ class _AppointedPageState
         ],
       ),
       builder: (context, index, appoint) {
-        if (appoint.testId == null) {
-          return SizedBox.shrink();
-        }
         return CustomLoad.load(
-          loader: GetIt.I.get<EducationStore>().get(appoint.testId!),
+          loader: appoint.getTest(),
           skeleton: CustomSkeleton(child: CustomSkeleton.panel(height: 80)),
           builder: (BuildContext context, test) {
             return HoveredRegion(

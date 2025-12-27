@@ -9,6 +9,7 @@ import ru.dda.homecrmback.domain.subdomain.employee.aggregate.EmployeeAggregate;
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.context.IUserContext;
 import ru.dda.homecrmback.domain.subdomain.user.context.UserInfo;
+import ru.dda.homecrmback.domain.subdomain.user.dto.response.UserAggregateDTO;
 import ru.dda.homecrmback.domain.subdomain.user.dto.response.UserDTO;
 import ru.dda.homecrmback.domain.subdomain.user.dto.response.UserEmployeesDTO;
 import ru.dda.homecrmback.domain.subdomain.user.dto.response.UserOrganizationsDTO;
@@ -114,6 +115,19 @@ public class UserAggregate implements IUserContext {
         return AuthSuccessDTO.builder()
                 .token(token)
                 .userId(id)
+                .build();
+    }
+
+    public UserAggregateDTO getUserAggregateDTO() {
+        return UserAggregateDTO.builder()
+                .id(id)
+//                .active()
+//                .version()
+//                .createdAt()
+                .name(name)
+//                .surname()
+//                .patronymic()
+                .phone(phone)
                 .build();
     }
 }

@@ -13,14 +13,13 @@ class ScopeStore extends Store<ScopeAggregate> {
     return LoadStore(
       value: () async => (await refresh(Loaded.ifNotLoad))[id],
       callback: loadCallback,
+      refreshSource: () => refreshOnId(id),
     );
   }
 
   @override
-  Future<Map<int, ScopeAggregate>> loadData() async {
-    return {
-      for (var item in ((await _scopeRepository.scopes()) ?? [])) item.id: item,
-    };
+  Future<void> loadData() async {
+    (await _scopeRepository.scopes())?.forEach((s) => data[s.id!] = s);
   }
 
   LoadStore<Set<ScopeAggregate>> gets(Set<int> ids) {
@@ -29,6 +28,13 @@ class ScopeStore extends Store<ScopeAggregate> {
         Loaded.ifNotLoad,
       )).entries.where((e) => ids.contains(e.key)).map((e) => e.value).toSet(),
       callback: loadCallback,
+      refreshSource: () {},
     );
+  }
+
+  @override
+  Future<ScopeAggregate?> loadDataId(int id) {
+    // TODO: implement loadDataIds
+    throw UnimplementedError();
   }
 }

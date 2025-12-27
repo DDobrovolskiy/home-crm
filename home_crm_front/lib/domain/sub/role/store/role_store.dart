@@ -13,6 +13,7 @@ class RoleStore extends Store<RoleAggregate> {
     return LoadStore(
       value: () async => (await refresh(Loaded.ifNotLoad))[id],
       callback: loadCallback,
+      refreshSource: () => refreshOnId(id),
     );
   }
 
@@ -22,13 +23,18 @@ class RoleStore extends Store<RoleAggregate> {
         Loaded.ifNotLoad,
       )).entries.map((e) => e.value).toList(),
       callback: loadCallback,
+      refreshSource: () {},
     );
   }
 
   @override
-  Future<Map<int, RoleAggregate>> loadData() async {
-    return {
-      for (var item in ((await _roleRepository.roles()) ?? [])) item.id: item,
-    };
+  Future<void> loadData() async {
+    (await _roleRepository.roles())?.forEach((s) => data[s.id!] = s);
+  }
+
+  @override
+  Future<RoleAggregate?> loadDataId(int id) {
+    // TODO: implement loadDataIds
+    throw UnimplementedError();
   }
 }

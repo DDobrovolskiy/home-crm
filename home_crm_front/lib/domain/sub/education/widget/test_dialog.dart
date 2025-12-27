@@ -981,7 +981,6 @@ class _TestDialogState extends State<TestDialog> {
                   width: 250,
                 ),
                 onChanged: (value) {
-                  print(value);
                   setState(() {
                     test.addAppointed(
                       AppointedAggregate(

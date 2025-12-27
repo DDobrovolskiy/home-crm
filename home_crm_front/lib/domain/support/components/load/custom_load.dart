@@ -39,8 +39,11 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
           if (!mounted) return;
           setState(() {
             if (v == null) {
+              print('loader callback - null');
               result = (c) => widget.skeleton;
+              widget.loader.refreshSource();
             } else {
+              print('loader callback - $v');
               result = (c) => widget.builder(c, v as T);
             }
           });
@@ -57,8 +60,11 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
         if (!mounted) return;
         setState(() {
           if (v == null) {
+            print('loader - null');
             result = (c) => widget.skeleton;
+            widget.loader.refreshSource();
           } else {
+            print('loader - $v');
             result = (c) => widget.builder(c, v as T);
           }
         });
@@ -88,10 +94,12 @@ class _CustomLoadState<T> extends State<CustomLoad<T>> {
 class LoadStore<T> {
   final Future<T> Function() value;
   final LoadCallback callback;
+  final Function() refreshSource;
 
   const LoadStore({
     required this.value,
     required this.callback,
+    required this.refreshSource,
   });
 
 }
