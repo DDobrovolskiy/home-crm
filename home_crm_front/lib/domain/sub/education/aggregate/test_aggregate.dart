@@ -84,6 +84,7 @@ class TestAggregate extends Aggregate {
     return null;
   }
 
+  @override
   String? doArchive() {
     status = StatusDoc.ARCHIVE;
     active = false;

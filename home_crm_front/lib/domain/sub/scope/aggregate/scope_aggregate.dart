@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 
-class ScopeAggregate extends Loader {
+class ScopeAggregate extends Aggregate {
   final String name;
   final String description;
 
@@ -27,4 +27,14 @@ class ScopeAggregate extends Loader {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get key => Object.hash(super.key, name, description);
+
+  @override
+  String getAbbreviate() {
+    return name;
+  }
+
+  @override
+  String getNewName() {
+    return name;
+  }
 }

@@ -64,15 +64,16 @@ class AppointedStore extends Store<AppointedAggregate> {
     );
   }
 
-  void save(List<AppointedAggregate> tests) {
-    // tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
-    // testList.addAll(tests);
-    refresh(Loaded.ifLoad);
-  }
-
   @override
   Future<bool?> deleteInBackend(Set<int> ids) {
     // TODO: implement deleteInBackend
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<AppointedAggregate>?> saveInBackend(
+      List<AppointedAggregate> aggregates) {
+    // TODO: implement saveInBackend
     throw UnimplementedError();
   }
 }

@@ -44,4 +44,10 @@ class RoleStore extends Store<RoleAggregate> {
     // TODO: implement deleteInBackend
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<RoleAggregate>?> saveInBackend(List<RoleAggregate> aggregates) {
+    // TODO: implement saveInBackend
+    throw UnimplementedError();
+  }
 }

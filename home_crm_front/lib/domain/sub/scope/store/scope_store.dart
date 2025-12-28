@@ -23,4 +23,10 @@ class ScopeStore extends Store<ScopeAggregate> {
     // TODO: implement deleteInBackend
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<ScopeAggregate>?> saveInBackend(List<ScopeAggregate> aggregates) {
+    // TODO: implement saveInBackend
+    throw UnimplementedError();
+  }
 }

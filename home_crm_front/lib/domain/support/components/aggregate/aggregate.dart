@@ -12,6 +12,11 @@ abstract class Aggregate extends Loader {
 
   String getAbbreviate();
 
+  String? doArchive() {
+    active = false;
+    return null;
+  }
+
   bool isCreate() {
     return id == null;
   }

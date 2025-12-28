@@ -11,7 +11,7 @@ import '../../port/port.dart';
 import '../../service/loaded.dart';
 import '../load/custom_load.dart';
 
-abstract class Store<T extends Loader> extends IsHasError {
+abstract class Store<T extends Aggregate> extends IsHasError {
   bool load = false;
   PortException? error;
   LoadCallback loadCallback = LoadCallback();
@@ -36,39 +36,44 @@ abstract class Store<T extends Loader> extends IsHasError {
       // Повторная проверка внутри блокировки (на случай, если
       // другой поток уже завершил загрузку, пока мы ждали очередь)
       if (!loaded.needLoad(this)) {
-        logBuffer.print(Level.debug,
-            message: 'другой поток уже завершил загрузку, пока мы ждали очередь');
+        logBuffer.print(
+          Level.debug,
+          message: 'другой поток уже завершил загрузку, пока мы ждали очередь',
+        );
         return data;
       }
 
-        try {
-          _isRefreshing = true;
-          data.clear();
+      try {
+        _isRefreshing = true;
+        data.clear();
 
-          // Уведомляем UI, что данных теперь нет и включился режим рефреша
-          // Это заставит список отобразить скелетоны
+        // Уведомляем UI, что данных теперь нет и включился режим рефреша
+        // Это заставит список отобразить скелетоны
+        loadCallback.call();
+
+        logBuffer.add(
+          '${toString()}: loadData - refresh started (${loaded.name})',
+        );
+
+        await loadData();
+
+        load = true;
+        error = null; // Сбрасываем старые ошибки при успешном старте
+      } catch (e, stack) {
+        logBuffer.print(
+          Level.error,
+          message: '${toString()}: Error during refresh',
+          error: e,
+          stackTrace: stack,
+        );
+        error = Port.errorHandler(e);
+      } finally {
+        _isRefreshing = false;
+        // Финальное уведомление UI (либо данные пришли, либо показываем ошибку)
+        if (loaded != Loaded.ifNotLoad) {
           loadCallback.call();
-
-          logBuffer.add(
-              '${toString()}: loadData - refresh started (${loaded.name})');
-
-          await loadData();
-
-          load = true;
-          error = null; // Сбрасываем старые ошибки при успешном старте
-        } catch (e, stack) {
-          logBuffer.print(
-              Level.error, message: '${toString()}: Error during refresh',
-              error: e,
-              stackTrace: stack);
-          error = Port.errorHandler(e);
-        } finally {
-          _isRefreshing = false;
-          // Финальное уведомление UI (либо данные пришли, либо показываем ошибку)
-          if (loaded != Loaded.ifNotLoad) {
-            loadCallback.call();
-          }
         }
+      }
       logBuffer.print(Level.debug);
       return data;
     });
@@ -80,7 +85,8 @@ abstract class Store<T extends Loader> extends IsHasError {
 
     final logBuffer = CustomLogger.buffer();
     logBuffer.add(
-        '${toString()}: Запрос на обновление refreshOnIds IDs: $cleanIds');
+      '${toString()}: Запрос на обновление refreshOnIds IDs: $cleanIds',
+    );
 
     if (!load) {
       logBuffer.print(Level.debug, message: 'ifNotLoad');
@@ -91,8 +97,10 @@ abstract class Store<T extends Loader> extends IsHasError {
 
     // 2. Если уже есть активный Completer, возвращаем его Future
     if (_batchCompleter != null && !(_batchCompleter!.isCompleted)) {
-      logBuffer.print(Level.debug,
-          message: 'уже есть активный Completer, возвращаем его Future');
+      logBuffer.print(
+        Level.debug,
+        message: 'уже есть активный Completer, возвращаем его Future',
+      );
       return _batchCompleter!.future;
     }
 
@@ -117,7 +125,8 @@ abstract class Store<T extends Loader> extends IsHasError {
     return await _lock.synchronized(() async {
       final logBuffer = CustomLogger.buffer();
       logBuffer.add(
-          'Batch ${toString()} Refresh started for ${ids.length} items');
+        'Batch ${toString()} Refresh started for ${ids.length} items',
+      );
       try {
         // Сохраняем старые значения для сравнения (Deep Equality)
         List<T> oldValues = [];
@@ -133,12 +142,12 @@ abstract class Store<T extends Loader> extends IsHasError {
         if (newValues != null) {
           logBuffer.add('Получено новых значений: ${newValues.length}');
           // Проверка на изменения для вызова колбэка
-          const equality = DeepCollectionEquality
-              .unordered(); // Используем неупорядоченное сравнение
+          const equality =
+              DeepCollectionEquality.unordered(); // Используем неупорядоченное сравнение
           if (!equality.equals(oldValues, newValues)) {
             logBuffer.add('Обнаружены изменения, уведомляем UI...');
             // Массовое обновление локальной карты
-            var newMap = { for (var v in newValues) v.id: v};
+            var newMap = {for (var v in newValues) v.id: v};
             for (var id in ids) {
               var newValue = newMap[id];
               if (newValue == null) {
@@ -155,9 +164,11 @@ abstract class Store<T extends Loader> extends IsHasError {
         logBuffer.print(Level.info);
       } catch (e, stack) {
         logBuffer.print(
-            Level.error, message: '❌ Ошибка при пакетном обновлении',
-            error: e,
-            stackTrace: stack);
+          Level.error,
+          message: '❌ Ошибка при пакетном обновлении',
+          error: e,
+          stackTrace: stack,
+        );
         error = Port.errorHandler(e);
       }
       return data;
@@ -174,8 +185,9 @@ abstract class Store<T extends Loader> extends IsHasError {
         final logBuffer = CustomLogger.buffer();
         logBuffer.add('${toString()}: получение данных по ID get ${id}');
         Set<int> idsNull = {};
-        var result = await Stream.value(await refresh(Loaded.ifNotLoad))
-            .map((map) {
+        var result = await Stream.value(await refresh(Loaded.ifNotLoad)).map((
+          map,
+        ) {
           var v = map[id];
           if (v == null) {
             idsNull.add(id);
@@ -186,7 +198,8 @@ abstract class Store<T extends Loader> extends IsHasError {
           refreshSamSelf();
           refreshOnIds(idsNull);
           logBuffer.add(
-              'Найдены нулевые IDs ${idsNull} - отправлены уведомления');
+            'Найдены нулевые IDs ${idsNull} - отправлены уведомления',
+          );
         }
         logBuffer.print(Level.debug);
         return result;
@@ -202,20 +215,22 @@ abstract class Store<T extends Loader> extends IsHasError {
         final logBuffer = CustomLogger.buffer();
         logBuffer.add('${toString()}: получение данных для IDs gets ${ids}');
         var result = await Stream.value(await refresh(Loaded.ifNotLoad))
-            .map((map) =>
-            ids.map((id) {
-              var v = map[id];
-              if (v == null) {
-                idsNull.add(id);
-              }
-              return v;
-            }).toSet())
+            .map(
+              (map) => ids.map((id) {
+                var v = map[id];
+                if (v == null) {
+                  idsNull.add(id);
+                }
+                return v;
+              }).toSet(),
+            )
             .first;
         if (idsNull.isNotEmpty) {
           refreshSamSelf();
           refreshOnIds(idsNull);
           logBuffer.add(
-              'Найдены нулевые IDs ${idsNull} - отправлены уведомления');
+            'Найдены нулевые IDs ${idsNull} - отправлены уведомления',
+          );
         }
         logBuffer.print(Level.debug);
         return result;
@@ -234,6 +249,63 @@ abstract class Store<T extends Loader> extends IsHasError {
     return load;
   }
 
+  void toArchive(Set<int> ids) {
+    List<T> archives = [];
+    for (var id in ids) {
+      T? aggregate = data[id];
+      if (aggregate != null) {
+        aggregate.doArchive();
+        archives.add(aggregate);
+      }
+    }
+    save(archives);
+  }
+
+  Future<void> save(List<T> aggregates) async {
+    final logBuffer = CustomLogger.buffer();
+    logBuffer.add('${toString()} save ${aggregates.length} items');
+    for (var id in aggregates) {
+      data[id]?.load = true;
+    }
+    logBuffer.add('Aggregate`s установлены в load = true: $aggregates');
+    loadCallback.call();
+    logBuffer.add('LoadCallback: $aggregates');
+    try {
+      List<T>? result = await saveInBackend(aggregates);
+      logBuffer.add('saveInBackend $result');
+      if (result != null) {
+        for (var aggregate in result) {
+          data[aggregate.id!] = aggregate;
+        }
+        logBuffer.add('saveInLocal $result');
+        if (result.length != aggregates.length) {
+          logBuffer.add(
+            'есть разница длин массивов ${result.length} != ${aggregates.length}',
+          );
+          await refreshOnIds(aggregates.map((a) => a.id).nonNulls.toSet());
+        } else {
+          loadCallback.call();
+        }
+      } else {
+        logBuffer.add('пришел нулевой результат $result');
+        await refreshOnIds(aggregates.map((a) => a.id).nonNulls.toSet());
+      }
+      logBuffer.print(Level.info);
+    } catch (e, stack) {
+      logBuffer.print(
+        Level.error,
+        message: '❌ Ошибка при save',
+        error: e,
+        stackTrace: stack,
+      );
+      error = Port.errorHandler(e);
+      await refreshOnIds(aggregates.map((a) => a.id).nonNulls.toSet());
+      rethrow;
+    }
+  }
+
+  Future<List<T>?> saveInBackend(List<T> aggregates);
+
   Future<void> delete(Set<int> ids) async {
     var deleteIds = Set<int>.from(ids);
     final logBuffer = CustomLogger.buffer();
@@ -247,15 +319,19 @@ abstract class Store<T extends Loader> extends IsHasError {
     try {
       await deleteInBackend(deleteIds);
       logBuffer.add('deleteInBackend $deleteIds');
+      logBuffer.print(Level.info);
     } catch (e, stack) {
-      logBuffer.print(Level.error, message: '❌ Ошибка при delete',
-          error: e,
-          stackTrace: stack);
+      logBuffer.print(
+        Level.error,
+        message: '❌ Ошибка при delete',
+        error: e,
+        stackTrace: stack,
+      );
       error = Port.errorHandler(e);
+      rethrow;
+    } finally {
+      await refreshOnIds(deleteIds);
     }
-    await refreshOnIds(deleteIds);
-    logBuffer.add('refreshOnIds $deleteIds');
-    logBuffer.print(Level.info);
   }
 
   Future<bool?> deleteInBackend(Set<int> ids);
@@ -263,15 +339,11 @@ abstract class Store<T extends Loader> extends IsHasError {
   void execute(StoreCommand command) {
     command.execute(this);
   }
-
 }
 
-enum StoreEvent {
-  UPDATE,
-  DELETE
-}
+enum StoreEvent { UPDATE, DELETE }
 
-class StoreCommand<T extends Loader> {
+class StoreCommand<T extends Aggregate> {
   final Function(Store<T> store) execute;
 
   StoreCommand({required this.execute});

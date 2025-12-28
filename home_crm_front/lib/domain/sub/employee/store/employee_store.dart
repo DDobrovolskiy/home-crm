@@ -57,5 +57,11 @@ class EmployeeStore extends Store<EmployeeAggregate> {
   Future<bool?> deleteInBackend(Set<int> ids) {
     // TODO: implement deleteInBackend
     throw UnimplementedError();
+  }override
+  Future<List<EmployeeAggregate>?> saveInBackend(
+    List<EmployeeAggregate> aggregates,
+  ) {
+    // TODO: implement saveInBackend
+    throw UnimplementedError();
   }
 }

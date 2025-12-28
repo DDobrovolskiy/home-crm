@@ -100,5 +100,4 @@ class AppointedAggregate extends Aggregate {
         .toString()}, deadline: $deadline, sessions: $sessions, employeeId: $employeeId, testId: $testId}';
   }
 
-
 }

@@ -1,4 +1,5 @@
 import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dart';
+import 'package:home_crm_front/domain/support/components/aggregate/aggregate.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
 
 import '../../../support/components/status/doc.dart';
@@ -302,25 +303,6 @@ class EducationStore extends Store<TestAggregate> {
     );
   }
 
-  void save(List<TestAggregate> tests) {
-    //TODO
-    tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
-    testList.addAll(tests);
-    refreshOnIds(tests
-        .map((t) => t.id)
-        .nonNulls
-        .toSet());
-  }
-
-  void toArchive(Set<int> ids) {
-    for (var id in ids) {
-      data[id]?.doArchive();
-    }
-    //TODO Реальный вызов к БД
-    testList.where((t) => ids.contains(t.id)).forEach((t) => t.doArchive());
-    refreshOnIds(ids);
-  }
-
   @override
   Future<void> loadData() async {
     await Future.delayed(Duration(seconds: 1));
@@ -342,5 +324,15 @@ class EducationStore extends Store<TestAggregate> {
     //TODO Реальный вызов к БД
     testList.removeWhere((t) => ids.contains(t.id));
     return true;
+  }override
+  Future<List<TestAggregate>?> saveInBackend(
+    List<TestAggregate> aggregates,
+  ) async {
+    await Future.delayed(Duration(seconds: 1));
+    aggregates
+        .where((t) => t.id == null)
+        .forEach((t) => t.id = testList.length + 1);
+    testList.addAll(aggregates);
+    return aggregates;
   }
 }
