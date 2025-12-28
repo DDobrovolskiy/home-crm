@@ -74,8 +74,9 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
         builder: (
       BuildContext context,
       employees,
-    ) {urn CustomLoadList.load(
-          keykey: Key('null'),
+    ) {
+        return CustomLoadList.load(
+          key: Key('null'),
           loader: GetIt.I.get<RoleStore>().getAllMap(),
               skeleton: CustomSkeleton(
                 child: CustomSkeleton.panel(

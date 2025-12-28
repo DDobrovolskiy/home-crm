@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:home_crm_front/domain/sub/education/aggregate/test_aggregate.dart';
-import 'package:home_crm_front/domain/support/components/aggregate/aggregate.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
 
 import '../../../support/components/status/doc.dart';
@@ -324,7 +325,9 @@ class EducationStore extends Store<TestAggregate> {
     //TODO Реальный вызов к БД
     testList.removeWhere((t) => ids.contains(t.id));
     return true;
-  }override
+  }
+
+  @override
   Future<List<TestAggregate>?> saveInBackend(
     List<TestAggregate> aggregates,
   ) async {
