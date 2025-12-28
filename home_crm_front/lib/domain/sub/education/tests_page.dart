@@ -14,7 +14,6 @@ import '../../support/components/button/hovered_region.dart';
 import '../../support/components/callback/NavBarCallBack.dart';
 import '../../support/components/load/custom_load.dart';
 import '../../support/components/screen/Screen.dart';
-import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
 import '../../support/components/table/table_row.dart';
@@ -254,10 +253,11 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
       onLoad: (tests) {
         setState(() {
           selected =
-              tests.firstWhereOrNull((t) => t.id == selected?.id) ??
+              tests.firstWhereOrNull((t) => t?.id == selected?.id) ??
               tests.firstOrNull;
         });
       },
+      skeleton: CustomSkeleton(child: CustomSkeleton.panel(height: 80)),
       head: (context, tests) => CustomTableHeadRow(
         cells: [
           Padding(
@@ -269,7 +269,7 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
                 if (value != null) {
                   if (value) {
                     setState(() {
-                      selectIds = tests.map((e) => e.id).nonNulls.toSet();
+                      selectIds = tests.map((e) => e?.id).nonNulls.toSet();
                     });
                   } else {
                     setState(() {
@@ -485,7 +485,6 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
           },
         );
       },
-      skeleton: CustomSkeleton(child: CustomSkeleton.panel(height: 80)),
     );
   }
 }

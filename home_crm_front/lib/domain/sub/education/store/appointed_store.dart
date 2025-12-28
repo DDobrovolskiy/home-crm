@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/education/store/education_store.dart';
 import 'package:home_crm_front/domain/support/components/load/custom_load.dart';
@@ -9,6 +11,7 @@ import '../aggregate/appointed_aggregate.dart';
 class AppointedStore extends Store<AppointedAggregate> {
   @override
   Future<void> loadData() async {
+    await Future.delayed(Duration(seconds: 1));
     //TODO
     GetIt.I
         .get<EducationStore>()
@@ -27,6 +30,7 @@ class AppointedStore extends Store<AppointedAggregate> {
     if (ids.isEmpty) {
       return [];
     }
+    await Future.delayed(Duration(seconds: 1));
     return GetIt.I
         .get<EducationStore>()
         .testList
@@ -64,5 +68,11 @@ class AppointedStore extends Store<AppointedAggregate> {
     // tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
     // testList.addAll(tests);
     refresh(Loaded.ifLoad);
+  }
+
+  @override
+  Future<bool?> deleteInBackend(Set<int> ids) {
+    // TODO: implement deleteInBackend
+    throw UnimplementedError();
   }
 }

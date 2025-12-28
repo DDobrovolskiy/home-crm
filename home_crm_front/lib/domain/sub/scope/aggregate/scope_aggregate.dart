@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../support/components/aggregate/aggregate.dart';
 
-class ScopeAggregate extends Id {
+class ScopeAggregate extends Loader {
   final String name;
   final String description;
 

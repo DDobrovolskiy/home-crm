@@ -52,10 +52,10 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
   @override
   Widget build(BuildContext context) {
     //TODO
-    return CustomLoad.load(
-        key: Key('todo'),
-        loader: GetIt.I.get<EmployeeStore>().getAll(),
-        skeleton: CustomSkeleton(
+    return CustomLoadList.load(
+      key: Key('null'),
+      loader: GetIt.I.get<EmployeeStore>().getAllMap(),
+      skeleton: CustomSkeleton(
           child: Column(
             crossAxisAlignment:
             CrossAxisAlignment.start,
@@ -75,11 +75,10 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
       BuildContext context,
       employees,
     ) {
-          //TODO
-          return CustomLoad.load(
-              key: Key(''),
-              loader: GetIt.I.get<RoleStore>().getAll(),
-              skeleton: CustomSkeleton(
+          //TODOurn CustomLoadList.load(
+          key: Key('null'),
+          loader: GetIt.I.get<RoleStore>().getAllMap(),
+          skeskeleton: CustomSkeleton(
                 child: CustomSkeleton.panel(
                   width: 80,
                   height: 12,
@@ -97,19 +96,21 @@ class _EmployeeSelectState extends State<EmployeeSelect> {
               widget.text ?? 'Выбор сотрудника',
               style: CustomColors.getBodyLarge(context, null),
             ),
-            items: employees
-                .where((e) => !(widget.excludeId?.contains(e.id) ?? false))
+            items: employees.entries
+                .where((e) =>
+            !(widget.excludeId?.contains(e.key) ?? false) &&
+                roles[e.value.roleId] != null)
                 .map((empl) {
                   var pair = Pair(
-                    id: empl.id!,
-                    name: empl.user.name,
-                    role: roles.where((r) => r.id == empl.roleId).first.name,
+                    id: empl.key,
+                    name: empl.value.user.name,
+                    role: roles[empl.value.roleId]!.name,
                   );
                   return DropdownMenuItem<Pair>(
                     value: pair,
                     child: CustomLoad.load(
-                        key: empl.getKey(),
-                        loader: empl.getRole(),
+                        key: empl.value.getKey(),
+                        loader: empl.value.getRole(),
                         skeleton: CustomSkeleton(
                           child: CustomSkeleton.panel(
                             width: 80,

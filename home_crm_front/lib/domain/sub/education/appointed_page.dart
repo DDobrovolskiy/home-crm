@@ -15,7 +15,6 @@ import '../../support/components/callback/NavBarCallBack.dart';
 import '../../support/components/load/custom_load.dart';
 import '../../support/components/screen/Screen.dart';
 import '../../support/components/skeleton/custom_skeleton.dart';
-import '../../support/components/table/table.dart';
 import '../../support/components/table/table_head_row.dart';
 import '../../support/components/table/table_head_row_cell.dart';
 import '../../support/components/table/table_row.dart';
@@ -152,7 +151,7 @@ class _AppointedPageState
       onLoad: (values) {
         setState(() {
           selected =
-              values.firstWhereOrNull((t) => t.id == selected?.id) ??
+              values.firstWhereOrNull((t) => t?.id == selected?.id) ??
               values.firstOrNull;
         });
       },
@@ -197,6 +196,11 @@ class _AppointedPageState
           skeleton: CustomSkeleton(
               key: appoint.getKey(), child: CustomSkeleton.panel(height: 80)),
           builder: (BuildContext context, test) {
+            if (test.load) {
+              return CustomSkeleton(
+                  key: appoint.getKey(),
+                  child: CustomSkeleton.panel(height: 80));
+            }
             return HoveredRegion(
               key: Key('${appoint.key}-${test.key}'),
               onTap: () async {

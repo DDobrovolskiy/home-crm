@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-abstract class Aggregate extends Id {
+abstract class Aggregate extends Loader {
   late bool active;
   late int version;
   final String createdAt;
@@ -26,6 +26,7 @@ abstract class Aggregate extends Id {
 
   int get key => Object.hash(super.key, active, version, createdAt);
 
+  @override
   Key getKey() {
     return ValueKey<int>(key);
   }
@@ -33,6 +34,19 @@ abstract class Aggregate extends Id {
   @override
   String toString() {
     return 'Aggregate{super: ${super.toString()}, active: $active, version: $version, createdAt: $createdAt}';
+  }
+}
+
+abstract class Loader extends Id {
+  late bool load = false;
+
+  Loader({super.id});
+
+  int get key => Object.hash(super.key, load);
+
+  @override
+  Key getKey() {
+    return ValueKey<int>(key);
   }
 }
 

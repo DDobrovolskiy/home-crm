@@ -306,23 +306,24 @@ class EducationStore extends Store<TestAggregate> {
     //TODO
     tests.where((t) => t.id == null).forEach((t) => t.id = testList.length + 1);
     testList.addAll(tests);
-    refresh(Loaded.ifLoad);
+    refreshOnIds(tests
+        .map((t) => t.id)
+        .nonNulls
+        .toSet());
   }
 
   void toArchive(Set<int> ids) {
-    //TODO
+    for (var id in ids) {
+      data[id]?.doArchive();
+    }
+    //TODO Реальный вызов к БД
     testList.where((t) => ids.contains(t.id)).forEach((t) => t.doArchive());
-    refreshOnIds(ids);
-  }
-
-  void delete(Set<int> ids) {
-    //TODO
-    testList.removeWhere((t) => ids.contains(t.id));
     refreshOnIds(ids);
   }
 
   @override
   Future<void> loadData() async {
+    await Future.delayed(Duration(seconds: 1));
     //TODO
     testList.forEach((e) {
       data[e.id!] = e;
@@ -331,6 +332,15 @@ class EducationStore extends Store<TestAggregate> {
 
   @override
   Future<List<TestAggregate>?> loadDataIds(Set<int> ids) async {
+    await Future.delayed(Duration(seconds: 1));
     return testList.where((t) => ids.contains(t.id)).toList();
+  }
+
+  @override
+  Future<bool?> deleteInBackend(Set<int> ids) async {
+    await Future.delayed(Duration(seconds: 1));
+    //TODO Реальный вызов к БД
+    testList.removeWhere((t) => ids.contains(t.id));
+    return true;
   }
 }

@@ -17,4 +17,10 @@ class ScopeStore extends Store<ScopeAggregate> {
     // TODO: implement loadDataIds
     throw UnimplementedError();
   }
+
+  @override
+  Future<bool?> deleteInBackend(Set<int> ids) {
+    // TODO: implement deleteInBackend
+    throw UnimplementedError();
+  }
 }

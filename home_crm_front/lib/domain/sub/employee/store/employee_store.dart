@@ -20,6 +20,16 @@ class EmployeeStore extends Store<EmployeeAggregate> {
     );
   }
 
+  LoadStore<Map<int, EmployeeAggregate>> getAllMap() {
+    return LoadStore(
+      value: () async =>
+      (await refresh(
+        Loaded.ifNotLoad,
+      )),
+      callback: loadCallback,
+    );
+  }
+
   @override
   Future<void> loadData() async {
     var organizationEmployee = await _organizationRepository
@@ -40,6 +50,12 @@ class EmployeeStore extends Store<EmployeeAggregate> {
   @override
   Future<List<EmployeeAggregate>?> loadDataIds(Set<int> ids) {
     // TODO: implement loadDataIds
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool?> deleteInBackend(Set<int> ids) {
+    // TODO: implement deleteInBackend
     throw UnimplementedError();
   }
 }
