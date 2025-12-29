@@ -75,8 +75,8 @@ class CustomButtonDisplay extends StatelessWidget {
         side: WidgetStatePropertyAll(
           BorderSide(
             color: primary
-                ? CustomColors.getPrimary(context)
-                : CustomColors.getLineColor(context),
+                ? (onPressed != null) ? CustomColors.getPrimary(context) : CustomColors.getSecondaryText(context)
+                : (onPressed != null) ? CustomColors.getLineColor(context) : CustomColors.getSecondaryText(context),
             width: 2,
           ),
         ),
@@ -90,22 +90,24 @@ class CustomButtonDisplay extends StatelessWidget {
         ),
         backgroundColor: WidgetStatePropertyAll(
           primary
-              ? CustomColors.getPrimary(context)
-              : CustomColors.getPrimaryBackground(context),
+              ? (onPressed != null) ? CustomColors.getPrimary(context) : CustomColors.getSecondaryText(context).withAlpha(100)
+              : (onPressed != null) ? CustomColors.getPrimaryBackground(context) : CustomColors.getSecondaryText(context).withAlpha(100),
         ),
       ),
-      child: Text(
-        text,
-        style: Screen.isWeb(context)
-            ? CustomColors.getDisplaySmallButtonIsWeb(
-                context,
-                primary ? CustomColors.getPrimaryBtnText(context) : null,
-              )
-            : CustomColors.getDisplaySmallButton(
-                context,
-                primary ? CustomColors.getPrimaryBtnText(context) : null,
-              ),
-      ),
+      child: Column(children: [
+        Text(
+          text,
+          style: Screen.isWeb(context)
+              ? CustomColors.getDisplaySmallButtonIsWeb(
+            context,
+            primary ? CustomColors.getPrimaryBtnText(context) : null,
+          )
+              : CustomColors.getDisplaySmallButton(
+            context,
+            primary ? CustomColors.getPrimaryBtnText(context) : null,
+          ),
+        ),
+      ],),
     );
   }
 }

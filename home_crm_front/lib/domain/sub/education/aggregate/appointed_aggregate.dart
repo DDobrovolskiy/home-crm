@@ -76,6 +76,10 @@ class AppointedAggregate extends Aggregate {
     }
   }
 
+  bool isCanStart(int iteration) {
+    return (isActive() == StatusDoc.ACTIVE) && (isStatus(iteration) != StatusDoc.FAILED) && (iteration > getAttempts()) ;
+  }
+
   int getAttempts() {
     return sessions.length;
   }

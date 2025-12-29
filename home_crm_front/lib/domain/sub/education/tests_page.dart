@@ -252,9 +252,12 @@ class _OrganizationTestsPageState extends State<OrganizationTestsPage>
       loader: GetIt.I.get<EducationStore>().getAll(showArchive),
       onLoad: (tests) {
         setState(() {
-          selected =
+          var newSelected =
               tests.firstWhereOrNull((t) => t?.id == selected?.id) ??
               tests.firstOrNull;
+          if(selected?.id != newSelected?.id) {
+            selected = newSelected;
+          }
         });
       },
       skeleton: CustomSkeleton(child: CustomSkeleton.panel(height: 80)),

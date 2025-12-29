@@ -284,6 +284,7 @@ class _CustomTableLoadSliverState<T extends Loader>
 
   Widget _table(BuildContext context) {
     return SliverList(
+      key: ValueKey(_items),
       delegate: SliverChildBuilderDelegate((context, index) {
         var item = _items[index];
         if (index > 20) {

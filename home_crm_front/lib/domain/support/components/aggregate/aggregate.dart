@@ -53,6 +53,11 @@ abstract class Loader extends Id {
   Key getKey() {
     return ValueKey<int>(key);
   }
+
+  @override
+  String toString() {
+    return 'Loader{super: ${super.toString()} load: $load}';
+  }
 }
 
 abstract class Id {

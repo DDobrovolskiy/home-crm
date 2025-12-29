@@ -45,8 +45,7 @@ class _CustomTabState extends State<CustomTab> with TickerProviderStateMixin {
             ),
             tabs: widget.contents
                 .map(
-                  (title) =>
-                  Tab(
+                  (title) => Tab(
                     child: Row(
                       children: [
                         // Text(title.name),
@@ -57,7 +56,7 @@ class _CustomTabState extends State<CustomTab> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-            )
+                )
                 .toList(),
           ),
         ),
@@ -148,8 +147,7 @@ class _CustomSliverTabState extends State<CustomSliverTab>
             ),
             tabs: widget.contents
                 .map(
-                  (title) =>
-                  Tab(
+                  (title) => Tab(
                     child: Row(
                       children: [
                         CustomLabelCircleText(
@@ -159,23 +157,27 @@ class _CustomSliverTabState extends State<CustomSliverTab>
                       ],
                     ),
                   ),
-            )
+                )
                 .toList(),
           ),
         ),
-        Expanded(child: TabBarView(
-          controller: widget.tabController,
-          children: widget.contents.map((page) {
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(child: Container(
-                  color: CustomColors.getSecondaryBackground(context),
-                  child: page, //SingleChildScrollView(child: page),
-                ),)
-              ],
-            );
-          }).toList(),
-        ),),
+        Expanded(
+          child: Container(
+            color: CustomColors.getSecondaryBackground(context),
+            child: TabBarView(
+              controller: widget.tabController,
+              children: widget.contents.map((page) {
+                return CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: page,
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        ),
       ],
     );
   }

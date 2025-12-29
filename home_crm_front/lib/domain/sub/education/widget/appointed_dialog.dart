@@ -23,8 +23,11 @@ class AppointedDialog extends SheetPage {
   final AppointedAggregate appointed;
   final bool isSidePanel;
 
-  const AppointedDialog(
-      {super.key, required this.appointed, this.isSidePanel = false});
+  const AppointedDialog({
+    super.key,
+    required this.appointed,
+    this.isSidePanel = false,
+  });
 
   @override
   _TestDialogState createState() => _TestDialogState();
@@ -47,99 +50,131 @@ class _TestDialogState extends State<AppointedDialog> {
   @override
   Widget build(BuildContext context) {
     return CustomLoad.load(
-        key: appointed.getKey(),
-        loader: appointed.getTest(),
-        skeleton: SizedBox.shrink(),
-        builder: (context, test) {
-      return DialogPage(
-        label: (validator) {
-          return Column(
-            children: [
-              CustomLabelPage(
-                contents: [
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                            child: CustomButtonDisplay(
-                              primary: true,
-                              text: 'Приступить',
-                              onPressed: () async {
-                                if (validator()) {
-                                  // var error = test.doReady();
-                                  // if (error != null) {
-                                  //   Stamp.showTemporarySnackbar(context, error);
-                                  // } else {
-                                  //   GetIt.I.get<EducationStore>().save([test]);
-                                  //   GetIt.I.get<SheetElementDeleteCallback>().call(
-                                  //     widget.getName(),
-                                  //   );
-                                  //   setState(() {
-                                  //
-                                  //   });
-                                  // }
-                                }
-                              },
+      key: appointed.getKey(),
+      loader: appointed.getTest(),
+      skeleton: SizedBox.shrink(),
+      builder: (context, test) {
+        return DialogPage(
+          label: (validator) {
+            return Column(
+              children: [
+                CustomLabelPage(
+                  contents: [
+                    Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
+                              child: (!appointed.isCanStart(test.iteration))
+                                  ? Tooltip(
+                                      message:
+                                          'Невозможно приступить к тестированию',
+                                      child: appointed.isDone()
+                                          ? Icon(
+                                              Icons.done,
+                                              size: 44,
+                                              color: CustomColors.getSuccess(
+                                                context,
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.warning,
+                                              size: 44,
+                                              color: CustomColors.getWarning(
+                                                context,
+                                              ),
+                                            ),
+                                    )
+                                  : CustomButtonDisplay(
+                                      primary: true,
+                                      text: 'Приступить',
+                                      onPressed:
+                                          (!appointed.isCanStart(
+                                            test.iteration,
+                                          ))
+                                          ? null
+                                          : () {
+                                              if (validator()) {
+                                                // var error = test.doReady();
+                                                // if (error != null) {
+                                                //   Stamp.showTemporarySnackbar(context, error);
+                                                // } else {
+                                                //   GetIt.I.get<EducationStore>().save([test]);
+                                                //   GetIt.I.get<SheetElementDeleteCallback>().call(
+                                                //     widget.getName(),
+                                                //   );
+                                                //   setState(() {
+                                                //
+                                                //   });
+                                                // }
+                                              }
+                                            },
+                                    ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            widget.getName(),
-                            textAlign: TextAlign.start,
-                            style: Screen.isWeb(context)
-                                ? CustomColors.getDisplaySmall(context, null)
-                                : CustomColors.getDisplaySmallButtonIsWeb(
-                                    context,
-                                    null,
-                                  ),
-                          ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                              15,
-                              0,
-                              0,
-                              0,
+                          ],
+                        ),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              widget.getName(),
+                              textAlign: TextAlign.start,
+                              style: Screen.isWeb(context)
+                                  ? CustomColors.getDisplaySmall(context, null)
+                                  : CustomColors.getDisplaySmallButtonIsWeb(
+                                      context,
+                                      null,
+                                    ),
                             ),
-                            child: CustomStatusDoc(
-                              status: appointed.isStatus(test!.iteration),
+                            Padding(
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                15,
+                                0,
+                                0,
+                                0,
+                              ),
+                              child: CustomStatusDoc(
+                                status: appointed.isStatus(test.iteration),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(4, 0, 0, 0),
-                            child: CustomStatusDoc(
-                              status: appointed.isActive(),
+                            Padding(
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                4,
+                                0,
+                                0,
+                                0,
+                              ),
+                              child: CustomStatusDoc(
+                                status: appointed.isActive(),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-        contents: appointed.sessions.isEmpty
-            ? [(key) => CustomTabView(name: 'Инфо', child: empty())]
-            : appointed.sessions
-            .mapIndexed((index, s) =>
-        ((key) =>
-            CustomTabView(
-                name: '${s.getAbbreviate()}-${index + 1}', child: session(s))),
-                  )
-                  .toList(),
-      );
-    });
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+          contents: appointed.sessions.isEmpty
+              ? [(key) => CustomTabView(name: 'Инфо', child: empty())]
+              : appointed.sessions
+                    .mapIndexed(
+                      (index, s) => ((key) => CustomTabView(
+                        name: '${s.getAbbreviate()}-${index + 1}',
+                        child: session(s),
+                      )),
+                    )
+                    .toList(),
+        );
+      },
+    );
   }
 
   Widget empty() {
@@ -174,27 +209,29 @@ class _TestDialogState extends State<AppointedDialog> {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(15, 5, 15, 0),
             child: Container(
-            width: double.infinity,
-            constraints: BoxConstraints(maxWidth: Screen.getMaxWidth()),
-            child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              createLabelRow(
-                'Дата начала:',
-                DateFormat('yyyy-MM-dd HH:mm').format(session.dateStart),
+              width: double.infinity,
+              constraints: BoxConstraints(maxWidth: Screen.getMaxWidth()),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  createLabelRow(
+                    'Дата начала:',
+                    DateFormat('yyyy-MM-dd HH:mm').format(session.dateStart),
+                  ),
+                  createLabelRow(
+                    'Дата окончания:',
+                    DateFormat('yyyy-MM-dd HH:mm').format(session.dateEnd),
+                  ),
+                  createLabelRow(
+                    'Результат тестирования:',
+                    session.success ? 'Успешный' : 'Неуспешный',
+                  ),
+                ],
               ),
-              createLabelRow(
-                'Дата окончания:',
-                DateFormat('yyyy-MM-dd HH:mm').format(session.dateEnd),
-              ),
-              createLabelRow(
-                'Результат тестирования:',
-                session.success ? 'Успешный' : 'Неуспешный',
-              ),
-            ],
-            ),),),
+            ),
+          ),
         ],
       ),
     );

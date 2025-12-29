@@ -150,9 +150,12 @@ class _AppointedPageState
       ),
       onLoad: (values) {
         setState(() {
-          selected =
+          var newSelected =
               values.firstWhereOrNull((t) => t?.id == selected?.id) ??
               values.firstOrNull;
+          if (selected?.id != newSelected?.id) {
+            selected = newSelected;
+          }
         });
       },
       head: (context, tests) => CustomTableHeadRow(
@@ -194,12 +197,15 @@ class _AppointedPageState
           key: appoint.getKey(),
           loader: appoint.getTest(),
           skeleton: CustomSkeleton(
-              key: appoint.getKey(), child: CustomSkeleton.panel(height: 80)),
+            key: appoint.getKey(),
+            child: CustomSkeleton.panel(height: 80),
+          ),
           builder: (BuildContext context, test) {
             if (test.load) {
               return CustomSkeleton(
-                  key: appoint.getKey(),
-                  child: CustomSkeleton.panel(height: 80));
+                key: appoint.getKey(),
+                child: CustomSkeleton.panel(height: 80),
+              );
             }
             return HoveredRegion(
               key: Key('${appoint.key}-${test.key}'),

@@ -323,7 +323,7 @@ abstract class Store<T extends Aggregate> extends IsHasError {
     } catch (e, stack) {
       logBuffer.print(
         Level.error,
-        message: '❌ Ошибка при delete',
+        message: '❌ Ошибка при delete: ${e}',
         error: e,
         stackTrace: stack,
       );

@@ -315,13 +315,11 @@ class EducationStore extends Store<TestAggregate> {
 
   @override
   Future<List<TestAggregate>?> loadDataIds(Set<int> ids) async {
-    await Future.delayed(Duration(seconds: 1));
     return testList.where((t) => ids.contains(t.id)).toList();
   }
 
   @override
   Future<bool?> deleteInBackend(Set<int> ids) async {
-    await Future.delayed(Duration(seconds: 1));
     //TODO Реальный вызов к БД
     testList.removeWhere((t) => ids.contains(t.id));
     return true;
@@ -331,7 +329,6 @@ class EducationStore extends Store<TestAggregate> {
   Future<List<TestAggregate>?> saveInBackend(
     List<TestAggregate> aggregates,
   ) async {
-    await Future.delayed(Duration(seconds: 1));
     aggregates
         .where((t) => t.id == null)
         .forEach((t) => t.id = testList.length + 1);

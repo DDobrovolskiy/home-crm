@@ -11,7 +11,6 @@ import '../aggregate/appointed_aggregate.dart';
 class AppointedStore extends Store<AppointedAggregate> {
   @override
   Future<void> loadData() async {
-    await Future.delayed(Duration(seconds: 1));
     //TODO
     GetIt.I
         .get<EducationStore>()
@@ -30,7 +29,6 @@ class AppointedStore extends Store<AppointedAggregate> {
     if (ids.isEmpty) {
       return [];
     }
-    await Future.delayed(Duration(seconds: 1));
     return GetIt.I
         .get<EducationStore>()
         .testList
