@@ -21,6 +21,8 @@ import ru.dda.homecrmback.domain.support.result.aggregate.ResultAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -33,8 +35,11 @@ public class AuthHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
+            List<String> allowedPaths = Arrays.asList(IAuthController.PATH, "/ws-endpoint");
             RequestFacade requestFacade = (RequestFacade) request;
-            if (!(requestFacade).getServletPath().contains(IAuthController.PATH) && !Objects.equals(requestFacade.getMethod(), "OPTIONS")) {
+            String currentPath = requestFacade.getServletPath();
+            boolean isAllowed = allowedPaths.stream().anyMatch(currentPath::contains);
+            if (!isAllowed && !Objects.equals(requestFacade.getMethod(), "OPTIONS")) {
                 Result.<String, IFailAggregate>success(getHeaderValue(request, Api.AUTHORIZATION_HEADER))
                         .isTrue(StringUtils::hasText,
                                 onFail -> {
@@ -71,6 +76,8 @@ public class AuthHeaderFilter implements Filter {
     }
 
     private String getHeaderValue(ServletRequest request, String headerName) {
-        return ((HttpServletRequest) request).getHeader(headerName);
+        String header = ((HttpServletRequest) request).getHeader(headerName);
+        String token = request.getParameter("token");
+        return header != null ? header : token;
     }
 }

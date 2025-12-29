@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 abstract class Aggregate extends Loader {
   late bool active;
@@ -29,6 +30,7 @@ abstract class Aggregate extends Loader {
     }
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   int get key => Object.hash(super.key, active, version, createdAt);
 
   @override
@@ -43,10 +45,12 @@ abstract class Aggregate extends Loader {
 }
 
 abstract class Loader extends Id {
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late bool load = false;
 
   Loader({super.id});
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   int get key => Object.hash(super.key, load);
 
   @override
@@ -65,6 +69,7 @@ abstract class Id {
 
   Id({this.id});
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   int get key => id ?? 0;
 
   Key getKey() {

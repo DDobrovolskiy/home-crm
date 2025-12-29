@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/sub/organization/repository/organization_repository.dart';
+import 'package:home_crm_front/domain/support/port/websocket/websocket_service.dart';
 import 'package:home_crm_front/domain/support/token_service.dart';
 
 import '../../../support/port/port.dart';
@@ -13,12 +14,15 @@ class OrganizationCurrentBloc
       .get<OrganizationRepository>();
   late final TokenService _tokenService = GetIt.instance
       .get<TokenService>();
+  late final WebSocketService _webSocketService = GetIt.instance
+      .get<WebSocketService>();
 
   OrganizationCurrentBloc() : super(OrganizationUnSelectedState()) {
     on<OrganizationRefreshEvent>((event, emit) async {
       refresh();
     });
     on<OrganizationUnSelectedEvent>((event, emit) async {
+      _webSocketService.disposeConnection();
       await _tokenService.clearToken(
           TokenService.organizationToken);
       add(OrganizationRefreshEvent());
@@ -26,9 +30,11 @@ class OrganizationCurrentBloc
     on<OrganizationSelectedEvent>((event, emit) async {
       await _tokenService.saveToken(
           TokenService.organizationToken, event.id.toString());
+      await _webSocketService.initStomp(event.id.toString());
       add(OrganizationRefreshEvent());
     });
     on<OrganizationErrorEvent>((event, emit) async {
+      _webSocketService.disposeConnection();
       await _tokenService.clearToken(TokenService.organizationToken);
       add(OrganizationRefreshEvent());
     });

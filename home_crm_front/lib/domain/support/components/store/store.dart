@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:get_it/get_it.dart';
 import 'package:home_crm_front/domain/support/components/aggregate/aggregate.dart';
 import 'package:home_crm_front/domain/support/components/logger/custom_logger.dart';
 import 'package:logger/logger.dart';
@@ -8,10 +9,12 @@ import 'package:synchronized/synchronized.dart';
 
 import '../../exceptions/exceptions.dart';
 import '../../port/port.dart';
+import '../../port/websocket/websocket_service.dart';
 import '../../service/loaded.dart';
 import '../load/custom_load.dart';
 
 abstract class Store<T extends Aggregate> extends IsHasError {
+  late final WebSocketService _webSocketService = GetIt.instance.get<WebSocketService>();
   bool load = false;
   PortException? error;
   LoadCallback loadCallback = LoadCallback();
@@ -274,10 +277,14 @@ abstract class Store<T extends Aggregate> extends IsHasError {
       List<T>? result = await saveInBackend(aggregates);
       logBuffer.add('saveInBackend $result');
       if (result != null) {
+        Set<int> idsWebSocket = {};
         for (var aggregate in result) {
           data[aggregate.id!] = aggregate;
+          idsWebSocket.add(aggregate.id!);
         }
         logBuffer.add('saveInLocal $result');
+        _webSocketService.sendMessage('name', idsWebSocket);
+        logBuffer.add('_webSocketService sendMessage $idsWebSocket');
         if (result.length != aggregates.length) {
           logBuffer.add(
             'есть разница длин массивов ${result.length} != ${aggregates.length}',

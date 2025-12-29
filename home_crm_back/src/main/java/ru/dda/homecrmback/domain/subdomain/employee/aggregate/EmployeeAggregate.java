@@ -18,7 +18,8 @@ import ru.dda.homecrmback.domain.subdomain.employee.dto.response.EmployeeTestsDT
 import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAggregate;
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
-import ru.dda.homecrmback.domain.support.aggregete.IAggregate;
+import ru.dda.homecrmback.domain.support.aggregete.AggregateType;
+import ru.dda.homecrmback.domain.support.aggregete.BaseAuditableEntity;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -31,7 +32,7 @@ import java.util.*;
 @Setter
 @Entity
 @Table(name = "employee")
-public class EmployeeAggregate implements IAggregate {
+public class EmployeeAggregate extends BaseAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,11 +40,11 @@ public class EmployeeAggregate implements IAggregate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserAggregate user;
-    @NotNull
-    @Fetch(FetchMode.JOIN)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organization_id")
-    private OrganizationAggregate organization;
+//    @NotNull
+//    @Fetch(FetchMode.JOIN)
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "organization_id")
+//    private OrganizationAggregate organization;
     @NotNull
     @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -77,8 +78,9 @@ public class EmployeeAggregate implements IAggregate {
                         FailEvent.VALIDATION.fail("У сотрудника не определена роль"))
                 .getResult(() -> {
                     EmployeeAggregate aggregate = new EmployeeAggregate();
+                    aggregate.setActive(true);
                     aggregate.user = userAggregate;
-                    aggregate.organization = organizationAggregate;
+                    aggregate.setOrganization(organizationAggregate);
                     aggregate.role = roleAggregate;
                     roleAggregate.addEmployee(aggregate);
                     return aggregate;
@@ -94,7 +96,7 @@ public class EmployeeAggregate implements IAggregate {
         return EmployeeDTO.builder()
                 .id(id)
                 .user(user.getUserDTO())
-                .organization(organization.organizationDTO())
+                .organization(getOrganization().organizationDTO())
                 .role(role.getRoleDTO())
                 .build();
     }
@@ -133,5 +135,10 @@ public class EmployeeAggregate implements IAggregate {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String getEntityName() {
+        return AggregateType.EMPLOYEE.name();
     }
 }
