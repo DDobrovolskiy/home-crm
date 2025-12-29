@@ -40,11 +40,6 @@ public class EmployeeAggregate extends BaseAuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserAggregate user;
-//    @NotNull
-//    @Fetch(FetchMode.JOIN)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "organization_id")
-//    private OrganizationAggregate organization;
     @NotNull
     @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
