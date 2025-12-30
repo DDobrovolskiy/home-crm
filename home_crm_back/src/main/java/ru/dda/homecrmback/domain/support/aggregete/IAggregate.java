@@ -1,8 +1,9 @@
 package ru.dda.homecrmback.domain.support.aggregete;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public interface IAggregate extends Comparable<IAggregate> {
+public interface IAggregate extends Comparable<IAggregate>, Serializable {
     Long getId();
 
     @Override

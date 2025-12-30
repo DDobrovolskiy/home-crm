@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.util.SerializationUtils;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestResultAggregate;
 import ru.dda.homecrmback.domain.subdomain.education.aggregate.TestSessionAggregate;
@@ -19,7 +20,9 @@ import ru.dda.homecrmback.domain.subdomain.organization.aggregate.OrganizationAg
 import ru.dda.homecrmback.domain.subdomain.role.aggregate.RoleAggregate;
 import ru.dda.homecrmback.domain.subdomain.user.aggregate.UserAggregate;
 import ru.dda.homecrmback.domain.support.aggregete.AggregateType;
-import ru.dda.homecrmback.domain.support.aggregete.BaseAuditableEntity;
+import ru.dda.homecrmback.domain.support.aggregete.entity.IAuditableEntity;
+import ru.dda.homecrmback.domain.support.aggregete.entity.INotifyBot;
+import ru.dda.homecrmback.domain.support.aggregete.entity.SubscribesEntity;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -32,14 +35,21 @@ import java.util.*;
 @Setter
 @Entity
 @Table(name = "employee")
-public class EmployeeAggregate extends BaseAuditableEntity {
+public class EmployeeAggregate extends SubscribesEntity implements IAuditableEntity, INotifyBot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
+    private boolean active = true;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserAggregate user;
+    @NotNull
+    @Fetch(FetchMode.JOIN)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private OrganizationAggregate organization;
     @NotNull
     @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -133,7 +143,22 @@ public class EmployeeAggregate extends BaseAuditableEntity {
     }
 
     @Override
+    @Transient
     public String getEntityName() {
         return AggregateType.EMPLOYEE.name();
+    }
+
+    @Transient
+    private EmployeeAggregate snapshot;
+
+    @PostLoad
+    protected void makeSnapshot() {
+        this.snapshot = SerializationUtils.clone(this);
+    }
+
+    @Override
+    @Transient
+    public Optional<NotifyAggregate> getNotify() {
+        return Optional.of(NotifyAggregate.Employee.of(this.id, this.organization.getId()));
     }
 }

@@ -16,7 +16,10 @@ import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleFullDTO;
 import ru.dda.homecrmback.domain.subdomain.role.dto.response.RoleScopesDTO;
 import ru.dda.homecrmback.domain.subdomain.scope.aggregate.ScopeAggregate;
 import ru.dda.homecrmback.domain.subdomain.scope.enums.ScopeType;
+import ru.dda.homecrmback.domain.support.aggregete.AggregateType;
 import ru.dda.homecrmback.domain.support.aggregete.IAggregate;
+import ru.dda.homecrmback.domain.support.aggregete.entity.IAuditableEntity;
+import ru.dda.homecrmback.domain.support.aggregete.entity.SubscribesEntity;
 import ru.dda.homecrmback.domain.support.result.Result;
 import ru.dda.homecrmback.domain.support.result.aggregate.IFailAggregate;
 import ru.dda.homecrmback.domain.support.result.events.FailEvent;
@@ -30,7 +33,7 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Table(name = "role")
-public class RoleAggregate implements IAggregate {
+public class RoleAggregate extends SubscribesEntity implements IAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -162,5 +165,11 @@ public class RoleAggregate implements IAggregate {
                         .map(ScopeAggregate::getId)
                         .collect(Collectors.toSet()))
                 .build();
+    }
+
+    @Override
+    @Transient
+    public String getEntityName() {
+        return AggregateType.ROLE.name();
     }
 }

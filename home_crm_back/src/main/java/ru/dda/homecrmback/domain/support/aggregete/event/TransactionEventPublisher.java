@@ -1,8 +1,9 @@
-package ru.dda.homecrmback.domain.support.aggregete;
+package ru.dda.homecrmback.domain.support.aggregete.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import ru.dda.homecrmback.domain.support.aggregete.BeanUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -14,7 +15,6 @@ public class TransactionEventPublisher {
      */
     public static void registerSynchronization() {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) return;
-
         // Проверяем, не зарегистрирована ли уже наша синхронизация
         boolean alreadyRegistered = TransactionSynchronizationManager.getSynchronizations()
                 .stream()

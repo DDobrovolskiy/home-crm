@@ -38,6 +38,7 @@ public class UserAggregate implements IUserContext {
     private String token = UUID.randomUUID().toString();
     @NotNull
     private String phone;
+    private Long chatId;
     @NotNull
     private String password;
     @NotNull

@@ -1,4 +1,4 @@
-package ru.dda.homecrmback.domain.support.aggregete;
+package ru.dda.homecrmback.domain.support.aggregete.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
